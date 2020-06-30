@@ -5,5 +5,13 @@ module Main where
 
   main :: IO ()
   main = do
-    SimplyTyped.main
-    LambdaPi.main
+    putStrLn $ "==================="
+    putStrLn $ "Running Test Suites"
+    putStrLn $ "==================="
+    putStrLn ""
+
+    SimplyTyped.test
+    putStrLn ""
+
+    LambdaPi.test
+    putStrLn ""

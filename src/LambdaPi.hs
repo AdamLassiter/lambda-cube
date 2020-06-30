@@ -1,5 +1,7 @@
 module LambdaPi where
 
+    -- data and type declarations
+
     data InfTerm
         = Ann ChkTerm ChkTerm
         | Star
@@ -30,10 +32,21 @@ module LambdaPi where
         = NFree Name
         | NApp Neutral Type
 
+    type Env = [Type]
+
+    type Context = [(Name, Type)]
+
+    type Result a = Either String a
+
+
+    -- type checking and type inference
+
     vFree :: Name -> Type
     vFree n = VNeutral (NFree n)
 
-    type Env = [Type]
+    vApp :: Type -> Type -> Type
+    vApp (VLam f) v = f v
+    vApp (VNeutral n) v = VNeutral (NApp n v)
 
     infEval :: InfTerm -> Env -> Type
     infEval (Ann e _) d = chkEval e d
@@ -43,18 +56,9 @@ module LambdaPi where
     infEval (Bound i) d = d !! i
     infEval (App e e') d = vApp (infEval e d) (chkEval e' d)
 
-    vApp :: Type -> Type -> Type
-    vApp (VLam f) v = f v
-    vApp (VNeutral n) v = VNeutral (NApp n v)
-
     chkEval :: ChkTerm -> Env -> Type
     chkEval (Inf i) d = infEval i d
     chkEval (Lam e) d = VLam (\x -> chkEval e (x:d))
-
-    type Context = [(Name, Type)]
-
-    type Result a = Either String a
-
     throwError :: String -> Result a
     throwError = error
 
@@ -124,15 +128,18 @@ module LambdaPi where
     boundFree i (Quote k) = Bound (i - k - 1)
     boundFree _ x         = Free x
 
+
     -- poor man's unittest lib --
+
     assertEquals :: (Show a, Eq a) => a -> a -> a
     assertEquals x y = case x == y of
         True  -> x
         False -> error $ (show x) ++ " != " ++ (show y)
 
-    main :: IO ()
-    main = do
+    test :: IO ()
+    test = do
         putStrLn $ "LambdaPi Test Suite"
+        putStrLn $ "-------------------"
 
         let id'     = Lam (Lam (Inf (Bound 0)))
         let const'  = Lam (Lam (Inf (Bound 1)))
@@ -173,5 +180,4 @@ module LambdaPi where
             Left err  -> error err
             Right inf -> print $ assertEquals (quote0 inf) type3
 
-        putStrLn ""
         return ()
