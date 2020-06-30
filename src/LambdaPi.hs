@@ -9,18 +9,26 @@ module LambdaPi where
         | Bound Int
         | Free Name
         | App InfTerm ChkTerm
-        deriving (Show, Eq)
+        deriving (Eq)
+    instance Show InfTerm where
+        show = showITerm0
 
     data ChkTerm
         = Inf InfTerm
         | Lam ChkTerm
-        deriving (Show, Eq)
+        deriving (Eq)
+    instance Show ChkTerm where
+        show = showCTerm0
 
     data Name
         = Global String
         | Local Int
         | Quote Int
-        deriving (Show, Eq)
+        deriving (Eq)
+    instance Show Name where
+        show (Global name) = name
+        show (Local int)   = show int
+        show (Quote int)   = show int
 
     data Type
         = VLam (Type -> Type)
@@ -35,6 +43,29 @@ module LambdaPi where
     type Env = [Type]
 
     type Context = [(Name, Type)]
+
+    showCTerm0 :: ChkTerm -> String
+    showCTerm0 ρ = str
+        where (str, _) = showCTerm ρ 0
+
+    showCTerm :: ChkTerm -> Int -> (String, Int)
+    showCTerm (Inf inf) i = (showITerm inf i, i)
+    showCTerm (Lam exp) i = ("λ " ++ show i' ++ " . " ++ expr, i' + 1)
+        where (expr, i') = showCTerm exp i
+
+    showITerm0 :: InfTerm -> String
+    showITerm0 e = showITerm e 0
+
+    showITerm :: InfTerm -> Int -> String
+    showITerm (Ann e ρ) i  = "(" ++ show e ++ ") :: (" ++ show ρ ++ ")"
+    showITerm Star      _  = "*"
+    showITerm (Pi τ τ') i  = "Π " ++ show i ++ "::" ++ e ++ " . " ++ e'
+        where (e, j)   = showCTerm τ i
+              (e', j') = showCTerm τ' (j + 1)
+    showITerm (Bound i) _  = show i
+    showITerm (Free x) _   = show x
+    showITerm (App e e') i = "(" ++ showITerm e i ++ ") (" ++ expr ++ ")"
+        where (expr, i') = showCTerm e' i
 
     type Result a = Either String a
 
@@ -151,10 +182,12 @@ module LambdaPi where
         -- ~> λx -> λy -> y :: Πx::* -> Πy::x -> y
         let eval1 = quote0 $ infEval term1 []
         -- assert
-        print $ eval1
+        putStrLn $ "term: " ++ show term1
+        putStrLn $ "eval: " ++ show eval1
         case infType0 [] term1 of
             Left err  -> error err
-            Right inf -> print $ quote0 inf
+            Right inf -> putStrLn $ "type: " ++ show (quote0 inf)
+        putStrLn ""
 
         -- >> assume (Bool :: *) (False :: Bool)
         let env = [(Global "False", tFree "Bool"), (Global "Bool", VStar)]
@@ -164,10 +197,12 @@ module LambdaPi where
         let eval2 = Lam (Inf (Bound 0))
         let type2 = Inf (Pi (free "Bool") (free "Bool"))
         -- assert
-        print $ assertEquals (quote0 $ infEval term2 []) eval2
+        putStrLn $ "term: " ++ show term2
+        putStrLn $ "eval: " ++ show (assertEquals (quote0 $ infEval term2 []) eval2)
         case infType0 env term2 of
             Left err  -> error err
-            Right inf -> print $ assertEquals (quote0 inf) type2
+            Right inf -> putStrLn $ "type: " ++ show (assertEquals (quote0 inf) type2)
+        putStrLn ""
 
         -- >> id Bool False
         let term3 = term2 `App` (free "False")
@@ -175,9 +210,10 @@ module LambdaPi where
         let eval3 = free "False"
         let type3 = free "Bool"
         -- assert
-        print $ assertEquals (quote0 $ infEval term3 []) eval3
+        putStrLn $ "term: " ++ show term3
+        putStrLn $ "eval: " ++ show (assertEquals (quote0 $ infEval term3 []) eval3)
         case infType0 env term3 of
             Left err  -> error err
-            Right inf -> print $ assertEquals (quote0 inf) type3
+            Right inf -> putStrLn $ "type: " ++ show (assertEquals (quote0 inf) type3)
 
         return ()
