@@ -1,6 +1,6 @@
 module LambdaPi where
 
-    -- data and type declarations
+    -- data and type declarations --
 
     data InfTerm
         = Ann ChkTerm ChkTerm
@@ -49,28 +49,30 @@ module LambdaPi where
         where (str, _) = showCTerm ρ 0
 
     showCTerm :: ChkTerm -> Int -> (String, Int)
-    showCTerm (Inf inf) i = (showITerm inf i, i)
-    showCTerm (Lam exp) i = ("λ " ++ show i' ++ " . " ++ expr, i' + 1)
-        where (expr, i') = showCTerm exp i
+    showCTerm (Inf inf) i = showITerm inf i
+    showCTerm (Lam exp) i = ("λ " ++ show j ++ " . " ++ e, j + 1)
+        where (e, j) = showCTerm exp i
 
     showITerm0 :: InfTerm -> String
-    showITerm0 e = showITerm e 0
+    showITerm0 e = str
+        where (str, _) = showITerm e 0
 
-    showITerm :: InfTerm -> Int -> String
-    showITerm (Ann e ρ) i  = "(" ++ show e ++ ") :: (" ++ show ρ ++ ")"
-    showITerm Star      _  = "*"
-    showITerm (Pi τ τ') i  = "Π " ++ show i ++ "::" ++ e ++ " . " ++ e'
-        where (e, j)   = showCTerm τ i
-              (e', j') = showCTerm τ' (j + 1)
-    showITerm (Bound i) _  = show i
-    showITerm (Free x) _   = show x
-    showITerm (App e e') i = "(" ++ showITerm e i ++ ") (" ++ expr ++ ")"
-        where (expr, i') = showCTerm e' i
+    showITerm :: InfTerm -> Int -> (String, Int)
+    showITerm (Ann e ρ) i  = ("(" ++ show e ++ ") :: (" ++ show ρ ++ ")", i)
+    showITerm Star i       = ("*", i)
+    showITerm (Pi τ τ') i  = ("Π " ++ show j' ++ "::" ++ t ++ " . " ++ t', j)
+        where (t, j)   = showCTerm τ (j' + 1)
+              (t', j') = showCTerm τ' i
+    showITerm (Bound j) i  = (show (j + i), i)
+    showITerm (Free x) i   = (show x, i)
+    showITerm (App ρ ρ') i = ("(" ++ e ++ ") (" ++ e' ++ ")", j')
+        where (e, j)   = showITerm ρ i
+              (e', j') = showCTerm ρ' j
 
     type Result a = Either String a
 
 
-    -- type checking and type inference
+    -- type checking and type inference --
 
     vFree :: Name -> Type
     vFree n = VNeutral (NFree n)
@@ -172,13 +174,14 @@ module LambdaPi where
         putStrLn $ "LambdaPi Test Suite"
         putStrLn $ "-------------------"
 
+        -- >> id = λx -> λy -> y
         let id'     = Lam (Lam (Inf (Bound 0)))
         let const'  = Lam (Lam (Inf (Bound 1)))
         let tFree a = vFree (Global a)
         let free  x = Inf (Free (Global x))
 
-        -- >> id :: Πx::* . Πy::x . y
-        let term1 = id' `Ann` (Inf (Pi (Inf Star) (Inf (Pi (Inf (Bound 0)) (Inf (Bound 1))))))
+        let t' = Inf (Pi (Inf Star) (Inf (Pi (Inf $ Bound 0) (Inf $ Bound 1))))
+        let term1 = id' `Ann` t'
         -- ~> λx -> λy -> y :: Πx::* -> Πy::x -> y
         let eval1 = quote0 $ infEval term1 []
         -- assert
