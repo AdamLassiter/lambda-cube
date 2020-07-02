@@ -44,6 +44,11 @@ module LambdaPi where
 
     type Context = [(Name, Type)]
 
+    type Result a = Either String a
+
+
+    -- pretty-printing for terms --
+
     showCTerm0 :: ChkTerm -> String
     showCTerm0 ρ = str
         where (str, _) = showCTerm ρ 0
@@ -68,8 +73,6 @@ module LambdaPi where
     showITerm (App ρ ρ') i = ("(" ++ e ++ ") (" ++ e' ++ ")", j')
         where (e, j)   = showITerm ρ i
               (e', j') = showCTerm ρ' j
-
-    type Result a = Either String a
 
 
     -- type checking and type inference --
