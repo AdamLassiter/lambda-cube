@@ -1,5 +1,8 @@
 module LambdaPi where
 
+    import Parsec
+    import Util
+
     -- data and type declarations --
 
     data InfTerm
@@ -35,6 +38,8 @@ module LambdaPi where
         | VStar
         | VPi Type (Type -> Type)
         | VNeutral Neutral
+    instance Show Type where
+        show = (show . quote0)
 
     data Neutral
         = NFree Name
@@ -43,8 +48,6 @@ module LambdaPi where
     type Env = [Type]
 
     type Context = [(Name, Type)]
-
-    type Result a = Either String a
 
 
     -- pretty-printing for terms --
@@ -75,6 +78,18 @@ module LambdaPi where
               (e', j') = showCTerm ρ' j
 
 
+    -- equivalent parsing for said pretty-prints --
+    -- expr :: Parser InfTerm
+    -- expr = noUnitOp `chainl1` unitOp
+
+    -- unitOp :: Parser InfTerm
+    -- unitOp = reserved "*"
+    --      <|> parens expr
+
+    -- noUnitOp :: Parser ChkTerm
+    -- noUnitOp expr = undefined 
+
+
     -- type checking and type inference --
 
     vFree :: Name -> Type
@@ -95,8 +110,6 @@ module LambdaPi where
     chkEval :: ChkTerm -> Env -> Type
     chkEval (Inf i) d = infEval i d
     chkEval (Lam e) d = VLam (\x -> chkEval e (x:d))
-    throwError :: String -> Result a
-    throwError = error
 
     infType0 :: Context -> InfTerm -> Result Type
     infType0 = infType 0
@@ -165,12 +178,7 @@ module LambdaPi where
     boundFree _ x         = Free x
 
 
-    -- poor man's unittest lib --
-
-    assertEquals :: (Show a, Eq a) => a -> a -> a
-    assertEquals x y = case x == y of
-        True  -> x
-        False -> error $ (show x) ++ " != " ++ (show y)
+    -- test example
 
     test :: IO ()
     test = do
