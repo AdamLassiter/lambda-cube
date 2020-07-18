@@ -1,5 +1,6 @@
 module LambdaPi where
 
+    import Data.List (intersperse)
     import Parsec
     import Util
 
@@ -66,9 +67,9 @@ module LambdaPi where
         where (str, _) = showITerm e 0
 
     showITerm :: InfTerm -> Int -> (String, Int)
-    showITerm (Ann e ρ) i  = ("(" ++ show e ++ ") :: (" ++ show ρ ++ ")", i)
+    showITerm (Ann e ρ) i  = ("(" ++ show e ++ ") : (" ++ show ρ ++ ")", i)
     showITerm Star i       = ("*", i)
-    showITerm (Pi τ τ') i  = ("Π " ++ show j' ++ "::" ++ t ++ " . " ++ t', j)
+    showITerm (Pi τ τ') i  = ("Π " ++ show j' ++ " : " ++ t ++ " . " ++ t', j)
         where (t, j)   = showCTerm τ (j' + 1)
               (t', j') = showCTerm τ' i
     showITerm (Bound j) i  = (show (j + i), i)
@@ -76,6 +77,9 @@ module LambdaPi where
     showITerm (App ρ ρ') i = ("(" ++ e ++ ") (" ++ e' ++ ")", j')
         where (e, j)   = showITerm ρ i
               (e', j') = showCTerm ρ' j
+
+    showCtx :: Context -> String
+    showCtx ctx = concat $ intersperse ", " (map (\(n, τ) -> show n ++ " : " ++ show τ) ctx)
 
 
     -- equivalent parsing for said pretty-prints --
@@ -169,7 +173,7 @@ module LambdaPi where
     quote i (VPi v f)    = Inf (Pi (quote i v) (quote (i + 1) (f (vFree (Quote i)))))
     quote i (VNeutral n) = Inf (neutralQuote i n)
 
-    neutralQuote:: Int -> Neutral -> InfTerm
+    neutralQuote :: Int -> Neutral -> InfTerm
     neutralQuote i (NFree x)  = boundFree i x
     neutralQuote i (NApp n v) = App (neutralQuote i n) (quote i v)
 
@@ -198,6 +202,7 @@ module LambdaPi where
         -- assert
         putStrLn $ "term: " ++ show term1
         putStrLn $ "eval: " ++ show eval1
+        putStrLn $ "env:  " ++ showCtx ([] :: Context)
         case infType0 [] term1 of
             Left err  -> error err
             Right inf -> putStrLn $ "type: " ++ show (quote0 inf)
@@ -213,6 +218,7 @@ module LambdaPi where
         -- assert
         putStrLn $ "term: " ++ show term2
         putStrLn $ "eval: " ++ show (assertEquals (quote0 $ infEval term2 []) eval2)
+        putStrLn $ "env:  " ++ showCtx env
         case infType0 env term2 of
             Left err  -> error err
             Right inf -> putStrLn $ "type: " ++ show (assertEquals (quote0 inf) type2)
@@ -226,8 +232,10 @@ module LambdaPi where
         -- assert
         putStrLn $ "term: " ++ show term3
         putStrLn $ "eval: " ++ show (assertEquals (quote0 $ infEval term3 []) eval3)
+        putStrLn $ "env:  " ++ showCtx env
         case infType0 env term3 of
             Left err  -> error err
             Right inf -> putStrLn $ "type: " ++ show (assertEquals (quote0 inf) type3)
+        putStrLn ""
 
         return ()

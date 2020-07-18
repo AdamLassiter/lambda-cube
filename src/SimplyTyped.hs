@@ -1,27 +1,41 @@
 module SimplyTyped where
 
+    import Data.List (intersperse)
+    import Util
+
     data InfTerm
         = Ann ChkTerm Type
         | Bound Int
         | Free Name
         | App InfTerm ChkTerm
-        deriving (Show, Eq)
+        deriving (Eq)
+    instance Show InfTerm where
+        show = showITerm0
 
     data ChkTerm
         = Inf InfTerm
         | Lam ChkTerm
-        deriving (Show, Eq)
+        deriving (Eq)
+    instance Show ChkTerm where
+        show = showCTerm0
 
     data Name
         = Global String
         | Local Int
         | Quote Int
-        deriving (Show, Eq)
+        deriving (Eq)
+    instance Show Name where
+        show (Global name) = name
+        show (Local int)   = show int
+        show (Quote int)   = show int
 
     data Type
         = TFree Name
         | Fun Type Type
-        deriving (Show, Eq)
+        deriving (Eq)
+    instance Show Type where
+        show (TFree name)     = show name
+        show (Fun left right) = "(" ++ show left ++ " -> " ++ show right ++ ")"
 
     data Value
         = VLam (Value -> Value)
@@ -33,21 +47,46 @@ module SimplyTyped where
 
     data Kind
         = Star
-        deriving (Show)
+    instance Show Kind where
+        show Star = show "*"
 
     data Info
         = HasKind Kind
         | HasType Type
-        deriving (Show)
+    instance Show Info where
+        show (HasKind k) = show k
+        show (HasType τ) = show τ
 
     type Env = [Value]
 
     type Context = [(Name, Info)]
 
-    type Result a = Either String a
 
-    throwError :: String -> Result a
-    throwError = error
+    -- pretty-printing for terms --
+
+    showCTerm0 :: ChkTerm -> String
+    showCTerm0 ρ = str
+        where (str, _) = showCTerm ρ 0
+
+    showCTerm :: ChkTerm -> Int -> (String, Int)
+    showCTerm (Inf inf) i = showITerm inf i
+    showCTerm (Lam exp) i = ("λ " ++ show j ++ " . " ++ e, j + 1)
+        where (e, j) = showCTerm exp i
+
+    showITerm0 :: InfTerm -> String
+    showITerm0 e = str
+        where (str, _) = showITerm e 0
+
+    showITerm :: InfTerm -> Int -> (String, Int)
+    showITerm (Ann e ρ) i  = (show e ++ " : " ++ show ρ, i)
+    showITerm (Bound j) i  = (show (j + i), i)
+    showITerm (Free x) i   = (show x, i)
+    showITerm (App ρ ρ') i = ("(" ++ e ++ ") (" ++ e' ++ ")", j')
+        where (e, j)   = showITerm ρ i
+              (e', j') = showCTerm ρ' j
+
+    showCtx :: Context -> String
+    showCtx ctx = concat $ intersperse ", " (map (\(n, τ) -> show n ++ " : " ++ show τ) ctx)
 
 
     -- type checking and type inference
@@ -134,12 +173,7 @@ module SimplyTyped where
     boundFree _ x         = Free x
 
 
-    -- poor man's unittest lib --
-
-    assertEquals :: (Show a, Eq a) => a -> a -> a
-    assertEquals x y = case x == y of
-        True  -> x
-        False -> error $ (show x) ++ " != " ++ (show y)
+    -- test example
 
     test :: IO ()
     test = do
@@ -157,10 +191,15 @@ module SimplyTyped where
         let term1 = Ann id' (Fun (tFree "a") (tFree "a")) `App` free "y"
         -- ~> y :: a
         let eval1 = free "y"
-        let type1 = Right (TFree (Global "a"))
+        let type1 = TFree (Global "a")
         -- assert
-        print $ assertEquals (quote0 (infEval term1 [])) eval1
-        print $ assertEquals (infType0 env1 term1) type1
+        putStrLn $ "term: " ++ show term1
+        putStrLn $ "eval: " ++ show (assertEquals (quote0 (infEval term1 [])) eval1)
+        putStrLn $ "env:  " ++ showCtx env1
+        case infType0 env1 term1 of
+            Left err  -> error err
+            Right inf -> putStrLn $ "type: " ++ show (assertEquals inf type1)
+        putStrLn ""
 
         -- >> assume (b :: *)
         let env2 = [(Global "b", HasKind Star)] ++ env1
@@ -168,9 +207,14 @@ module SimplyTyped where
         let term2 = Ann const' (Fun (Fun (tFree "b") (tFree "b")) (Fun (tFree "a") (Fun (tFree "b") (tFree "b")))) `App` id' `App` free "y"
         -- ~> id :: b -> b
         let eval2 = id'
-        let type2 = Right (Fun (TFree (Global "b")) (TFree (Global "b")))
+        let type2 = Fun (TFree (Global "b")) (TFree (Global "b"))
         -- assert
-        print $ assertEquals (quote0 $ infEval term2 []) eval2
-        print $ assertEquals (infType0 env2 term2) type2
+        putStrLn $ "term: " ++ show term2
+        putStrLn $ "eval: " ++ show (assertEquals (quote0 (infEval term2 [])) eval2)
+        putStrLn $ "env:  " ++ showCtx env2
+        case infType0 env2 term2 of
+            Left err  -> error err
+            Right inf -> putStrLn $ "type: " ++ show (assertEquals inf type2)
+        putStrLn ""
 
         return ()
