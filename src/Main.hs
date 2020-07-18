@@ -2,6 +2,7 @@ module Main where
 
   import qualified LambdaPi
   import qualified SimplyTyped
+  import qualified Constructions
 
   main :: IO ()
   main = do
@@ -14,4 +15,7 @@ module Main where
     putStrLn ""
 
     LambdaPi.test
+    putStrLn ""
+
+    Constructions.test
     putStrLn ""
