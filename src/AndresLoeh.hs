@@ -130,7 +130,8 @@ module AndresLoeh where
 
   parseLam :: [String] -> CharParser () CTerm
   parseLam e =
-        do reservedOp simplyTyped "\\"
+        do 
+          reservedOp simplyTyped "\\"
           xs <- many1 (identifier simplyTyped)
           reservedOp simplyTyped "->"
           t <- parseCTerm 0 (reverse xs ++ e)
@@ -276,7 +277,8 @@ module AndresLoeh where
 
   parseLam_ :: [String] -> CharParser () CTerm_
   parseLam_ e =
-        do reservedOp lambdaPi "\\"
+        do 
+          reservedOp lambdaPi "\\"
           xs <- many1 (identifier lambdaPi)
           reservedOp lambdaPi "->"
           t <- parseCTerm_ 0 (reverse xs ++ e)
@@ -408,7 +410,7 @@ module AndresLoeh where
   interpretCommand x
     =  if isPrefixOf ":" x then
         do  let  (cmd,t')  =  break isSpace x
-                  t         =  dropWhile isSpace t'
+                 t         =  dropWhile isSpace t'
             --  find matching commands
             let  matching  =  filter (\ (Cmd cs _ _ _) -> any (isPrefixOf cmd) cs) commands
             case matching of
@@ -685,7 +687,7 @@ module AndresLoeh where
         Just (HasKind Star)  ->  return ()
         Nothing              ->  throwError "unknown identifier"
   cKind g (Fun kk kk') Star
-    =  do  cKind g kk   Star
+    =  do cKind g kk   Star
           cKind g kk'  Star
 
   iType0 :: Context -> ITerm -> Result Type
@@ -693,7 +695,7 @@ module AndresLoeh where
 
   iType :: Int -> Context -> ITerm -> Result Type
   iType ii g (Ann e ty)
-    =  do  cKind g ty Star
+    =  do cKind g ty Star
           cType ii g e ty
           return ty
   iType ii g (Free x)
@@ -701,7 +703,7 @@ module AndresLoeh where
         Just (HasType ty)  ->  return ty
         Nothing            ->  throwError "unknown identifier"
   iType ii g (e1 :@: e2)
-    =  do  si <- iType ii g e1
+    =  do si <- iType ii g e1
           case si of
             Fun ty ty'  ->  do  cType ii g e2 ty
                                 return ty'
@@ -709,7 +711,7 @@ module AndresLoeh where
 
   cType :: Int -> Context -> CTerm -> Type -> Result ()
   cType ii g (Inf e) ty
-    =  do  ty' <- iType ii g e
+    =  do ty' <- iType ii g e
           unless (ty == ty') (throwError "type mismatch")
   cType ii g (Lam e) (Fun ty ty')
     =  cType  (ii + 1) ((Local ii, HasType ty) : g)
@@ -895,7 +897,7 @@ module AndresLoeh where
   iEval_ (Vec_ a n)                 d  =  VVec_ (cEval_ a d) (cEval_ n d)
 
   iEval_ (VecElim_ a m mn mc n xs)  d  =
-    let  mnVal  =  cEval_ mn d
+    let mnVal  =  cEval_ mn d
         mcVal  =  cEval_ mc d
         rec nVal xsVal =
           case xsVal of
@@ -909,7 +911,7 @@ module AndresLoeh where
 
   iEval_ (Eq_ a x y)                d  =  VEq_ (cEval_ a d) (cEval_ x d) (cEval_ y d)
   iEval_ (EqElim_ a m mr x y eq)    d  =
-    let  mrVal  =  cEval_ mr d
+    let mrVal  =  cEval_ mr d
         rec eqVal =
           case eqVal of
             VRefl_ _ z -> mrVal `vapp_` z
@@ -921,7 +923,7 @@ module AndresLoeh where
 
   iEval_ (Fin_ n)                d  =  VFin_ (cEval_ n d)
   iEval_ (FinElim_ m mz ms n f)  d  =
-    let  mzVal  =  cEval_ mz d
+    let mzVal  =  cEval_ mz d
         msVal  =  cEval_ ms d
         rec fVal =
           case fVal of
@@ -1063,11 +1065,10 @@ module AndresLoeh where
   iType_ ii g Star_   
     =  return VStar_   
   iType_ ii g (Pi_ tyt tyt')  
-    =  do  cType_ ii g tyt VStar_    
-            let ty = cEval_ tyt (fst g, [])  
-            cType_  (ii + 1) ((\ (d,g) -> (d,  ((Local ii, ty) : g))) g)  
-                      (cSubst_ 0 (Free_ (Local ii)) tyt') VStar_  
-            return VStar_   
+    =  do cType_ ii g tyt VStar_    
+          let ty = cEval_ tyt (fst g, [])
+          cType_  (ii + 1) ((\ (d,g) -> (d,  ((Local ii, ty) : g))) g) (cSubst_ 0 (Free_ (Local ii)) tyt') VStar_
+          return VStar_   
   iType_ ii g (Free_ x)
     =     case lookup x (snd g) of
             Just ty        ->  return ty
