@@ -186,7 +186,7 @@ module SimplyTyped where
         let free  x = Inf (Free (Global x))
 
         -- >> assume (a :: *) (y :: a)
-        let env1 = [(Global "y", HasType (tFree "a")), (Global "a", HasKind Star)]
+        let ctx1 = [(Global "y", HasType (tFree "a")), (Global "a", HasKind Star)]
         -- >> (id :: a -> a) y
         let term1 = Ann id' (Fun (tFree "a") (tFree "a")) `App` free "y"
         -- ~> y :: a
@@ -194,15 +194,15 @@ module SimplyTyped where
         let type1 = TFree (Global "a")
         -- assert
         putStrLn $ "term: " ++ show term1
+        putStrLn $ "ctx:  " ++ showCtx ctx1
         putStrLn $ "eval: " ++ show (assertEquals (quote0 (infEval term1 [])) eval1)
-        putStrLn $ "env:  " ++ showCtx env1
-        case infType0 env1 term1 of
+        case infType0 ctx1 term1 of
             Left err  -> error err
             Right inf -> putStrLn $ "type: " ++ show (assertEquals inf type1)
         putStrLn ""
 
         -- >> assume (b :: *)
-        let env2 = [(Global "b", HasKind Star)] ++ env1
+        let ctx2 = [(Global "b", HasKind Star)] ++ ctx1
         -- >> (const :: (b -> b) -> a -> b -> b) id y
         let term2 = Ann const' (Fun (Fun (tFree "b") (tFree "b")) (Fun (tFree "a") (Fun (tFree "b") (tFree "b")))) `App` id' `App` free "y"
         -- ~> id :: b -> b
@@ -210,9 +210,9 @@ module SimplyTyped where
         let type2 = Fun (TFree (Global "b")) (TFree (Global "b"))
         -- assert
         putStrLn $ "term: " ++ show term2
+        putStrLn $ "ctx:  " ++ showCtx ctx2
         putStrLn $ "eval: " ++ show (assertEquals (quote0 (infEval term2 [])) eval2)
-        putStrLn $ "env:  " ++ showCtx env2
-        case infType0 env2 term2 of
+        case infType0 ctx2 term2 of
             Left err  -> error err
             Right inf -> putStrLn $ "type: " ++ show (assertEquals inf type2)
         putStrLn ""

@@ -1,5 +1,6 @@
 module Constructions where
 
+    import Data.List (intersperse)
     import Util
 
     data Expr = Star
@@ -7,8 +8,12 @@ module Constructions where
               | Var Int
               | Lam Int Expr Expr
               | Pi Int Expr Expr
-              | App Expr Expr deriving (Show, Eq)
+              | App Expr Expr
+              deriving (Eq)
+    instance Show Expr where
+        show = showExpr
 
+    type Context = [(Int, Expr)]
 
     -- pretty-printing for expressions
 
@@ -16,9 +21,12 @@ module Constructions where
     showExpr (Star)       = "*"
     showExpr (Box)        = "□"
     showExpr (Var i)      = show i
-    showExpr (Lam i e e') = "λ " ++ show i ++ " : " ++ show e ++ " . " ++ show e'
-    showExpr (Pi i e e')  = "Π " ++ show i ++ " : " ++ show e ++ " . " ++ show e'
+    showExpr (Lam i e e') = "λ (" ++ show i ++ " : " ++ show e ++ ") . " ++ show e'
+    showExpr (Pi i e e')  = "π (" ++ show i ++ " : " ++ show e ++ ") . " ++ show e'
     showExpr (App e ρ)    = "( " ++ show e ++ " ) ( " ++ show ρ ++ " )"
+
+    showCtx :: Context -> String
+    showCtx ctx = concat $ intersperse ", " (map (\(n, τ) -> show n ++ " : " ++ show τ) ctx)
 
 
     -- type checking and type inference
@@ -68,10 +76,12 @@ module Constructions where
     -- `typeIn` does not necessarily normalize the type since full normalization
     -- is not necessary for just type-checking.  If you actually care about the
     -- returned type then you may want to `normalize` it afterwards.
-    typeIn :: [(Int, Expr)] -> Expr -> Maybe Expr
+    typeIn :: Context -> Expr -> Result Expr
     typeIn _ Star = return Box
-    typeIn _ Box  = Nothing
-    typeIn ctx (Var v) = lookup v ctx
+    typeIn _ Box  = throwError "absurd box?"
+    typeIn ctx (Var v) = case lookup v ctx of
+        Nothing -> throwError $ "unbound variable: " ++ show (Var v)
+        Just e  -> Right e
     typeIn ctx (Lam v ta b) = do
         tb <- typeIn ((v, ta):ctx) b
         let tf = Pi v ta tb
@@ -85,25 +95,27 @@ module Constructions where
             (Box , Star) -> return Star
             (Star, Box ) -> return Box
             (Box , Box ) -> return Box
-            _            -> Nothing
+            _            -> throwError $ "invalid type: " ++ show (Pi v ta tb) 
     typeIn ctx (App f a) = do
         (v, ta, tb) <- case typeIn ctx f of
-            Just (Pi v ta tb) -> return (v, ta, tb)
-            _                 -> Nothing
+            Right (Pi v ta tb) -> return (v, ta, tb)
+            _                  -> throwError $ "not a function: " ++ show (App f a)
         ta' <- typeIn ctx a
         if ta `equiv` ta'
         then return $ subst v a tb
-        else Nothing
+        else throwError $ "type mismatch: " ++ show ta ++ " != " ++ show ta'
 
     -- `typeOf` is the same as `typeIn` with an empty context, meaning that the
     -- expression must be closed (i.e. no free variables), otherwise type-checking
     -- will fail.
-    typeOf :: Expr -> Maybe Expr
+    typeOf :: Expr -> Result Expr
     typeOf = typeIn []
 
     -- Deduce if an expression e is well-typed
     wellTyped :: Expr -> Bool
-    wellTyped e = typeOf e /= Nothing
+    wellTyped e = case typeOf e of
+        Right _ -> True
+        Left _  -> False
 
 
     -- test example
@@ -113,25 +125,68 @@ module Constructions where
         putStrLn $ "Constructions Test Suite"
         putStrLn $ "------------------------"
 
-        -- let id'     = Lam (Inf (Bound 0))
-        -- let const'  = Lam (Lam (Inf (Bound 1)))
-        -- let tFree a = TFree (Global a)
+        -- -- >> id = λx -> λy -> y
+        -- let id'     = Lam (Lam (Inf (Bound 0)))
+        -- let tFree a = vFree (Global a)
         -- let free  x = Inf (Free (Global x))
 
-        -- -- >> assume (a :: *) (y :: a)
-        -- let env1 = [(Global "y", HasType (tFree "a")), (Global "a", HasKind Star)]
-        -- -- >> (id :: a -> a) y
-        -- let term1 = Ann id' (Fun (tFree "a") (tFree "a")) `App` free "y"
-        -- -- ~> y :: a
-        -- let eval1 = free "y"
-        -- let type1 = TFree (Global "a")
+        -- let t' = Inf (Pi (Inf Star) (Inf (Pi (Inf $ Bound 0) (Inf $ Bound 1))))
+        -- let term1 = id' `Ann` t'
+        -- -- ~> λx -> λy -> y :: πx::* -> πy::x -> y
+        -- let eval1 = quote0 $ infEval term1 []
         -- -- assert
         -- putStrLn $ "term: " ++ show term1
-        -- putStrLn $ "eval: " ++ show (assertEquals (quote0 (infEval term1 [])) eval1)
-        -- putStrLn $ "env:  " ++ showCtx env1
-        -- case infType0 env1 term1 of
+        -- putStrLn $ "eval: " ++ show eval1
+        -- putStrLn $ "env:  " ++ showCtx ([] :: Context)
+        -- case infType0 [] term1 of
         --     Left err  -> error err
-        --     Right inf -> putStrLn $ "type: " ++ show (assertEquals inf type1)
+        --     Right inf -> putStrLn $ "type: " ++ show (quote0 inf)
         -- putStrLn ""
+
+        -- id = λ x:* -> λ y:x -> y
+        let term1 = Lam 0 Star (Lam 1 (Var 0) (Var 1)) 
+        -- ~> id :: (πx::* -> πy::x -> x)
+        let eval1 = term1
+        let type1 = Pi 0 Star (Pi 1 (Var 0) (Var 0))
+        -- assert
+        putStrLn $ "term: " ++ show term1
+        putStrLn $ "ctx:  " ++ showCtx ([] :: Context)
+        putStrLn $ "eval: " ++ show (assertEquals (normalize term1) eval1)
+        -- putStrLn $ "ctx:  " ++ showCtx ctx
+        case (typeOf $ normalize term1) of
+            Left err  -> error err
+            Right inf -> putStrLn $ "type: " ++ show (assertEquals inf type1)
+        putStrLn ""
+
+        -- >> assume (Bool :: *) (False :: Bool)
+        let ctx = [(-1, Star), (-2, Var (-1))]
+
+        -- id Bool = -> λ y:Bool -> y
+        let term2 = term1 `App` Var (-1)
+        -- ~> id Bool :: (πy::Bool -> Bool)
+        let eval2 = normalize term2
+        let type2 = either (\x -> Box) id (typeIn ctx eval2)
+        -- assert
+        putStrLn $ "term: " ++ show term2
+        putStrLn $ "ctx:  " ++ showCtx ctx
+        putStrLn $ "eval: " ++ show (assertEquals (normalize term2) eval2)
+        case (typeIn ctx $ normalize term2) of
+            Left err  -> error err
+            Right inf -> putStrLn $ "type: " ++ show (assertEquals inf type2)
+        putStrLn ""
+
+        -- id Bool False = -> False
+        let term3 = term2 `App` Var (-2)
+        -- ~> id Bool False :: Bool
+        let eval2 = normalize term2
+        let type2 = either (\x -> Box) id (typeIn ctx eval2)
+        -- assert
+        putStrLn $ "term: " ++ show term2
+        putStrLn $ "ctx:  " ++ showCtx ctx
+        putStrLn $ "eval: " ++ show (assertEquals (normalize term2) eval2)
+        case (typeIn ctx $ normalize term2) of
+            Left err  -> error err
+            Right inf -> putStrLn $ "type: " ++ show (assertEquals inf type2)
+        putStrLn ""
 
         return ()
