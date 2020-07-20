@@ -160,25 +160,7 @@ module Constructions where
         putStrLn $ "Constructions Test Suite"
         putStrLn $ "------------------------"
 
-        -- -- >> id = λx -> λy -> y
-        -- let id'     = Lam (Lam (Inf (Bound 0)))
-        -- let tFree a = vFree (Global a)
-        -- let free  x = Inf (Free (Global x))
-
-        -- let t' = Inf (Pi (Inf Star) (Inf (Pi (Inf $ Bound 0) (Inf $ Bound 1))))
-        -- let term1 = id' `Ann` t'
-        -- -- ~> λx -> λy -> y :: πx::* -> πy::x -> y
-        -- let eval1 = quote0 $ infEval term1 []
-        -- -- assert
-        -- putStrLn $ "term: " ++ show term1
-        -- putStrLn $ "eval: " ++ show eval1
-        -- putStrLn $ "env:  " ++ showCtx ([] :: DeBruijnCtx)
-        -- case infType0 [] term1 of
-        --     Left err  -> error err
-        --     Right inf -> putStrLn $ "type: " ++ show (quote0 inf)
-        -- putStrLn ""
-
-        -- id = λ x:* -> λ y:x -> y :: (π x:* -> π y:x -> x
+        -- id = λ x:* -> λ y:x -> y :: π x:* -> π y:x -> x
         let term1' = Lam "x" Star (Lam "y" (Var "x") (Var "y"))
         -- >> assume (Bool :: *") (False :: Bool)
         let ctx' = [("Bool", Star), ("False", Var ("Bool"))]
