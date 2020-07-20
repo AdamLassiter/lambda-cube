@@ -50,20 +50,20 @@ type: Bool
 
 Constructions Test Suite
 ------------------------
-term: λ (0 : *) . λ (1 : 0) . 1
-ctx:  
+term: λ ("x" : *) . λ ("y" : "x") . "y"
+ctx:  "Bool" : *, "False" : "Bool"
 eval: λ (0 : *) . λ (1 : 0) . 1
 type: π (0 : *) . π (1 : 0) . 0
 
-term: ( λ (0 : *) . λ (1 : 0) . 1 ) ( -1 )
-ctx:  -1 : *, -2 : -1
+term: (λ ("x" : *) . λ ("y" : "x") . "y") ("Bool")
+ctx:  "Bool" : *, "False" : "Bool"
 eval: λ (1 : -1) . 1
 type: π (1 : -1) . -1
 
-term: ( λ (0 : *) . λ (1 : 0) . 1 ) ( -1 )
-ctx:  -1 : *, -2 : -1
-eval: λ (1 : -1) . 1
-type: π (1 : -1) . -1
+term: ((λ ("x" : *) . λ ("y" : "x") . "y") ("Bool")) ("False")
+ctx:  "Bool" : *, "False" : "Bool"
+eval: -2
+type: -1
 ```
 
 ---
