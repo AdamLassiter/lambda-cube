@@ -199,7 +199,7 @@ module LambdaPi where
         let eval1 = quote0 $ infEval term1 []
         -- assert
         putStrLn $ "term: " ++ show term1
-        putStrLn $ "env:  " ++ showCtx ([] :: Context)
+        putStrLn $ "ctx:  " ++ showCtx ([] :: Context)
         putStrLn $ "eval: " ++ show eval1
         case infType0 [] term1 of
             Left err  -> error err
@@ -207,7 +207,7 @@ module LambdaPi where
         putStrLn ""
 
         -- >> assume (Bool :: *) (False :: Bool)
-        let env = [(Global "False", tFree "Bool"), (Global "Bool", VStar)]
+        let ctx = [(Global "False", tFree "Bool"), (Global "Bool", VStar)]
 
         -- >> id Bool
         let term2 = term1 `App` (free "Bool")
@@ -216,9 +216,9 @@ module LambdaPi where
         let type2 = Inf (Pi (free "Bool") (free "Bool"))
         -- assert
         putStrLn $ "term: " ++ show term2
-        putStrLn $ "env:  " ++ showCtx env
+        putStrLn $ "ctx:  " ++ showCtx ctx
         putStrLn $ "eval: " ++ show (assertEquals (quote0 $ infEval term2 []) eval2)
-        case infType0 env term2 of
+        case infType0 ctx term2 of
             Left err  -> error err
             Right inf -> putStrLn $ "type: " ++ show (assertEquals (quote0 inf) type2)
         putStrLn ""
@@ -230,9 +230,9 @@ module LambdaPi where
         let type3 = free "Bool"
         -- assert
         putStrLn $ "term: " ++ show term3
-        putStrLn $ "env:  " ++ showCtx env
+        putStrLn $ "ctx:  " ++ showCtx ctx
         putStrLn $ "eval: " ++ show (assertEquals (quote0 $ infEval term3 []) eval3)
-        case infType0 env term3 of
+        case infType0 ctx term3 of
             Left err  -> error err
             Right inf -> putStrLn $ "type: " ++ show (assertEquals (quote0 inf) type3)
         putStrLn ""

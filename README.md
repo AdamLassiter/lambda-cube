@@ -33,17 +33,17 @@ type: (b -> b)
 LambdaPi Test Suite
 -------------------
 term: (λ 1 . λ 0 . 0) : (π 1 : * . π 0 : 1 . 1)
-env:  
+ctx:  
 eval: λ 1 . λ 0 . 0
 type: π 1 : * . π 0 : 1 . 1
 
 term: ((λ 1 . λ 0 . 0) : (π 1 : * . π 0 : 1 . 1)) (Bool)
-env:  False : Bool, Bool : *
+ctx:  False : Bool, Bool : *
 eval: λ 0 . 0
 type: π 0 : Bool . Bool
 
 term: (((λ 1 . λ 0 . 0) : (π 1 : * . π 0 : 1 . 1)) (Bool)) (False)
-env:  False : Bool, Bool : *
+ctx:  False : Bool, Bool : *
 eval: False
 type: Bool
 
