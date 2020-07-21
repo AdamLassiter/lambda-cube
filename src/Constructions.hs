@@ -42,26 +42,37 @@ module Constructions where
 
     idxCtx :: (Eq a, Show a) => [a] -> [a] -> Expr a -> DeBruijnExpr
     idxCtx = idx idxCtx0 length
-        where idxCtx0 γ σ v = (v `elemIndex` γ, v `elemIndex` σ)
+        where idxCtx0 γ s v = (v `elemIndex` γ, v `elemIndex` s)
 
     idxExpr :: (Eq a, Show a) => PartialContext a Int -> [a] -> Expr a -> DeBruijnExpr
     idxExpr = idx idxExpr0 length
-        where idxExpr0 γ σ v = (((==) v . fst) `findIndex` γ, v `elemIndex` σ)
+        where idxExpr0 γ s v = (((==) v . fst) `findIndex` γ, v `elemIndex` s)
 
     idx :: (Show a) => ([b] -> [a] -> a -> (Maybe Int, Maybe Int)) -> ([a] -> Int) -> [b] -> [a] -> Expr a -> DeBruijnExpr
     idx φ θ γ = idx0
         where idx0 _ Star = Star
               idx0 _ Box  = Box
-              idx0 σ (Var v) = case (φ γ σ v) of
+              idx0 s (Var v) = case (φ γ s v) of
+                (_,        Just idx) -> Var $ idx
                 (Just idx, Nothing)  -> Var $ -1 - idx
-                (Nothing,  Just idx) -> Var $ idx
-                _                    -> error $ "not in scope: " ++ show v
-              idx0 σ (Lam a τ e) = Lam (θ σ) (idx0 σ τ) (idx0 (σ ++ [a]) e)
-              idx0 σ (Pi a τ e)  = Pi (θ σ) (idx0 σ τ) (idx0 (σ ++ [a]) e)
-              idx0 σ (App e ρ)   = App (idx0 σ e) (idx0 σ ρ) 
+                (Nothing, Nothing)   -> error $ "not in scope: " ++ show v
+              idx0 s (Lam a τ e) = Lam (θ s) (idx0 s τ) (idx0 (s ++ [a]) e)
+              idx0 s (Pi a τ e)  = Pi (θ s) (idx0 s τ) (idx0 (s ++ [a]) e)
+              idx0 s (App e ρ)   = App (idx0 s e) (idx0 s ρ) 
 
-    named :: DeBruijnExpr -> DeBruijnCtx -> Context a -> Expr a
-    named = undefined
+    quote :: DeBruijnExpr -> DeBruijnCtx -> Context String -> Expr String
+    quote e γ γ' = named e γ γ' (map show [0..])
+
+    named :: (Eq a) => DeBruijnExpr -> DeBruijnCtx -> Context a -> [a] -> Expr a
+    named e γ γ' s = named0 e
+        where named0 Star = Star
+              named0 Box  = Box
+              named0 (Var v) = case (((==) v . fst) `find` γ) of
+                  Just (i, _) -> Var (fst $ γ' !! (-1 - i))
+                  Nothing     -> Var (s !! v)
+              named0 (Lam a τ e) = Lam (s !! a) (named0 τ) (named0 e)
+              named0 (Pi a τ e)  = Pi (s !! a) (named0 τ) (named0 e)
+              named0 (App e ρ)   = App (named0 e) (named0 ρ)
 
 
     -- type checking and type inference
@@ -172,11 +183,11 @@ module Constructions where
         -- assert
         putStrLn $ "term: " ++ show term1'
         putStrLn $ "ctx:  " ++ showCtx ctx'
-        putStrLn $ "eval: " ++ show (assertEquals (normalize term1) eval1)
+        putStrLn $ "eval: " ++ show (quote (assertEquals (normalize term1) eval1) ctx ctx')
         -- putStrLn $ "ctx:  " ++ showCtx ctx
         case (typeOf $ normalize term1) of
             Left err  -> error err
-            Right inf -> putStrLn $ "type: " ++ show (assertEquals inf type1)
+            Right inf -> putStrLn $ "type: " ++ show (quote (assertEquals inf type1) ctx ctx')
         putStrLn ""
         
         -- id Bool = λ y:Bool -> y :: π y:Bool -> Bool
@@ -189,10 +200,10 @@ module Constructions where
         -- assert
         putStrLn $ "term: " ++ show term2'
         putStrLn $ "ctx:  " ++ showCtx ctx'
-        putStrLn $ "eval: " ++ show (assertEquals (normalize term2) eval2)
+        putStrLn $ "eval: " ++ show (quote (assertEquals (normalize term2) eval2) ctx ctx')
         case (typeIn ctx $ normalize term2) of
             Left err  -> error err
-            Right inf -> putStrLn $ "type: " ++ show (assertEquals inf type2)
+            Right inf -> putStrLn $ "type: " ++ show (quote (assertEquals inf type2) ctx ctx')
         putStrLn ""
 
         -- id Bool False = False :: Bool
@@ -205,10 +216,10 @@ module Constructions where
         -- assert
         putStrLn $ "term: " ++ show term3'
         putStrLn $ "ctx:  " ++ showCtx ctx'
-        putStrLn $ "eval: " ++ show (assertEquals (normalize term3) eval3)
+        putStrLn $ "eval: " ++ show (quote (assertEquals (normalize term3) eval3) ctx ctx')
         case (typeIn ctx $ normalize term3) of
             Left err  -> error err
-            Right inf -> putStrLn $ "type: " ++ show (assertEquals inf type3)
+            Right inf -> putStrLn $ "type: " ++ show (quote (assertEquals inf type3) ctx ctx')
         putStrLn ""
 
         return ()

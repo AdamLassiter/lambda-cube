@@ -52,18 +52,18 @@ Constructions Test Suite
 ------------------------
 term: λ ("x" : *) . λ ("y" : "x") . "y"
 ctx:  "Bool" : *, "False" : "Bool"
-eval: λ (0 : *) . λ (1 : 0) . 1
-type: π (0 : *) . π (1 : 0) . 0
+eval: λ ("0" : *) . λ ("1" : "0") . "1"
+type: π ("0" : *) . π ("1" : "0") . "0"
 
 term: (λ ("x" : *) . λ ("y" : "x") . "y") ("Bool")
 ctx:  "Bool" : *, "False" : "Bool"
-eval: λ (1 : -1) . 1
-type: π (1 : -1) . -1
+eval: λ ("1" : "Bool") . "1"
+type: π ("1" : "Bool") . "Bool"
 
 term: ((λ ("x" : *) . λ ("y" : "x") . "y") ("Bool")) ("False")
 ctx:  "Bool" : *, "False" : "Bool"
-eval: -2
-type: -1
+eval: "False"
+type: "Bool"
 ```
 
 ---
