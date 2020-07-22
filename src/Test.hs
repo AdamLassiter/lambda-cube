@@ -1,6 +1,6 @@
 module Test where
     import Core
-    import ParseIO
+    import Pretty
     import Util
 
     test :: IO ()

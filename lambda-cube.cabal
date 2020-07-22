@@ -19,4 +19,4 @@ executable lambda-cube
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5, haskeline
   other-modules:
-    Core, Repl, ParseIO, Parsec, Test, Util
+    Core, Repl, Pretty, Parsec, Test, Util

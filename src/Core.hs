@@ -8,17 +8,12 @@ module Core where
                 | Pi a (Expr a) (Expr a)
                 | App (Expr a) (Expr a)
                 deriving (Eq, Show)
-    -- instance Show a => Show (Expr a) where
-    --     show = showExpr show
 
     type PartialContext a b = [(a, Expr b)]
     type Context a = PartialContext a a
 
     type DeBruijnExpr = Expr Int
     type DeBruijnCtx = Context Int
-
-    type NamedExpr = Expr String
-    type NamedCtx = Context String
 
 
     -- type checking and type inference

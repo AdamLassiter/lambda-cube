@@ -1,8 +1,64 @@
 module Repl where
     import Core
-    import ParseIO
+    import Pretty
+    import Parsec
+    import Util
 
+    import Control.Applicative hiding (some, many)
     import System.Console.Haskeline
+
+    data ReplAction = None
+                    | Quit String
+                    | EvalOf NamedExpr
+                    | TypeOf NamedExpr
+                    | EchoOf NamedExpr
+                    | LetCtx NamedExpr
+
+
+    -- parsing equivalent to pretty shows
+
+    parseExpr :: String -> Result NamedExpr
+    parseExpr = runParser expr
+        where expr = star
+                <|> box
+                <|> var
+                <|> lam
+                <|> pi
+                <|> app
+              star = do
+                  reserved "*"
+                  return Star
+              box  = do
+                  reserved "#"
+                  return Box
+              var  = do
+                  v <- word
+                  return $ Var v
+              lam  = do
+                  reserved "λ"
+                  (i, τ) <- parens typ
+                  reserved "."
+                  e <- expr
+                  return $ Lam i τ e
+              pi   = do
+                  reserved "π"
+                  (i, τ) <- parens typ
+                  reserved "."
+                  e <- expr
+                  return $ Pi i τ e
+              app  = do
+                  e <- parens expr
+                  ρs <- many $ parens expr
+                  return $ foldl App e ρs
+              typ  = do
+                  v <- word
+                  reserved ":"
+                  τ <- expr
+                  return $ (v, τ)
+    
+
+    -- parsing for REPL commands
+
 
     main :: IO ()
     main = runInputT defaultSettings repl
