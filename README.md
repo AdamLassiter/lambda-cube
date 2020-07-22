@@ -1,74 +1,43 @@
-# λ Cube
-Some implementations of vertices of the λ cube, with varying levels of quality.
+# λ-Cube
+Some thoughts on Calculus of Constructions
 
 ![lambda-cube](resources/Lambda_Cube_img.svg)
-
-- [x] [(λ→) Simply Typed Lambda Calculus](src/SimplyTyped.hs)
-- [ ] (λ2) System F
-- [ ] (Fω_) System Fω_
-- [x] [(λP) Lambda-Pi](src/LambdaPi.hs)
-- [ ] (Fω) System Fω
-- [x] [(λC) Calculus of Constructions](src/Constructions.hs)
 
 ---
 
 ```
-===================
-Running Test Suites
-===================
+==================
+Running Test Suite
+==================
 
-SimplyTyped Test Suite
-----------------------
-term: (λ 0 . 0 : (a -> a)) (y)
-ctx:  y : a, a : "*"
-eval: y
-type: a
+Constructions Test Suite
+------------------------
+term: λ (x : *) . λ (y : x) . y
+ctx:  Bool : *, False : Bool
+eval: λ (0 : *) . λ (1 : 0) . 1
+type: π (0 : *) . π (1 : 0) . 0
 
-term: ((λ 1 . λ 0 . 1 : ((b -> b) -> (a -> (b -> b)))) (λ 0 . 0)) (y)
-ctx:  b : "*", y : a, a : "*"
-eval: λ 0 . 0
-type: (b -> b)
+term: (λ (x : *) . λ (y : x) . y) (Bool)
+ctx:  Bool : *, False : Bool
+eval: λ (1 : Bool) . 1
+type: π (1 : Bool) . Bool
 
-
-LambdaPi Test Suite
--------------------
-term: (λ 1 . λ 0 . 0) : (π 1 : * . π 0 : 1 . 1)
-ctx:  
-eval: λ 1 . λ 0 . 0
-type: π 1 : * . π 0 : 1 . 1
-
-term: ((λ 1 . λ 0 . 0) : (π 1 : * . π 0 : 1 . 1)) (Bool)
-ctx:  False : Bool, Bool : *
-eval: λ 0 . 0
-type: π 0 : Bool . Bool
-
-term: (((λ 1 . λ 0 . 0) : (π 1 : * . π 0 : 1 . 1)) (Bool)) (False)
-ctx:  False : Bool, Bool : *
+term: ((λ (x : *) . λ (y : x) . y) (Bool)) (False)
+ctx:  Bool : *, False : Bool
 eval: False
 type: Bool
 
 
-Constructions Test Suite
-------------------------
-term: λ ("x" : *) . λ ("y" : "x") . "y"
-ctx:  "Bool" : *, "False" : "Bool"
-eval: λ ("0" : *) . λ ("1" : "0") . "1"
-type: π ("0" : *) . π ("1" : "0") . "0"
+==================
+Constructions REPL
+==================
 
-term: (λ ("x" : *) . λ ("y" : "x") . "y") ("Bool")
-ctx:  "Bool" : *, "False" : "Bool"
-eval: λ ("1" : "Bool") . "1"
-type: π ("1" : "Bool") . "Bool"
-
-term: ((λ ("x" : *) . λ ("y" : "x") . "y") ("Bool")) ("False")
-ctx:  "Bool" : *, "False" : "Bool"
-eval: "False"
-type: "Bool"
+>> 
 ```
 
 ---
 
-| (s_1,s_2) | ( * , * ) | ( * , ◻ ) | ( ◻ , * ) | ( ◻ , ◻ )
+| (s_1,s_2) | ( * , * ) | ( * , # ) | ( # , * ) | ( # , # )
 |-----------|-----------|-----------|-----------|-----------
 | λ→        | Yes       | No        | No        | No
 | λP        | Yes       | Yes       | No        | No

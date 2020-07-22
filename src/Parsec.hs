@@ -1,10 +1,9 @@
 module Parsec where
+    import Util
 
     import Data.Char
     import Control.Monad
     import Control.Applicative hiding (some, many)
-
-    import Util
 
     newtype Parser a = Parser { parse :: String -> [(a, String)] }
 
@@ -12,8 +11,8 @@ module Parsec where
     runParser m s =
         case parse m s of
             (res, []):[] -> Right res
-            (_, rem):[]  -> throwError $ "Parser failed to consume" ++ rem
-            _            -> throwError $ "Parser error"
+            (_, rem):[]  -> throwError $ "parser failed to consume: " ++ rem
+            _            -> throwError $ "parser error"
 
     item :: Parser Char
     item = Parser $ \s ->
@@ -93,6 +92,9 @@ module Parsec where
     char :: Char -> Parser Char
     char c = satisfy (c ==)
 
+    letter :: Parser Char
+    letter = satisfy (`elem` ['a'..'z'] ++ ['A'..'Z'])
+
     natural :: Parser Integer
     natural = read <$> some (satisfy isDigit)
 
@@ -117,6 +119,11 @@ module Parsec where
         s <- string "-" <|> return []
         cs <- some digit
         return $ read (s ++ cs)
+    
+    word :: Parser String
+    word = do
+        cs <- some letter
+        return cs
 
     parens :: Parser a -> Parser a
     parens m = do

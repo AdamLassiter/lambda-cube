@@ -1,21 +1,21 @@
 module Main where
 
-  import qualified LambdaPi
-  import qualified SimplyTyped
-  import qualified Constructions
+  import qualified Repl
+  import qualified Test
 
   main :: IO ()
   main = do
-    putStrLn $ "==================="
-    putStrLn $ "Running Test Suites"
-    putStrLn $ "==================="
+    putStrLn $ "=================="
+    putStrLn $ "Running Test Suite"
+    putStrLn $ "=================="
     putStrLn ""
 
-    SimplyTyped.test
+    Test.test
     putStrLn ""
 
-    LambdaPi.test
+    putStrLn $ "=================="
+    putStrLn $ "Constructions REPL"
+    putStrLn $ "=================="
     putStrLn ""
 
-    Constructions.test
-    putStrLn ""
+    Repl.main
