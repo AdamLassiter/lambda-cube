@@ -100,16 +100,19 @@ module Parsec where
 
     string :: String -> Parser String
     string [] = return []
-    string (c:cs) = do { char c; string cs; return (c:cs)}
+    string (c:cs) = do {char c; string cs; return (c:cs)}
 
     token :: Parser a -> Parser a
-    token p = do { a <- p; spaces ; return a}
+    token p = do {a <- p; spaces; return a}
 
     reserved :: String -> Parser String
     reserved s = token (string s)
 
+    space :: Parser Char
+    space = oneOf " \n\r"
+
     spaces :: Parser String
-    spaces = many $ oneOf " \n\r"
+    spaces = many $ space
 
     digit :: Parser Char
     digit = satisfy isDigit
@@ -123,6 +126,7 @@ module Parsec where
     word :: Parser String
     word = do
         cs <- some letter
+        spaces
         return cs
 
     parens :: Parser a -> Parser a
