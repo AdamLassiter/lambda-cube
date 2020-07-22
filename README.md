@@ -9,9 +9,6 @@ Some thoughts on Calculus of Constructions
 ==================
 Running Test Suite
 ==================
-
-Constructions Test Suite
-------------------------
 term: λ (x : *) . λ (y : x) . y
 ctx:  Bool : *, False : Bool
 eval: λ (0 : *) . λ (1 : 0) . 1
@@ -27,11 +24,15 @@ ctx:  Bool : *, False : Bool
 eval: False
 type: Bool
 
-
 ==================
 Constructions REPL
 ==================
-
+>> let Bool : *
+>> let False : Bool
+>> eval (λ (x : *) . λ (y : x) . y) (Bool) (False)
+False
+>> type (λ (x : *) . λ (y : x) . y) (Bool) (False)
+Bool
 >> 
 ```
 

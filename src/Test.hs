@@ -5,9 +5,6 @@ module Test where
 
     test :: IO ()
     test = do
-        putStrLn $ "Constructions Test Suite"
-        putStrLn $ "------------------------"
-
         -- show strings without " "
         let showE = showExpr id
         let showC = showCtx id

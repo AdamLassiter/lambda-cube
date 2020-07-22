@@ -135,6 +135,3 @@ module Parsec where
         n <- m
         reserved ")"
         return n
-
-    infixOp :: String -> (a -> a -> a) -> Parser (a -> a -> a)
-    infixOp x f = reserved x >> return f

@@ -7,14 +7,9 @@ module Main where
     putStrLn $ "=================="
     putStrLn $ "Running Test Suite"
     putStrLn $ "=================="
-    putStrLn ""
-
     Test.test
-    putStrLn ""
 
     putStrLn $ "=================="
     putStrLn $ "Constructions REPL"
     putStrLn $ "=================="
-    putStrLn ""
-
     Repl.main
