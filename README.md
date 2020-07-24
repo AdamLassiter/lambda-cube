@@ -3,37 +3,23 @@ Some thoughts on Calculus of Constructions
 
 ![lambda-cube](resources/Lambda_Cube_img.svg)
 
----
-
+### stlc.cube testfile
 ```
-==================
-Running Test Suite
-==================
-term: λ (x : *) . λ (y : x) . y
-ctx:  Bool : *, False : Bool
-eval: λ (0 : *) . λ (1 : 0) . 1
-type: π (0 : *) . π (1 : 0) . 0
+let Bool : *
+let False : Bool
+let True : Bool
 
-term: (λ (x : *) . λ (y : x) . y) (Bool)
-ctx:  Bool : *, False : Bool
-eval: λ (1 : Bool) . 1
-type: π (1 : Bool) . Bool
+let id = λ x : Bool . x
+assert (id) (True) = True
 
-term: ((λ (x : *) . λ (y : x) . y) (Bool)) (False)
-ctx:  Bool : *, False : Bool
-eval: False
-type: Bool
+let false = λ x : Bool . False
+assert (false) (True) = False
 
-==================
-Constructions REPL
-==================
->> let Bool : *
->> let False : Bool
->> eval (λ (x : *) . λ (y : x) . y) (Bool) (False)
-False
->> type (λ (x : *) . λ (y : x) . y) (Bool) (False)
-Bool
->> 
+let first = λ x : Bool . λ y : Bool . x
+assert (first) (False) (True) = False
+
+let applyFalse = λ f : (π x : Bool . Bool) . (f) (False)
+assert (applyFalse) (id) = False
 ```
 
 ---
