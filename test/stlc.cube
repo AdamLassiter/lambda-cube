@@ -1,0 +1,15 @@
+let Bool : *
+let False : Bool
+let True : Bool
+
+let id = λ x : Bool . x
+assert (id) (True) = True
+
+let false = λ x : Bool . False
+assert (false) (True) = False
+
+let first = λ x : Bool . λ y : Bool . x
+assert (first) (False) (True) = False
+
+let applyFalse = λ f : (π x : Bool . Bool) . (f) (False)
+assert (applyFalse) (id) = False
