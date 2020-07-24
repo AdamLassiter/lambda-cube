@@ -12,7 +12,9 @@ module Repl where
                     | EvalOf NamedExpr
                     | TypeOf NamedExpr
                     | PrintOf NamedExpr
+                    | ExprCtx String NamedExpr
                     | TypeCtx String NamedExpr
+                    deriving (Show)
 
 
     -- parsing equivalent to Pretty shows
@@ -27,6 +29,7 @@ module Repl where
        <|> lam
        <|> pi
        <|> app
+       <|> par
         where star = do
                   reserved "*"
                   return $ Star
@@ -38,13 +41,13 @@ module Repl where
                   return $ Var v
               lam = do
                   reserved "λ"
-                  (i, τ) <- parens typ
+                  (i, τ) <- typ
                   reserved "."
                   e <- expr
                   return $ Lam i τ e
               pi = do
                   reserved "π"
-                  (i, τ) <- parens typ
+                  (i, τ) <- typ
                   reserved "."
                   e <- expr
                   return $ Pi i τ e
@@ -57,6 +60,9 @@ module Repl where
                   reserved ":"
                   τ <- expr
                   return $ (v, τ)
+              par = do
+                  e <- parens expr
+                  return $ e
     
 
     -- parsing for REPL commands
@@ -69,7 +75,7 @@ module Repl where
              <|> evalOf
              <|> typeOf
              <|> printOf
-             <|> typeCtx
+             <|> letCtx
              <|> none
         where none = do
                   spaces
@@ -89,9 +95,16 @@ module Repl where
                   reserved "print"
                   e <- expr
                   return $ PrintOf e
-              typeCtx = do
+              letCtx = do
                   reserved "let"
                   name <- word
+                  letAct <- exprCtx name <|> typeCtx name
+                  return $ letAct
+              exprCtx name = do
+                  reserved "="
+                  e <- expr
+                  return $ ExprCtx name e
+              typeCtx name = do
                   reserved ":"
                   e <- expr
                   return $ TypeCtx name e
@@ -99,46 +112,42 @@ module Repl where
 
     -- run REPL
 
-    doAction :: ReplAction -> NamedCtx -> (String, NamedCtx)
-    doAction None ctx' = ("", ctx')
-    doAction Quit ctx' = error "quit"
-    doAction (EvalOf expr') ctx' = doAction (PrintOf namedEval) ctx'
-        where (expr, ctx) = index expr' ctx'
-              eval = normalize expr
-              namedEval = named eval ctx ctx'
-    doAction (TypeOf expr') ctx' = case (typeIn ctx eval) of
-                                        Left err  -> ("type error: " ++ err, ctx')
-                                        Right inf -> doAction (PrintOf $ named inf ctx ctx') ctx'
-        where (expr, ctx) = index expr' ctx'
-              eval = normalize expr
-    doAction (PrintOf expr') ctx' = (showExpr id expr', ctx')
-    doAction (TypeCtx name expr') ctx' = ("", ctx'')
-        where (expr, ctx) = index expr' ctx'
-              eval = normalize expr
-              namedEval = named eval ctx ctx'
-              ctx'' = ctx' ++ [(name, namedEval)]
+    doAction :: ReplAction -> NamedCtx -> NamedCtx -> Result (NamedExpr, NamedCtx, NamedCtx)
+    doAction None eCtx τCtx = Right (Var "", eCtx, τCtx)
+    doAction Quit _ _       = throwError "quit"
+    doAction (EvalOf expr) eCtx τCtx = mapR (\eval -> (eval, eCtx, τCtx)) (nNormalizeIn eCtx expr τCtx)
+    doAction (TypeOf expr) eCtx τCtx = mapR (\eval -> (eval, eCtx, τCtx)) (nTypeIn eCtx expr τCtx)
+    doAction (PrintOf expr) eCtx τCtx = Right (expr, eCtx, τCtx)
+    doAction (TypeCtx name expr) eCtx τCtx = mapR (\τCtx'' -> (Var "", eCtx, τCtx'')) τCtx'
+        where τCtx' = mapR (\(namedEval, _, _) -> τCtx ++ [(name, namedEval)]) (doAction (EvalOf expr) eCtx τCtx)
+    doAction (ExprCtx name expr) eCtx τCtx = mapR (\eCtx'' -> (Var "", eCtx'', τCtx)) eCtx'
+        where eCtx' = mapR (\(namedEval, _, _) -> eCtx ++ [(name, namedEval)]) (doAction (EvalOf expr) eCtx τCtx)
 
     main :: IO ()
     main = runInputT defaultSettings repl
 
     repl :: InputT IO ()
-    repl = repl0 []
+    repl = repl0 [] []
         where showE = showExpr id
               showC = showCtx id
-              repl0 ctx' = do
+              repl0 eCtx τCtx = do
+                outputStrLn $ showC eCtx
+                outputStrLn $ showC τCtx
                 inp' <- getInputLine ">> "
-                ctx'' <- case inp' of
+                (eCtx', τCtx') <- case inp' of
                     Just input -> do
                         let act' = parseRepl input
                         case act' of
                             Right action -> do
-                                let (msg, ctx'') = doAction action ctx'
-                                if msg /= ""
-                                    then outputStrLn msg
-                                    else return ()
-                                return ctx''
+                                case doAction action eCtx τCtx of
+                                    Right (expr, eCtx', τCtx') -> do
+                                        outputStrLn $ showE expr
+                                        return (eCtx', τCtx')
+                                    Left error -> do
+                                        outputStrLn error
+                                        return (eCtx, τCtx)
                             Left error -> do
                                 outputStrLn error
-                                return ctx'
+                                return (eCtx, τCtx)
                     Nothing -> error "quit"
-                repl0 ctx''
+                repl0 eCtx' τCtx'

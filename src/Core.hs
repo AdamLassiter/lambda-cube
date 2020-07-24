@@ -20,7 +20,7 @@ module Core where
 
     -- Substitute all occurrences of a variable v with an expression e
     -- subst x n C B  ~  B[x@n := C]
-    subst :: Int -> DeBruijnExpr -> DeBruijnExpr -> DeBruijnExpr
+    subst :: (Eq a) => a -> Expr a -> Expr a -> Expr a
     subst v e (Var v')       | v == v' = e
     subst v e (Lam v' ta b ) | v == v' = Lam v' (subst v e ta)            b
     subst v e (Lam v' ta b )           = Lam v' (subst v e ta) (subst v e b )
