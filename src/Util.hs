@@ -31,6 +31,10 @@ module Util where
     throwL (Right res) = res
 
 
+    converge :: Eq a => (a -> a) -> a -> a
+    converge = until =<< ((==) =<<)
+
+
     -- poor man's unittest lib --
 
     assertEquals :: (Show a, Eq a) => a -> a -> a

@@ -39,14 +39,17 @@ module Core where
     -- expressions before normalizing them since normalization can convert an
     -- ill-typed expression into a well-typed expression.
     normalize :: DeBruijnExpr -> DeBruijnExpr
-    normalize (Lam v ta b) = case normalize b of
+    normalize = converge normalize0
+
+    normalize0 :: DeBruijnExpr -> DeBruijnExpr
+    normalize0 (Lam v ta b) = case normalize b of
         App vb (Var v') | v == v' && not (free v vb) -> vb -- Eta reduce
         b'                                           -> Lam v (normalize ta) b'
-    normalize (Pi v ta tb) = Pi v (normalize ta) (normalize tb)
-    normalize (App f a) = case normalize f of
+    normalize0 (Pi v ta tb) = Pi v (normalize ta) (normalize tb)
+    normalize0 (App f a) = case normalize f of
         Lam v _ b -> subst v (normalize a) b -- Beta reduce
         f'        -> App f' (normalize a)
-    normalize c = c
+    normalize0 c = c
 
     -- Deduce if e is an equivalent expression to e'
     equiv :: DeBruijnExpr -> DeBruijnExpr -> Bool

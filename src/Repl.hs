@@ -14,6 +14,7 @@ module Repl where
                     | PrintOf NamedExpr
                     | ExprCtx String NamedExpr
                     | TypeCtx String NamedExpr
+                    | AssertEq NamedExpr NamedExpr
                     deriving (Show)
 
 
@@ -68,33 +69,40 @@ module Repl where
     -- parsing for REPL commands
 
     parseRepl :: String -> Result ReplAction
-    parseRepl = runParser replAction
+    parseRepl = runParser parseReplAction
     
-    replAction :: Parser ReplAction
-    replAction = quit
+    parseReplAction :: Parser ReplAction
+    parseReplAction = quit
              <|> evalOf
              <|> typeOf
              <|> printOf
+             <|> assertEq
              <|> letCtx
              <|> none
         where none = do
                   spaces
                   return $ None
               quit = do
-                  reserved "quit"
+                  reserved ":q"
                   return $ Quit
               evalOf = do
-                  reserved "eval"
+                  reserved ":e"
                   e <- expr
                   return $ EvalOf e
               typeOf = do
-                  reserved "type"
+                  reserved ":t"
                   e <- expr
                   return $ TypeOf e
               printOf = do
-                  reserved "print"
+                  reserved ":p"
                   e <- expr
                   return $ PrintOf e
+              assertEq = do
+                  reserved "assert"
+                  e <- expr
+                  reserved "="
+                  ρ <- expr
+                  return $ AssertEq e ρ
               letCtx = do
                   reserved "let"
                   name <- word
@@ -115,8 +123,13 @@ module Repl where
     doAction :: ReplAction -> NamedCtx -> NamedCtx -> Result (NamedExpr, NamedCtx, NamedCtx)
     doAction None eCtx τCtx = Right (Var "", eCtx, τCtx)
     doAction Quit _ _       = throwError "quit"
-    doAction (EvalOf expr) eCtx τCtx = mapR (\eval -> (eval, eCtx, τCtx)) (nNormalizeIn eCtx expr τCtx)
-    doAction (TypeOf expr) eCtx τCtx = mapR (\eval -> (eval, eCtx, τCtx)) (nTypeIn eCtx expr τCtx)
+    doAction (AssertEq e ρ) eCtx τCtx = if eτ == ρτ && ex == ρx then Right (ρ, eCtx, τCtx) else throwError $ showExpr id e ++ "/=" ++ showExpr id ρ
+        where eτ = doAction (TypeOf e) eCtx τCtx
+              ρτ = doAction (TypeOf ρ) eCtx τCtx
+              ex = doAction (EvalOf e) eCtx τCtx
+              ρx = doAction (EvalOf ρ) eCtx τCtx
+    doAction (EvalOf expr) eCtx τCtx  = mapR (\eval -> (eval, eCtx, τCtx)) (nNormalizeIn eCtx expr τCtx)
+    doAction (TypeOf expr) eCtx τCtx  = mapR (\eval -> (eval, eCtx, τCtx)) (nTypeIn eCtx expr τCtx)
     doAction (PrintOf expr) eCtx τCtx = Right (expr, eCtx, τCtx)
     doAction (TypeCtx name expr) eCtx τCtx = mapR (\τCtx'' -> (Var "", eCtx, τCtx'')) τCtx'
         where τCtx' = mapR (\(namedEval, _, _) -> τCtx ++ [(name, namedEval)]) (doAction (EvalOf expr) eCtx τCtx)
@@ -131,23 +144,31 @@ module Repl where
         where showE = showExpr id
               showC = showCtx id
               repl0 eCtx τCtx = do
-                outputStrLn $ showC eCtx
-                outputStrLn $ showC τCtx
-                inp' <- getInputLine ">> "
-                (eCtx', τCtx') <- case inp' of
-                    Just input -> do
-                        let act' = parseRepl input
-                        case act' of
-                            Right action -> do
-                                case doAction action eCtx τCtx of
-                                    Right (expr, eCtx', τCtx') -> do
-                                        outputStrLn $ showE expr
-                                        return (eCtx', τCtx')
-                                    Left error -> do
-                                        outputStrLn error
-                                        return (eCtx, τCtx)
-                            Left error -> do
-                                outputStrLn error
-                                return (eCtx, τCtx)
-                    Nothing -> error "quit"
-                repl0 eCtx' τCtx'
+                isTerminalUI <- haveTerminalUI
+                inp' <- getInputLine (if isTerminalUI then ">> " else "")
+                actionRes <- case inp' of
+                    Just input' -> return $ parseRepl input'
+                    Nothing -> return $ Right Quit
+                action <- case actionRes of
+                    Right act -> return act
+                    Left err  -> if isTerminalUI
+                        then do
+                            outputStrLn err
+                            return None
+                        else error err
+                case action of
+                    None -> repl0 eCtx τCtx
+                    Quit -> return ()
+                    _    -> do
+                        (eCtx', τCtx') <- case doAction action eCtx τCtx of
+                            Right (expr, eCtx', τCtx') -> do
+                                if showE expr /= ""
+                                    then outputStrLn $ showE expr
+                                    else return ()
+                                return (eCtx', τCtx')
+                            Left err -> if isTerminalUI
+                                then do
+                                    outputStrLn err
+                                    return (eCtx, τCtx)
+                                else error err
+                        repl0 eCtx' τCtx'
