@@ -6,7 +6,7 @@ module Test where
 
     stlc :: IO ()
     stlc = do
-        runInputTBehavior (useFile "./test/stlc.lc") defaultSettings repl
+        runInputTBehavior (useFile "./test/stlc.cube") defaultSettings repl
 
     test :: IO ()
     test = do
