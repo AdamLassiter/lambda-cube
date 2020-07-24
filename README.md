@@ -3,7 +3,7 @@ Some thoughts on Calculus of Constructions
 
 ![lambda-cube](resources/Lambda_Cube_img.svg)
 
-### stlc.cube testfile
+### [stlc.cube testfile](test/stlc.cube)
 ```
 let Bool : *
 let False : Bool
