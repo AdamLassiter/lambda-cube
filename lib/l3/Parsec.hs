@@ -1,11 +1,13 @@
-module Parsec where
-    import Util
+-- Small parsec-like module
+module L3.Parsec where
+    import L3.Util
 
     import Data.Char
     import Control.Monad
     import Control.Applicative hiding (some, many)
 
     newtype Parser a = Parser { parse :: String -> [(a, String)] }
+
 
     runParser :: Parser a -> String -> Result a
     runParser m s =

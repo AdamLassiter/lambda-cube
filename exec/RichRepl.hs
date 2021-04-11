@@ -1,8 +1,8 @@
-module Repl where
-    import Core
-    import Pretty
-    import Parsec
-    import Util
+-- parsing for REPL commands
+module RichRepl where
+    import L3.Pretty
+    import L3.Parser
+    import L3.Util
 
     import Control.Applicative hiding (some, many)
     import System.Console.Haskeline
@@ -18,55 +18,7 @@ module Repl where
                     deriving (Show)
 
 
-    -- parsing equivalent to Pretty shows
-
-    parseExpr :: String -> Result NamedExpr
-    parseExpr = runParser expr
-
-    expr :: Parser NamedExpr
-    expr = star
-       <|> box
-       <|> var
-       <|> lam
-       <|> pi
-       <|> app
-       <|> par
-        where star = do
-                  reserved "*"
-                  return $ Star
-              box = do
-                  reserved "#"
-                  return $ Box
-              var = do
-                  v <- word
-                  return $ Var v
-              lam = do
-                  reserved "λ"
-                  (i, τ) <- typ
-                  reserved "."
-                  e <- expr
-                  return $ Lam i τ e
-              pi = do
-                  reserved "π"
-                  (i, τ) <- typ
-                  reserved "."
-                  e <- expr
-                  return $ Pi i τ e
-              app = do
-                  e <- parens expr
-                  ρs <- many $ parens expr
-                  return $ foldl App e ρs
-              typ = do
-                  v <- word
-                  reserved ":"
-                  τ <- expr
-                  return $ (v, τ)
-              par = do
-                  e <- parens expr
-                  return $ e
-    
-
-    -- parsing for REPL commands
+    -- parse REPL commands with richer syntax
 
     parseRepl :: String -> Result ReplAction
     parseRepl = runParser parseReplAction
@@ -119,15 +71,19 @@ module Repl where
 
 
     -- run REPL
-
     doAction :: ReplAction -> NamedCtx -> NamedCtx -> Result (NamedExpr, NamedCtx, NamedCtx)
     doAction None eCtx τCtx = Right (Var "", eCtx, τCtx)
     doAction Quit _ _       = throwError "quit"
-    doAction (AssertEq e ρ) eCtx τCtx = if eτ == ρτ && ex == ρx then Right (ρ, eCtx, τCtx) else throwError $ showExpr id e ++ "/=" ++ showExpr id ρ
-        where eτ = doAction (TypeOf e) eCtx τCtx
-              ρτ = doAction (TypeOf ρ) eCtx τCtx
-              ex = doAction (EvalOf e) eCtx τCtx
-              ρx = doAction (EvalOf ρ) eCtx τCtx
+    doAction (AssertEq e ρ) eCtx τCtx =
+      if eτ == ρτ
+        then if ex == ρx
+            then Right (ρ, eCtx, τCtx)
+            else throwError $ showExpr id ex ++ " /= " ++ showExpr id ρx
+        else throwError $ showExpr id eτ ++ " /= " ++ showExpr id ρτ
+        where (eτ, _, _) = throwL $ doAction (TypeOf e) eCtx τCtx
+              (ρτ, _, _) = throwL $ doAction (TypeOf ρ) eCtx τCtx
+              (ex, _, _) = throwL $ doAction (EvalOf e) eCtx τCtx
+              (ρx, _, _) = throwL $ doAction (EvalOf ρ) eCtx τCtx
     doAction (EvalOf expr) eCtx τCtx  = mapR (\eval -> (eval, eCtx, τCtx)) (nNormalizeIn eCtx expr τCtx)
     doAction (TypeOf expr) eCtx τCtx  = mapR (\eval -> (eval, eCtx, τCtx)) (nTypeIn eCtx expr τCtx)
     doAction (PrintOf expr) eCtx τCtx = Right (expr, eCtx, τCtx)

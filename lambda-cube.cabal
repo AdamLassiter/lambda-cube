@@ -1,22 +1,31 @@
 name:                lambda-cube
-version:             0.1.0.0
--- synopsis:
--- description:
+version:             0.1
 homepage:            https://github.com/githubuser/lambda-cube#readme
 license:             MIT
 license-file:        LICENSE
 author:              Adam Lassiter
 maintainer:          adamlassiter96@gmail.com
-copyright:           2020 Adam Lassiter
-category:            Web
+copyright:           2020-2021 Adam Lassiter
+category:            Compiler
 build-type:          Simple
 cabal-version:       >=1.10
+default-language:    Haskell2010
+data-files:          test/morte/*.mt, prelude/**
 extra-source-files:  README.md
 
+library
+  hs-source-dirs:      lib
+  build-depends:       base >= 4.7 && < 5
+  exposed-modules:
+    L3.Core, L3.Parsec, L3.Parser, L3.Pretty, L3.Util
+
 executable lambda-cube
-  hs-source-dirs:      src
+  hs-source-dirs:      exec
   main-is:             Main.hs
-  default-language:    Haskell2010
-  build-depends:       base >= 4.7 && < 5, haskeline
-  other-modules:
-    Core, Repl, Pretty, Parsec, Test, Util
+  build-depends:       base >= 4.7 && < 5, lambda-cube, haskeline
+
+test-suite tests
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Test.hs
+  build-depends:       base >= 4.7 && < 5, lambda-cube
