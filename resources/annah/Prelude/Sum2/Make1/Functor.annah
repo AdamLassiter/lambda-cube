@@ -1,0 +1,5 @@
+let Functor (t : *) : ../../Functor (\(b : *) -> ../../Sum2 b t) =
+    \(b : *)
+->  \(d : ../../Defer (\(b : *) -> ../../Sum2 b t) b)
+->  d (../../Sum2 b t) (\(a : *) -> ./map t a b)
+in  Functor

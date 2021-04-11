@@ -1,0 +1,2 @@
+let sum : ../Monoid ../Nat = \(xs : ../List ../Nat ) -> xs ../Nat ./(+) 0
+in  sum

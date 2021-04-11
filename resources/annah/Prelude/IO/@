@@ -1,0 +1,1 @@
+λ(a : *) → ∀(IO : *) → ∀(Get_ : (./Nat  → IO) → IO) → ∀(Put_ : ./Nat  → IO → IO) → ∀(Pure_ : a → IO) → IO

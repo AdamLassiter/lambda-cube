@@ -1,0 +1,1 @@
+λ(b : *) → λ(d : ../Defer  ../IO  b) → d (../IO  b) (λ(a : *) → ./map  a b)

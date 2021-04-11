@@ -1,0 +1,3 @@
+let replicate (a : *) (n : ../Nat ) (x : a) : ../List a =
+    ../Nat/foldNat n (../List a) (./Cons a x) (./Nil a)
+in  replicate

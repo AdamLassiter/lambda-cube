@@ -1,0 +1,6 @@
+let (+) (m : ../Nat ) (n : ../Nat ) : ../Nat =
+    \(Nat : *)
+->  \(Succ : forall (pred : Nat) -> Nat)
+->  \(Zero : Nat)
+->  m Nat Succ (n Nat Succ Zero)
+in  (+)

@@ -1,0 +1,2 @@
+let pure (a : *) (x : a) : ../Maybe a = ./Just a x
+in  pure

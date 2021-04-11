@@ -1,0 +1,1 @@
+λ(t : *) → λ(a : *) → λ(b : *) → λ(f : a → b) → λ(s : ../../Sum2  t a) → λ(Sum2 : *) → λ(Make1 : ∀(_Make1 : t) → Sum2) → λ(Make2 : ∀(_Make2 : b) → Sum2) → s Sum2 Make1 (λ(x : a) → Make2 (f x))

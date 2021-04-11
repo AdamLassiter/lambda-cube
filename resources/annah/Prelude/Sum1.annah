@@ -1,0 +1,6 @@
+    \(a : *)
+->  type Sum1
+
+    data Make1 (_Make1 : a)
+
+    in   Sum1
