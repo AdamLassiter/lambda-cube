@@ -16,6 +16,7 @@ module Main (main) where
         putStrLn $ "=========="
         putStrLn $ file
         putStrLn $ "=========="
+        putStrLn $ "Expression: " ++ contents
         putStrLn $ "-- Type --"
         putStrLn $ "Expected: " ++ typ
         putStrLn $ "Actual: " ++ "none"
