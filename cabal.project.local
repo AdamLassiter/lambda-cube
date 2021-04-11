@@ -1,1 +1,2 @@
 tests: True
+test-show-details: streaming
