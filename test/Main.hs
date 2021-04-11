@@ -1,17 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Test (main) where
+module Main (main) where
     import Prelude
     import System.IO
 
     main :: IO ()
     main = do
-      results <- sequence tests
-      return
+        results <- sequence tests
+        return ()
 
     example :: String -> String -> String -> IO ()
     example file typ expr = do
         contents <- readFile file
+        putStrLn contents
+        return ()
 
 
     tests :: [IO ()]
