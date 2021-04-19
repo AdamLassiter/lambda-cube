@@ -8,16 +8,16 @@ module L3.Parser (module L3.Parser, module L3.Parsec) where
 
 
     -- parse a string to a named expression (using string labels)
-    parseExpr :: String -> Result NamedExpr
+    parseExpr :: String -> Result ShowExpr
     parseExpr = runParser expr
 
-    expr :: Parser NamedExpr
+    expr :: Parser ShowExpr
     expr = do
         es <- many expr0
         return $ foldl1 App es
 
     -- parser for calculus expressions
-    expr0 :: Parser NamedExpr
+    expr0 :: Parser ShowExpr
     expr0 = star
        <|> box
        <|> var
@@ -54,7 +54,7 @@ module L3.Parser (module L3.Parser, module L3.Parsec) where
                   e <- parens expr
                   return $ e
 
-    eval :: String -> (Result NamedExpr, Result NamedExpr)
+    eval :: String -> (Result ShowExpr, Result ShowExpr)
     eval inp = (typ, expr)
         where inpExpr = parseExpr inp
               dbExpr = mapR fst $ fmapR (\ex -> index ex []) inpExpr

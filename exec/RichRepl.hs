@@ -9,12 +9,12 @@ module RichRepl where
 
     data ReplAction = None
                     | Quit
-                    | EvalOf NamedExpr
-                    | TypeOf NamedExpr
-                    | PrintOf NamedExpr
-                    | ExprCtx String NamedExpr
-                    | TypeCtx String NamedExpr
-                    | AssertEq NamedExpr NamedExpr
+                    | EvalOf ShowExpr
+                    | TypeOf ShowExpr
+                    | PrintOf ShowExpr
+                    | ExprCtx String ShowExpr
+                    | TypeCtx String ShowExpr
+                    | AssertEq ShowExpr ShowExpr
                     deriving (Show)
 
 
@@ -71,7 +71,7 @@ module RichRepl where
 
 
     -- run REPL
-    doAction :: ReplAction -> NamedCtx -> NamedCtx -> Result (NamedExpr, NamedCtx, NamedCtx)
+    doAction :: ReplAction -> ShowCtx -> ShowCtx -> Result (ShowExpr, ShowCtx, ShowCtx)
     doAction None eCtx τCtx = Right (Var "", eCtx, τCtx)
     doAction Quit _ _       = throwError "quit"
     doAction (AssertEq e ρ) eCtx τCtx =

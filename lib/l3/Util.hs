@@ -29,6 +29,5 @@ module L3.Util where
     throwL (Left err)  = error err
     throwL (Right res) = res
 
-
     converge :: Eq a => (a -> a) -> a -> a
     converge = until =<< ((==) =<<)

@@ -6,8 +6,8 @@ module L3.Pretty (module L3.Pretty, module L3.Core) where
     import Data.List
     import Data.Either
 
-    type NamedExpr = Expr String
-    type NamedCtx = Context String
+    type ShowExpr = Expr String
+    type ShowCtx = Context String
 
     -- Show an expression using a naming function
     showExpr :: (a -> String) -> Expr a -> String
@@ -57,7 +57,7 @@ module L3.Pretty (module L3.Pretty, module L3.Core) where
               idx0 s (App e expr)   = fmapR (\e' -> mapR (\expr' -> App e' expr') (idx0 s expr)) (idx0 s e)
 
     -- Given a DeBruijn expression and context, convert it to named using a named (string) context
-    named :: DeBruijnExpr -> DeBruijnCtx -> NamedCtx -> NamedExpr
+    named :: DeBruijnExpr -> DeBruijnCtx -> ShowCtx -> ShowExpr
     named e ctx ctx' = quote e ctx ctx' (map show [0..])
 
     -- Given a DeBruijn expression and context, convert it to named using a context and local stack
@@ -76,7 +76,7 @@ module L3.Pretty (module L3.Pretty, module L3.Core) where
     -- core functions wrapped in namedexprs
 
     -- normalize a named expression
-    nNormalizeOf :: NamedExpr -> NamedCtx -> Result NamedExpr
+    nNormalizeOf :: ShowExpr -> ShowCtx -> Result ShowExpr
     nNormalizeOf expr typCtx = case index expr typCtx of
         Right (dbExpr, dbCtx) -> Right eval
             where dbEval = normalize dbExpr
@@ -84,11 +84,11 @@ module L3.Pretty (module L3.Pretty, module L3.Core) where
         Left err -> Left err
 
     -- `normalizeIn` is the same as `normalizeOf` but in a context binding free names to expressions.
-    nNormalizeIn :: NamedCtx -> NamedExpr -> NamedCtx -> Result NamedExpr
+    nNormalizeIn :: ShowCtx -> ShowExpr -> ShowCtx -> Result ShowExpr
     nNormalizeIn eCtx expr = nNormalizeOf (foldl (\expr (i, e) -> substitute i e expr) expr eCtx)
 
     -- type a named expression
-    nTypeOf :: NamedExpr -> NamedCtx -> Result NamedExpr
+    nTypeOf :: ShowExpr -> ShowCtx -> Result ShowExpr
     nTypeOf expr typCtx = case index expr typCtx of
         Right (dbExpr, dbCtx) -> case inferType dbCtx dbExpr of
             Right dbType -> Right type'
@@ -97,5 +97,5 @@ module L3.Pretty (module L3.Pretty, module L3.Core) where
         Left err -> Left err
 
     -- `inferType` is the same as `typeOf` but in a context binding free names to expressions
-    nTypeIn :: NamedCtx -> NamedExpr -> NamedCtx -> Result NamedExpr
+    nTypeIn :: ShowCtx -> ShowExpr -> ShowCtx -> Result ShowExpr
     nTypeIn eCtx expr = nTypeOf (foldl (\expr (i, e) -> substitute i e expr) expr eCtx)

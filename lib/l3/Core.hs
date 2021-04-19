@@ -1,3 +1,8 @@
+{-# LANGUAGE DeriveDataTypeable         #-}
+{-# LANGUAGE DeriveFoldable             #-}
+{-# LANGUAGE DeriveFunctor              #-}
+{-# LANGUAGE DeriveTraversable          #-}
+
 -- Type checking and type inference
 module L3.Core where
     import L3.Util
@@ -8,7 +13,7 @@ module L3.Core where
                 | Lam a (Expr a) (Expr a)
                 | Pi a (Expr a) (Expr a)
                 | App (Expr a) (Expr a)
-                deriving (Eq, Show)
+                deriving (Eq, Show, Traversable, Functor, Foldable)
 
     type PartialContext a b = [(a, Expr b)]
     type Context a = PartialContext a a
@@ -52,13 +57,13 @@ module L3.Core where
 
     -- Deduce if e is an equivalentalent expression to e'
     equivalent :: DeBruijnExpr -> DeBruijnExpr -> Bool
-    e `equivalent` e' = equivalent' (normalize e) (normalize e') (-1)
+    e `equivalent` e' = equivalent0 (normalize e) (normalize e') (-1)
 
-    equivalent' :: DeBruijnExpr -> DeBruijnExpr -> Int -> Bool
-    equivalent' (Lam v ta b) (Lam v' ta' b') n = equivalent' ta ta' n && equivalent' (substitute v (Var n)  b) (substitute v' (Var n)  b') (pred n)
-    equivalent' (Pi v ta tb) (Pi v' ta' tb') n = equivalent' ta ta' n && equivalent' (substitute v (Var n) tb) (substitute v' (Var n) tb') (pred n)
-    equivalent' (App f a)    (App f' a')     n = equivalent' f f' n && equivalent' a a' n
-    equivalent' c            c'              n = c == c'
+    equivalent0 :: DeBruijnExpr -> DeBruijnExpr -> Int -> Bool
+    equivalent0 (Lam v ta b) (Lam v' ta' b') n = equivalent0 ta ta' n && equivalent0 (substitute v (Var n)  b) (substitute v' (Var n)  b') (pred n)
+    equivalent0 (Pi v ta tb) (Pi v' ta' tb') n = equivalent0 ta ta' n && equivalent0 (substitute v (Var n) tb) (substitute v' (Var n) tb') (pred n)
+    equivalent0 (App f a)    (App f' a')     n = equivalent0 f f' n && equivalent0 a a' n
+    equivalent0 c            c'              n = c == c'
 
     -- Type-check an expression and return the expression's type if type-checking
     -- suceeds or Nothing if type-checking fails
