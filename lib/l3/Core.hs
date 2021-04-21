@@ -34,10 +34,11 @@ module L3.Core where
     substitute v e e'                       = e'
 
     -- Deduce if a variable v is free in an expression e
+    -- That is, e does not mention v
     free :: Int -> DeBruijnExpr -> Bool
     free v e = e /= substitute v (Var $ v + 1) e
 
-    -- Reduce an expression to its normal form, performing both beta reduction and
+    -- Reduce an expression e to its normal form, performing both beta reduction and
     -- eta reduction
     -- `normalize` does not type-check the expression.  You may want to type-check
     -- expressions before normalizing them since normalization can convert an
@@ -45,6 +46,7 @@ module L3.Core where
     normalize :: DeBruijnExpr -> DeBruijnExpr
     normalize = converge normalize0
 
+    -- One step of normalization, repeated until there are no changes (convergence)
     normalize0 :: DeBruijnExpr -> DeBruijnExpr
     normalize0 (Lam v ta b) = case normalize b of
         App vb (Var v') | v == v' && not (free v vb) -> vb -- Eta reduce
@@ -55,7 +57,8 @@ module L3.Core where
         f'        -> App f' (normalize a)
     normalize0 c = c
 
-    -- Deduce if e is an equivalentalent expression to e'
+    -- Deduce if e is an equivalent expression to e'
+    -- Implements structural-level renumbering over a negative index
     equivalent :: DeBruijnExpr -> DeBruijnExpr -> Bool
     e `equivalent` e' = equivalent0 (normalize e) (normalize e') (-1)
 
@@ -66,7 +69,7 @@ module L3.Core where
     equivalent0 c            c'              n = c == c'
 
     -- Type-check an expression and return the expression's type if type-checking
-    -- suceeds or Nothing if type-checking fails
+    -- succeeds or Nothing if type-checking fails
     -- `inferType` does not necessarily normalize the type since full normalization
     -- is not necessary for just type-checking.  If you actually care about the
     -- returned type then you may want to `normalize` it afterwards.

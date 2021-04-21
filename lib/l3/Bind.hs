@@ -1,7 +1,7 @@
 module L3.Bind where
     import L3.Core
 
-    data Label = Free String | Bound Int
+    data Label = Free String | Bound DeBruijnExpr
 
     type BindingExpr = Expr Label
     type BindingContext = PartialContext String BindingExpr
@@ -21,3 +21,5 @@ module L3.Bind where
     indexOf :: DeBruijnExpr -> Int
     indexOf = foldr1 min
 
+    evaluate :: BindingExpr -> BindingContext -> (DeBruijnExpr, DeBruijnCtx)
+    evaluate = undefined
