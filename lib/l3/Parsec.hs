@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+
 -- Small parsec-like module
 module L3.Parsec where
     import L3.Util
@@ -12,9 +14,9 @@ module L3.Parsec where
     runParser :: Parser a -> String -> Result a
     runParser m s =
         case parse m s of
-            (res, []):[] -> Right res
-            (_, rem):[]  -> throwError $ "parser failed to consume: " ++ rem
-            _            -> throwError $ "parser error"
+            [(res, [])] -> Right res
+            [(_, rem)]  -> throwError $ "parser failed to consume: " ++ rem
+            _            -> throwError "parser error"
 
     item :: Parser Char
     item = Parser $ \s ->
@@ -51,7 +53,7 @@ module L3.Parsec where
     combine p q = Parser (\s -> parse p s ++ parse q s)
 
     failure :: Parser a
-    failure = Parser (\cs -> [])
+    failure = Parser (const [])
 
     option :: Parser a -> Parser a -> Parser a
     option  p q = Parser $ \s ->
@@ -75,10 +77,10 @@ module L3.Parsec where
     satisfy p = item `bind` \c ->
         if p c
         then unit c
-        else (Parser (\cs -> []))
+        else Parser (const [])
 
-    oneOf :: [Char] -> Parser Char
-    oneOf s = satisfy (flip elem s)
+    oneOf :: String -> Parser Char
+    oneOf s = satisfy (`elem` s)
 
     chainl :: Parser a -> Parser (a -> a -> a) -> a -> Parser a
     chainl p op a = (p `chainl1` op) <|> return a
@@ -114,7 +116,7 @@ module L3.Parsec where
     space = oneOf " \n\r"
 
     spaces :: Parser String
-    spaces = many $ space
+    spaces = many space
 
     digit :: Parser Char
     digit = satisfy isDigit
@@ -124,7 +126,7 @@ module L3.Parsec where
         s <- string "-" <|> return []
         cs <- some digit
         return $ read (s ++ cs)
-    
+
     word :: Parser String
     word = do
         cs <- some letter

@@ -1,5 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- Reverse-parse of Pretty shows
 module L3.Parser (module L3.Parser, module L3.Parsec) where
+    import Prelude hiding (pi)
     import L3.Pretty
     import L3.Parsec
     import L3.Util
@@ -24,41 +27,41 @@ module L3.Parser (module L3.Parser, module L3.Parsec) where
        <|> lam
        <|> pi
        <|> par
-        where star = do
-                  reserved "*"
-                  return $ Star
-              box = do
-                  reserved "#"
-                  return $ Box
-              var = do
-                  v <- word
-                  return $ Var v
-              lam = do
-                  reserved "λ" <|> reserved "\\"
-                  (i, τ) <- typ
-                  reserved "."
-                  e <- expr
-                  return $ Lam i τ e
-              pi = do
-                  reserved "∀" <|> reserved "forall"
-                  (i, τ) <- typ
-                  reserved "." <|> reserved "->"
-                  e <- expr
-                  return $ Pi i τ e
-              typ = do
-                  v <- word
-                  reserved ":"
-                  τ <- expr
-                  return $ (v, τ)
-              par = do
-                  e <- parens expr
-                  return $ e
+
+    star :: Parser ShowExpr
+    star = do
+        reserved "*"
+        return Star
+    box :: Parser ShowExpr
+    box = do
+        reserved "#"
+        return Box
+    var :: Parser ShowExpr
+    var = do
+        Var . Name <$> word
+    lam :: Parser ShowExpr
+    lam = do
+        reserved "λ" <|> reserved "\\"
+        (i, τ) <- typ
+        reserved "."
+        Lam i τ <$> expr
+    pi :: Parser ShowExpr
+    pi = do
+        reserved "∀" <|> reserved "forall"
+        (i, τ) <- typ
+        reserved "." <|> reserved "->"
+        Pi i τ <$> expr
+    par :: Parser ShowExpr
+    par = do
+        parens expr
+    typ = do
+        v <- word
+        reserved ":"
+        τ <- expr
+        return (Name v, τ)
 
     eval :: String -> (Result ShowExpr, Result ShowExpr)
-    eval inp = (typ, expr)
+    eval inp = (typ, normExpr)
         where inpExpr = parseExpr inp
-              dbExpr = mapR fst $ fmapR (\ex -> index ex []) inpExpr
-              normExpr = mapR normalize dbExpr
-              dbType = fmapR (\dbEx -> inferType [] dbEx) normExpr
-              typ = mapR (\dbTy -> named dbTy [] []) dbType
-              expr = mapR (\ex -> named ex [] []) normExpr
+              normExpr = mapR normalize inpExpr
+              typ = fmapR (inferType []) normExpr

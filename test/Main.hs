@@ -13,17 +13,17 @@ module Main (main) where
     example :: String -> String -> String -> IO ()
     example file typ expr = do
         contents <- readFile file
-        putStrLn $ "=========="
-        putStrLn $ file
-        putStrLn $ "=========="
+        putStrLn "=========="
+        putStrLn file
+        putStrLn "=========="
         putStrLn $ "Expression: " ++ contents
-        putStrLn $ "-- Type --"
+        putStrLn "-- Type --"
         putStrLn $ "Expected: " ++ typ
         putStrLn $ "Actual: " ++ "none"
-        putStrLn $ "-- Expr --"
+        putStrLn "-- Expr --"
         putStrLn $ "Expected: " ++ expr
         putStrLn $ "Actual: " ++ "none"
-        putStrLn $ ""
+        putStrLn ""
         return ()
 
 

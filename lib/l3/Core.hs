@@ -15,16 +15,14 @@ module L3.Core where
                 | App (Expr a) (Expr a)
                 deriving (Eq, Show, Traversable, Functor, Foldable)
 
-    type PartialContext a b = [(a, Expr b)]
-    type Context a = PartialContext a a
+    type Context a = [(a, Expr a)]
 
-    type DeBruijnExpr = Expr Int
-    type DeBruijnCtx = Context Int
-
+    free :: (Eq a, Enum a) => a -> Expr a -> Bool
+    free v e = e /= substitute v (Var $ pred v) e
 
     -- Substitute all occurrences of a variable v with an expression e
     -- substitute x n C B  ~  B[x@n := C]
-    substitute :: (Eq a) => a -> Expr a -> Expr a -> Expr a
+    substitute :: (Eq a, Enum a) => a -> Expr a -> Expr a -> Expr a
     substitute v e (Var v')       | v == v' = e
     substitute v e (Lam v' ta b ) | v == v' = Lam v' (substitute v e ta)            b
     substitute v e (Lam v' ta b )           = Lam v' (substitute v e ta) (substitute v e b )
@@ -33,47 +31,32 @@ module L3.Core where
     substitute v e (App f a     )           = App    (substitute v e f ) (substitute v e a )
     substitute v e e'                       = e'
 
-    -- Deduce if a variable v is free in an expression e
-    -- That is, e does not mention v
-    free :: Int -> DeBruijnExpr -> Bool
-    free v e = e /= substitute v (Var $ v + 1) e
+    normalize :: (Eq a, Enum a) => Expr a -> Expr a
+    normalize (Lam v ta b) = case normalize b of
+        App vb (Var v') | v == v' && not (free v vb) -> vb
+        b' -> Lam v (normalize ta) b'
+    normalize (Pi v ta tb) = Pi v (normalize ta) (normalize tb)
+    normalize (App f a) = case normalize f of
+        Lam v _ b -> substitute v (normalize a) b
+        f' -> App f' (normalize a)
+    normalize c = c
 
-    -- Reduce an expression e to its normal form, performing both beta reduction and
-    -- eta reduction
-    -- `normalize` does not type-check the expression.  You may want to type-check
-    -- expressions before normalizing them since normalization can convert an
-    -- ill-typed expression into a well-typed expression.
-    normalize :: DeBruijnExpr -> DeBruijnExpr
-    normalize = converge normalize0
+    equivalent :: (Eq a, Enum a) => a -> Expr a -> Expr a -> Bool
+    equivalent n e e' = igo (normalize e) (normalize e') n where
+        igo (Lam v ta b) (Lam v' ta' b') n = igo ta ta' n && igo (substitute v (Var n)  b) (substitute v' (Var n)  b') (pred n)
+        igo (Pi v ta tb) (Pi v' ta' tb') n = igo ta ta' n && igo (substitute v (Var n) tb) (substitute v' (Var n) tb') (pred n)
+        igo (App f a) (App f' a') n = igo f f' n && igo a a' n
+        igo c c' n = c == c'
 
-    -- One step of normalization, repeated until there are no changes (convergence)
-    normalize0 :: DeBruijnExpr -> DeBruijnExpr
-    normalize0 (Lam v ta b) = case normalize b of
-        App vb (Var v') | v == v' && not (free v vb) -> vb -- Eta reduce
-        b'                                           -> Lam v (normalize ta) b'
-    normalize0 (Pi v ta tb) = Pi v (normalize ta) (normalize tb)
-    normalize0 (App f a) = case normalize f of
-        Lam v _ b -> substitute v (normalize a) b -- Beta reduce
-        f'        -> App f' (normalize a)
-    normalize0 c = c
-
-    -- Deduce if e is an equivalent expression to e'
-    -- Implements structural-level renumbering over a negative index
-    equivalent :: DeBruijnExpr -> DeBruijnExpr -> Bool
-    e `equivalent` e' = equivalent0 (normalize e) (normalize e') (-1)
-
-    equivalent0 :: DeBruijnExpr -> DeBruijnExpr -> Int -> Bool
-    equivalent0 (Lam v ta b) (Lam v' ta' b') n = equivalent0 ta ta' n && equivalent0 (substitute v (Var n)  b) (substitute v' (Var n)  b') (pred n)
-    equivalent0 (Pi v ta tb) (Pi v' ta' tb') n = equivalent0 ta ta' n && equivalent0 (substitute v (Var n) tb) (substitute v' (Var n) tb') (pred n)
-    equivalent0 (App f a)    (App f' a')     n = equivalent0 f f' n && equivalent0 a a' n
-    equivalent0 c            c'              n = c == c'
+    equivalent0 :: (Eq a, Enum a) => Expr a -> Expr a -> Bool
+    equivalent0 = equivalent (toEnum 0)
 
     -- Type-check an expression and return the expression's type if type-checking
     -- succeeds or Nothing if type-checking fails
     -- `inferType` does not necessarily normalize the type since full normalization
     -- is not necessary for just type-checking.  If you actually care about the
     -- returned type then you may want to `normalize` it afterwards.
-    inferType :: DeBruijnCtx -> DeBruijnExpr -> Result DeBruijnExpr
+    inferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
     inferType _ Star = return Box
     inferType _ Box  = throwError "absurd box"
     inferType ctx (Var v) = case lookup v ctx of
@@ -99,18 +82,21 @@ module L3.Core where
             Right expr         -> throwError $ "not a function: " ++ show (App f a) ++ " ~> " ++ show expr
             Left  err          -> throwError err
         ta' <- inferType ctx a
-        if ta `equivalent` ta'
+        if ta `equivalent0` ta'
           then return $ substitute v a tb
           else throwError $ "type mismatch: " ++ show ta ++ " != " ++ show ta'
 
-    -- `typeOf` is the same as `inferType` with an empty context, meaning that the
+    -- `inferType0` is the same as `inferType` with an empty context, meaning that the
     -- expression must be closed (i.e. no free variables), otherwise type-checking
     -- will fail.
-    typeOf :: DeBruijnExpr -> Result DeBruijnExpr
-    typeOf = inferType []
+    inferType0 :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
+    inferType0 = inferType []
 
     -- Deduce if an expression e is well-typed
-    wellTyped :: DeBruijnExpr -> Bool
-    wellTyped e = case typeOf e of
+    wellTyped :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Bool
+    wellTyped ctx e = case inferType ctx e of
+        Left _ -> False
         Right _ -> True
-        Left _  -> False
+
+    wellTyped0 :: (Eq a, Enum a, Show a) => Expr a -> Bool
+    wellTyped0 = wellTyped []
