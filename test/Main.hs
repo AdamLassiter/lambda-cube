@@ -1,49 +1,54 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Main (main) where
-    import Prelude
-    import System.IO
+    import Prelude (IO, sequence, return, ($))
+    import System.IO (FilePath)
+    import GHC.IO.Encoding
     import System.Exit (exitFailure, exitSuccess)
+    import Data.Text
+    import Data.Text.IO (putStrLn, readFile)
 
     main :: IO ()
     main = do
+        setLocaleEncoding utf8
         results <- sequence tests
         return ()
 
-    example :: String -> String -> String -> IO ()
+    example :: FilePath -> Text -> Text -> IO ()
     example file typ expr = do
         contents <- readFile file
         putStrLn "=========="
-        putStrLn file
+        putStrLn $ pack file
         putStrLn "=========="
-        putStrLn $ "Expression: " ++ contents
-        putStrLn "-- Type --"
-        putStrLn $ "Expected: " ++ typ
-        putStrLn $ "Actual: " ++ "none"
-        putStrLn "-- Expr --"
-        putStrLn $ "Expected: " ++ expr
-        putStrLn $ "Actual: " ++ "none"
+        putStrLn $ concat ["Expression: ", contents]
+        putStrLn "== Type =="
+        putStrLn $ concat ["Expected: ", typ]
+        putStrLn $ concat ["Actual: ", "none"]
+        putStrLn "== Expr =="
+        putStrLn $ concat ["Expected: ", expr]
+        putStrLn $ concat ["Actual: ", "none"]
         putStrLn ""
         return ()
 
 
     tests :: [IO ()]
-    tests = [ example0,
-              example1,
-              example2,
-              example3,
-              example4,
-              example5,
-              example6,
-              example7,
-              example8,
-              example9,
-              example10,
-              example11,
-              example12,
-              example13,
-              example14,
-              example15 ]
+    tests = [ example0 ]
+    --          example1,
+    --          example2,
+    --          example3,
+    --          example4,
+    --          example5,
+    --          example6,
+    --          example7,
+    --          example8,
+    --          example9,
+    --          example10,
+    --          example11,
+    --          example12,
+    --          example13,
+    --          example14,
+    --          example15 ]
 
 
     example0 :: IO ()
@@ -57,8 +62,8 @@ module Main (main) where
     example1 =
         example
             "test/morte/example1.mt"
-            "∀(String : *) . ∀(x : String) . String"
-            "λ(String : *) . λ(x : String) . x"
+            "∀(Text : *) . ∀(x : Text) . Text"
+            "λ(Text : *) . λ(x : Text) . x"
 
     example2 :: IO ()
     example2 =
@@ -148,12 +153,12 @@ module Main (main) where
     example14 =
         example
             "test/morte/example14.mt"
-            "∀(String : *) . ∀(U : *) . ∀(Unit : U) . ∀(x : *) . (String . x . x) . ((String . x) . x) . (U . x) . x"
-            "λ(String : *) . λ(U : *) . λ(Unit : U) . λ(x : *) . λ(PutStrLn : String . x . x) . λ(GetLine : (String . x) . x) . λ(Return : U . x) . GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (GetLine (λ(va : String) . PutStrLn va (Return Unit))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))"
+            "∀(Text : *) . ∀(U : *) . ∀(Unit : U) . ∀(x : *) . (Text . x . x) . ((Text . x) . x) . (U . x) . x"
+            "λ(Text : *) . λ(U : *) . λ(Unit : U) . λ(x : *) . λ(PutStrLn : Text . x . x) . λ(GetLine : (Text . x) . x) . λ(Return : U . x) . GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (Return Unit))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))"
 
     example15 :: IO ()
     example15 =
         example
             "test/morte/example15.mt"
-            "∀(String : *) . ∀(r : *) . ∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (String . s . x) . ((String . s) . x) . (r . x) . x) . x) . x"
-            "λ(String : *) . λ(r : *) . λ(x : *) . λ(k : ∀(s : *) . s . (s . ∀(x : *) . (String . s . x) . ((String . s) . x) . (r . x) . x) . x) . k (∀(x : *) . (String . x) . x . x) (λ(x : *) . λ(Just : String . x) . λ(Nothing : x) . Nothing) (λ(m : ∀(x : *) . (String . x) . x . x) . m (∀(x : *) . (String . (∀(x : *) . (String . x) . x . x) . x) . ((String . ∀(x : *) . (String . x) . x . x) . x) . (r . x) . x) (λ(str : String) . λ(x : *) . λ(PutStrLn : String . (∀(x : *) . (String . x) . x . x) . x) . λ(GetLine : (String . ∀(x : *) . (String . x) . x . x) . x) . λ(Return : r . x) . PutStrLn str (λ(x : *) . λ(Just : String . x) . λ(Nothing : x) . Nothing)) (λ(x : *) . λ(PutStrLn : String . (∀(x : *) . (String . x) . x . x) . x) . λ(GetLine : (String . ∀(x : *) . (String . x) . x . x) . x) . λ(Return : r . x) . GetLine (λ(va : String) . λ(x : *) . λ(Just : String . x) . λ(Nothing : x) . Just va)))"
+            "∀(Text : *) . ∀(r : *) . ∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (Text . s . x) . ((Text . s) . x) . (r . x) . x) . x) . x"
+            "λ(Text : *) . λ(r : *) . λ(x : *) . λ(k : ∀(s : *) . s . (s . ∀(x : *) . (Text . s . x) . ((Text . s) . x) . (r . x) . x) . x) . k (∀(x : *) . (Text . x) . x . x) (λ(x : *) . λ(Just : Text . x) . λ(Nothing : x) . Nothing) (λ(m : ∀(x : *) . (Text . x) . x . x) . m (∀(x : *) . (Text . (∀(x : *) . (Text . x) . x . x) . x) . ((Text . ∀(x : *) . (Text . x) . x . x) . x) . (r . x) . x) (λ(str : Text) . λ(x : *) . λ(PutStrLn : Text . (∀(x : *) . (Text . x) . x . x) . x) . λ(GetLine : (Text . ∀(x : *) . (Text . x) . x . x) . x) . λ(Return : r . x) . PutStrLn str (λ(x : *) . λ(Just : Text . x) . λ(Nothing : x) . Nothing)) (λ(x : *) . λ(PutStrLn : Text . (∀(x : *) . (Text . x) . x . x) . x) . λ(GetLine : (Text . ∀(x : *) . (Text . x) . x . x) . x) . λ(Return : r . x) . GetLine (λ(va : Text) . λ(x : *) . λ(Just : Text . x) . λ(Nothing : x) . Just va)))"
