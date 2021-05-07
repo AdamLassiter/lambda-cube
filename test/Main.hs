@@ -1,13 +1,7 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-
 module Main (main) where
-    import Prelude (IO, sequence, return, ($))
     import System.IO (FilePath)
     import GHC.IO.Encoding
     import System.Exit (exitFailure, exitSuccess)
-    import Data.Text
-    import Data.Text.IO (putStrLn, readFile)
 
     main :: IO ()
     main = do
@@ -15,19 +9,19 @@ module Main (main) where
         results <- sequence tests
         return ()
 
-    example :: FilePath -> Text -> Text -> IO ()
+    example :: FilePath -> String -> String -> IO ()
     example file typ expr = do
         contents <- readFile file
         putStrLn "=========="
-        putStrLn $ pack file
+        putStrLn file
         putStrLn "=========="
-        putStrLn $ concat ["Expression: ", contents]
+        putStrLn $ "Expression: " ++ contents
         putStrLn "== Type =="
-        putStrLn $ concat ["Expected: ", typ]
-        putStrLn $ concat ["Actual: ", "none"]
+        putStrLn $ "Expected: " ++ typ
+        putStrLn $ "Actual: " ++ "none"
         putStrLn "== Expr =="
-        putStrLn $ concat ["Expected: ", expr]
-        putStrLn $ concat ["Actual: ", "none"]
+        putStrLn $ "Expected: " ++ expr
+        putStrLn $ "Actual: " ++ "none"
         putStrLn ""
         return ()
 
@@ -42,7 +36,7 @@ module Main (main) where
     --          example6,
     --          example7,
     --          example8,
-    --          example9,
+    --          example9
     --          example10,
     --          example11,
     --          example12,
@@ -55,110 +49,110 @@ module Main (main) where
     example0 =
         example
             "test/morte/example0.mt"
-            "∀(a : *) . ∀(x : a) . a"
-            "λ(a : *) . λ(x : a) . x"
+            "forall (a : *) . forall (x : a) . a"
+            "\\ (a : *) . \\ (x : a) . x"
 
     example1 :: IO ()
     example1 =
         example
             "test/morte/example1.mt"
-            "∀(Text : *) . ∀(x : Text) . Text"
-            "λ(Text : *) . λ(x : Text) . x"
+            "forall (Text : *) . forall (x : Text) . Text"
+            "\\ (Text : *) . \\ (x : Text) . x"
 
     example2 :: IO ()
     example2 =
         example
             "test/morte/example2.mt"
-            "∀(a : *) . a . a"
-            "λ(a : *) . λ(x : a) . x"
+            "forall (a : *) . a . a"
+            "\\ (a : *) . \\ (x : a) . x"
 
     example3 :: IO ()
     example3 =
         example
             "test/morte/example3.mt"
-            "∀(Int : *) . ∀(Zero : Int) . ∀(One : Int) . Int"
-            "λ(Int : *) . λ(Zero : Int) . λ(One : Int) . One"
+            "forall (Int : *) . forall (Zero : Int) . forall (One : Int) . Int"
+            "\\ (Int : *) . \\ (Zero : Int) . \\ (One : Int) . One"
 
     example4 :: IO ()
     example4 =
         example
             "test/morte/example4.mt"
-            "∀(a : *) . ∀(x : a) . ∀(y : a) . a"
-            "λ(a : *) . λ(x : a) . λ(y : a) . y"
+            "forall (a : *) . forall (x : a) . forall (y : a) . a"
+            "\\ (a : *) . \\ (x : a) . \\ (y : a) . y"
 
     example5 :: IO ()
     example5 =
         example
             "test/morte/example5.mt"
-            "∀(r : *) . r . r . r"
-            "λ(r : *) . λ(x : r) . λ(_ : r) . x"
+            "forall (r : *) . r . r . r"
+            "\\ (r : *) . \\ (x : r) . \\ (_ : r) . x"
 
     example6 :: IO ()
     example6 =
         example
             "test/morte/example6.mt"
-            "∀(a : *) . (∀(x : *) . (a . x . x) . x . x) . ∀(x : *) . (a . x . x) . x . x"
-            "λ(a : *) . λ(l : ∀(x : *) . (a . x . x) . x . x) . l"
+            "forall (a : *) . (forall (x : *) . (a . x . x) . x . x) . forall (x : *) . (a . x . x) . x . x"
+            "\\ (a : *) . \\ (l : forall (x : *) . (a . x . x) . x . x) . l"
 
     example7 :: IO ()
     example7 =
         example
             "test/morte/example7.mt"
-            "∀(a : *) . (∀(x : *) . (a . x . x) . x . x) . ∀(x : *) . (a . x . x) . x . x"
-            "λ(a : *) . λ(va : ∀(x : *) . (a . x . x) . x . x) . va"
+            "forall (a : *) . (forall (x : *) . (a . x . x) . x . x) . forall (x : *) . (a . x . x) . x . x"
+            "\\ (a : *) . \\ (va : forall (x : *) . (a . x . x) . x . x) . va"
 
     example8 :: IO ()
     example8 =
         example
             "test/morte/example8.mt"
-            "∀(a : *) . ∀(b : *) . ∀(c : *) . ∀(f : b . c) . ∀(g : a . b) . (∀(x : *) . (a . x . x) . x . x) . ∀(x : *) . (c . x . x) . x . x"
-            "λ(a : *) . λ(b : *) . λ(c : *) . λ(f : b . c) . λ(g : a . b) . λ(l : ∀(x : *) . (a . x . x) . x . x) . λ(x : *) . λ(Cons : c . x . x) . l x (λ(va : a) . Cons (f (g va)))"
+            "forall (a : *) . forall (b : *) . forall (c : *) . forall (f : b . c) . forall (g : a . b) . (forall (x : *) . (a . x . x) . x . x) . forall (x : *) . (c . x . x) . x . x"
+            "\\ (a : *) . \\ (b : *) . \\ (c : *) . \\ (f : b . c) . \\ (g : a . b) . \\ (l : forall (x : *) . (a . x . x) . x . x) . \\ (x : *) . \\ (Cons : c . x . x) . l x (\\ (va : a) . Cons (f (g va)))"
 
     example9 :: IO ()
     example9 =
         example
             "test/morte/example9.mt"
-            "∀(a : *) . ∀(b : *) . ∀(c : *) . ∀(f : b . c) . ∀(g : a . b) . (∀(x : *) . (a . x . x) . x . x) . ∀(x : *) . (c . x . x) . x . x"
-            "λ(a : *) . λ(b : *) . λ(c : *) . λ(f : b . c) . λ(g : a . b) . λ(va : ∀(x : *) . (a . x . x) . x . x) . λ(x : *) . λ(Cons : c . x . x) . va x (λ(va : a) . Cons (f (g va)))"
+            "forall (a : *) . forall (b : *) . forall (c : *) . forall (f : b . c) . forall (g : a . b) . (forall (x : *) . (a . x . x) . x . x) . forall (x : *) . (c . x . x) . x . x"
+            "\\ (a : *) . \\ (b : *) . \\ (c : *) . \\ (f : b . c) . \\ (g : a . b) . \\ (va : forall (x : *) . (a . x . x) . x . x) . \\ (x : *) . \\ (Cons : c . x . x) . va x (\\ (va : a) . Cons (f (g va)))"
 
     example10 :: IO ()
     example10 =
         example
             "test/morte/example10.mt"
-            "∀(a : *) . (∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (a . s . x) . x) . x) . x) . ∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (a . s . x) . x) . x) . x"
-            "λ(a : *) . λ(st : ∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (a . s . x) . x) . x) . x) . st"
+            "forall (a : *) . (forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x"
+            "\\ (a : *) . \\ (st : forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . st"
 
     example11 :: IO ()
     example11 =
         example
             "test/morte/example11.mt"
-            "∀(a : *) . (∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (a . s . x) . x) . x) . x) . ∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (a . s . x) . x) . x) . x"
-            "λ(a : *) . λ(va : ∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (a . s . x) . x) . x) . x) . va"
+            "forall (a : *) . (forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x"
+            "\\ (a : *) . \\ (va : forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . va"
 
     example12 :: IO ()
     example12 =
         example
             "test/morte/example12.mt"
-            "∀(a : *) . ∀(b : *) . ∀(c : *) . (b . c) . (a . b) . (∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (a . s . x) . x) . x) . x) . ∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (c . s . x) . x) . x) . x"
-            "λ(a : *) . λ(b : *) . λ(c : *) . λ(f : b . c) . λ(g : a . b) . λ(st : ∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (a . s . x) . x) . x) . x) . λ(x : *) . λ(S : ∀(s : *) . s . (s . ∀(x : *) . (c . s . x) . x) . x) . st x (λ(s : *) . λ(seed : s) . λ(step : s . ∀(x : *) . (a . s . x) . x) . S s seed (λ(seed : s) . λ(x : *) . λ(Pair : c . s . x) . step seed x (λ(va : a) . Pair (f (g va)))))"
+            "forall (a : *) . forall (b : *) . forall (c : *) . (b . c) . (a . b) . (forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (c . s . x) . x) . x) . x"
+            "\\ (a : *) . \\ (b : *) . \\ (c : *) . \\ (f : b . c) . \\ (g : a . b) . \\ (st : forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . \\ (x : *) . \\ (S : forall (s : *) . s . (s . forall (x : *) . (c . s . x) . x) . x) . st x (\\ (s : *) . \\ (seed : s) . \\ (step : s . forall (x : *) . (a . s . x) . x) . S s seed (\\ (seed : s) . \\ (x : *) . \\ (Pair : c . s . x) . step seed x (\\ (va : a) . Pair (f (g va)))))"
 
     example13 :: IO ()
     example13 =
         example
             "test/morte/example13.mt"
-            "∀(a : *) . ∀(b : *) . ∀(c : *) . (b . c) . (a . b) . (∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (a . s . x) . x) . x) . x) . ∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (c . s . x) . x) . x) . x"
-            "λ(a : *) . λ(b : *) . λ(c : *) . λ(f : b . c) . λ(g : a . b) . λ(va : ∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (a . s . x) . x) . x) . x) . λ(x : *) . λ(S : ∀(s : *) . s . (s . ∀(x : *) . (c . s . x) . x) . x) . va x (λ(s : *) . λ(seed : s) . λ(step : s . ∀(x : *) . (a . s . x) . x) . S s seed (λ(seed : s) . λ(x : *) . λ(Pair : c . s . x) . step seed x (λ(va : a) . Pair (f (g va)))))"
+            "forall (a : *) . forall (b : *) . forall (c : *) . (b . c) . (a . b) . (forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (c . s . x) . x) . x) . x"
+            "\\ (a : *) . \\ (b : *) . \\ (c : *) . \\ (f : b . c) . \\ (g : a . b) . \\ (va : forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . \\ (x : *) . \\ (S : forall (s : *) . s . (s . forall (x : *) . (c . s . x) . x) . x) . va x (\\ (s : *) . \\ (seed : s) . \\ (step : s . forall (x : *) . (a . s . x) . x) . S s seed (\\ (seed : s) . \\ (x : *) . \\ (Pair : c . s . x) . step seed x (\\ (va : a) . Pair (f (g va)))))"
 
     example14 :: IO ()
     example14 =
         example
             "test/morte/example14.mt"
-            "∀(Text : *) . ∀(U : *) . ∀(Unit : U) . ∀(x : *) . (Text . x . x) . ((Text . x) . x) . (U . x) . x"
-            "λ(Text : *) . λ(U : *) . λ(Unit : U) . λ(x : *) . λ(PutStrLn : Text . x . x) . λ(GetLine : (Text . x) . x) . λ(Return : U . x) . GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (GetLine (λ(va : Text) . PutStrLn va (Return Unit))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))"
+            "forall (Text : *) . forall (U : *) . forall (Unit : U) . forall (x : *) . (Text . x . x) . ((Text . x) . x) . (U . x) . x"
+            "\\ (Text : *) . \\ (U : *) . \\ (Unit : U) . \\ (x : *) . \\ (PutStrLn : Text . x . x) . \\ (GetLine : (Text . x) . x) . \\ (Return : U . x) . GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (GetLine (\\ (va : Text) . PutStrLn va (Return Unit))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))"
 
     example15 :: IO ()
     example15 =
         example
             "test/morte/example15.mt"
-            "∀(Text : *) . ∀(r : *) . ∀(x : *) . (∀(s : *) . s . (s . ∀(x : *) . (Text . s . x) . ((Text . s) . x) . (r . x) . x) . x) . x"
-            "λ(Text : *) . λ(r : *) . λ(x : *) . λ(k : ∀(s : *) . s . (s . ∀(x : *) . (Text . s . x) . ((Text . s) . x) . (r . x) . x) . x) . k (∀(x : *) . (Text . x) . x . x) (λ(x : *) . λ(Just : Text . x) . λ(Nothing : x) . Nothing) (λ(m : ∀(x : *) . (Text . x) . x . x) . m (∀(x : *) . (Text . (∀(x : *) . (Text . x) . x . x) . x) . ((Text . ∀(x : *) . (Text . x) . x . x) . x) . (r . x) . x) (λ(str : Text) . λ(x : *) . λ(PutStrLn : Text . (∀(x : *) . (Text . x) . x . x) . x) . λ(GetLine : (Text . ∀(x : *) . (Text . x) . x . x) . x) . λ(Return : r . x) . PutStrLn str (λ(x : *) . λ(Just : Text . x) . λ(Nothing : x) . Nothing)) (λ(x : *) . λ(PutStrLn : Text . (∀(x : *) . (Text . x) . x . x) . x) . λ(GetLine : (Text . ∀(x : *) . (Text . x) . x . x) . x) . λ(Return : r . x) . GetLine (λ(va : Text) . λ(x : *) . λ(Just : Text . x) . λ(Nothing : x) . Just va)))"
+            "forall (Text : *) . forall (r : *) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (Text . s . x) . ((Text . s) . x) . (r . x) . x) . x) . x"
+            "\\ (Text : *) . \\ (r : *) . \\ (x : *) . \\ (k : forall (s : *) . s . (s . forall (x : *) . (Text . s . x) . ((Text . s) . x) . (r . x) . x) . x) . k (forall (x : *) . (Text . x) . x . x) (\\ (x : *) . \\ (Just : Text . x) . \\ (Nothing : x) . Nothing) (\\ (m : forall (x : *) . (Text . x) . x . x) . m (forall (x : *) . (Text . (forall (x : *) . (Text . x) . x . x) . x) . ((Text . forall (x : *) . (Text . x) . x . x) . x) . (r . x) . x) (\\ (str : Text) . \\ (x : *) . \\ (PutStrLn : Text . (forall (x : *) . (Text . x) . x . x) . x) . \\ (GetLine : (Text . forall (x : *) . (Text . x) . x . x) . x) . \\ (Return : r . x) . PutStrLn str (\\ (x : *) . \\ (Just : Text . x) . \\ (Nothing : x) . Nothing)) (\\ (x : *) . \\ (PutStrLn : Text . (forall (x : *) . (Text . x) . x . x) . x) . \\ (GetLine : (Text . forall (x : *) . (Text . x) . x . x) . x) . \\ (Return : r . x) . GetLine (\\ (va : Text) . \\ (x : *) . \\ (Just : Text . x) . \\ (Nothing : x) . Just va)))"

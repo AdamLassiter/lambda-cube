@@ -28,13 +28,13 @@ module L3.Pretty (module L3.Pretty, module L3.Core) where
     type ShowCtx = Context Name
 
     -- Show an expression using a naming function
-    showExpr :: (a -> String) -> Expr a -> String
-    showExpr _ Star      = "*"
-    showExpr _ Box       = "#"
-    showExpr s (Var i)     = s i
-    showExpr s (Lam i typ e) = "λ " ++ s i ++ " : " ++ showExpr s typ ++ " . " ++ showExpr s e
-    showExpr s (Pi i typ e)  = "∀ " ++ s i ++ " : " ++ showExpr s typ ++ " . " ++ showExpr s e
-    showExpr s (App e expr)  = "(" ++ showExpr s e ++ ") (" ++ showExpr s expr ++ ")"
+    showExpr :: ShowExpr -> String
+    showExpr Star      = "*"
+    showExpr Box       = "#"
+    showExpr (Var (Name i)) = i
+    showExpr (Lam (Name i) typ e) = "\\ " ++ i ++ " : " ++ showExpr typ ++ " . " ++ showExpr e
+    showExpr (Pi (Name i) typ e)  = "forall " ++ i ++ " : " ++ showExpr typ ++ " . " ++ showExpr e
+    showExpr (App e expr)         = "(" ++ showExpr e ++ ") (" ++ showExpr expr ++ ")"
 
-    showCtx :: (a -> String) -> Context a -> String
-    showCtx s ctx = intercalate ", " (map (\(n, typ) -> s n ++ " : " ++ showExpr s typ) ctx)
+    showCtx :: ShowCtx -> String
+    showCtx ctx = intercalate ", " (map (\(Name n, typ) -> n ++ " : " ++ showExpr typ) ctx)
