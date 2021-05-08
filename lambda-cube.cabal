@@ -1,33 +1,54 @@
-name:                lambda-cube
-version:             0.1
-homepage:            https://github.com/githubuser/lambda-cube#readme
-license:             MIT
-license-file:        LICENSE
-author:              Adam Lassiter
-maintainer:          adamlassiter96@gmail.com
-copyright:           2020-2021 Adam Lassiter
-category:            Compiler
-build-type:          Simple
-cabal-version:       >=1.10
-data-files:          test/morte/*.mt, prelude/**
-extra-source-files:  README.md
+cabal-version: 2.4
+name:          lambda-cube
+version:       0.1
+license:       MIT
+license-file:  LICENSE
+copyright:     2020-2021 Adam Lassiter
+maintainer:    adamlassiter96@gmail.com
+author:        Adam Lassiter
+homepage:      https://github.com/Adamlassiter/lambda-cube#readme
+category:      Compiler
+build-type:    Simple
+data-dir:
+    prelude
+
+extra-source-files: README.md
 
 library
-  hs-source-dirs:      lib
-  default-language:    Haskell2010
-  build-depends:       base >= 4.7 && < 5, text >= 1.2 && < 1.3, bytestring >= 0.10 && < 0.11
-  exposed-modules:
-    L3.Core, L3.Parsec, L3.Parser, L3.Pretty, L3.Loader, L3.Util
+    autogen-modules:
+        Paths_lambda_cube
+    exposed-modules:
+        L3.Core
+        L3.Parsec
+        L3.Parser
+        L3.Pretty
+        L3.Loader
+        L3.Util
+    other-modules:
+        Paths_lambda_cube
+
+    hs-source-dirs:   lib
+    default-language: Haskell2010
+    build-depends:
+        base >=4.7 && <5,
+        text >=1.2 && <1.3,
+        bytestring >=0.10 && <0.11,
+        extra >=1.7 && <1.8
 
 executable repl
-  hs-source-dirs:      exec
-  main-is:             Main.hs
-  default-language:    Haskell2010
-  build-depends:       base >= 4.7 && < 5, lambda-cube, haskeline
+    main-is:          Main.hs
+    hs-source-dirs:   exec
+    default-language: Haskell2010
+    build-depends:
+        base >=4.7 && <5,
+        lambda-cube,
+        haskeline
 
 test-suite tests
-  hs-source-dirs:      test
-  main-is:             Main.hs
-  default-language:    Haskell2010
-  type:                exitcode-stdio-1.0
-  build-depends:       base >= 4.7 && < 5, lambda-cube
+    type:             exitcode-stdio-1.0
+    main-is:          Main.hs
+    hs-source-dirs:   test
+    default-language: Haskell2010
+    build-depends:
+        base >=4.7 && <5,
+        lambda-cube

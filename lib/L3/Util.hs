@@ -1,6 +1,5 @@
 -- Utilites for result types and error throwing
 module L3.Util where
-
     type Result a = Either String a
 
     throwError :: String -> Result a

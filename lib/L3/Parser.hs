@@ -41,15 +41,15 @@ module L3.Parser (module L3.Parser, module L3.Parsec) where
         Var . Name <$> word
     lam :: Parser ShowExpr
     lam = do
-        reserved "λ" <|> reserved "\\"
+        reserved "λ" <|> reserved "lambda " <|> reserved "\\"
         (i, τ) <- typ
-        reserved "."
+        reserved "." <|> reserved "->" <|> reserved "→"
         Lam i τ <$> expr
     pi :: Parser ShowExpr
     pi = do
-        reserved "∀" <|> reserved "forall"
+        reserved "∀" <|> reserved "forall " <|> reserved "π"
         (i, τ) <- typ
-        reserved "." <|> reserved "->"
+        reserved "." <|> reserved "->" <|> reserved "→"
         Pi i τ <$> expr
     par :: Parser ShowExpr
     par = do
@@ -59,9 +59,3 @@ module L3.Parser (module L3.Parser, module L3.Parsec) where
         reserved ":"
         τ <- expr
         return (Name v, τ)
-
-    eval :: String -> (Result ShowExpr, Result ShowExpr)
-    eval inp = (typ, normExpr)
-        where inpExpr = parseExpr inp
-              normExpr = mapR normalize inpExpr
-              typ = fmapR (inferType []) normExpr

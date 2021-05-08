@@ -1,7 +1,5 @@
-{-# LANGUAGE DeriveDataTypeable         #-}
-{-# LANGUAGE DeriveFoldable             #-}
-{-# LANGUAGE DeriveFunctor              #-}
-{-# LANGUAGE DeriveTraversable          #-}
+{-# LANGUAGE DeriveTraversable #-}
+{-# LANGUAGE TupleSections #-}
 
 -- Type checking and type inference
 module L3.Core where
@@ -51,40 +49,60 @@ module L3.Core where
     equivalent0 :: (Eq a, Enum a) => Expr a -> Expr a -> Bool
     equivalent0 = equivalent (toEnum 0)
 
+    -- Evaluate an expression and return the expression's normal form if evaluation
+    -- succeeds or an error message if evaluation fails
+    -- Expression evaluation is within an expression context (list of global names
+    -- and their evaluations)
+    evalExpr :: (Eq a, Enum a, Show a) => Context a -> Context a -> Expr a -> Result (Expr a, Expr a)
+    evalExpr tCtx eCtx e = evalExpr1 tCtx (sExpr e)
+        where subs = map (uncurry substitute) eCtx
+              sExpr = foldl1 (.) subs
+
+    -- evaluate the type and normalized form of an expression
+    -- evalExpr0 is the same as evalExpr with an empty context
+    evalExpr1 :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
+    evalExpr1 tCtx e = mapR (, normExpr) typ
+        where normExpr = normalize e
+              typ = inferType tCtx normExpr
+
+    evalExpr0 :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a, Expr a)
+    evalExpr0 = evalExpr1 [] 
+
     -- Type-check an expression and return the expression's type if type-checking
-    -- succeeds or Nothing if type-checking fails
+    -- succeeds or an error message if type-checking fails
     -- `inferType` does not necessarily normalize the type since full normalization
     -- is not necessary for just type-checking.  If you actually care about the
     -- returned type then you may want to `normalize` it afterwards.
+    -- Type inference is within a type context (list of global names and their types)
     inferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
     inferType _ Star = return Box
     inferType _ Box  = throwError "absurd box"
-    inferType ctx (Var v) = case lookup v ctx of
+    inferType tCtx (Var v) = case lookup v tCtx of
         Nothing -> throwError $ "unbound variable: " ++ show v
         Just e  -> Right e
-    inferType ctx (Lam v ta b) = do
-        tb <- inferType ((v, ta):ctx) b
+    inferType tCtx (Lam v ta b) = do
+        tb <- inferType ((v, ta):tCtx) b
         let tf = Pi v ta tb
-        ttf <- inferType ctx tf
+        ttf <- inferType tCtx tf
         return tf
-    inferType ctx (Pi v ta tb) = do
-        tta <- inferType ctx ta
-        ttb <- inferType ((v, ta):ctx) tb
+    inferType tCtx (Pi v ta tb) = do
+        tta <- inferType tCtx ta
+        ttb <- inferType ((v, ta):tCtx) tb
         case (tta, ttb) of
             (Star, Star) -> return Star
             (Box , Star) -> return Star
             (Star, Box ) -> return Box
             (Box , Box ) -> return Box
             (l   , r   ) -> throwError $ "invalid type: " ++ show (Pi v ta tb) ++ " ~> " ++ show (l, r)
-    inferType ctx (App f a) = do
-        (v, ta, tb) <- case inferType ctx f of
+    inferType tCtx (App f a) = do
+        (v, ta, tb) <- case inferType tCtx f of
             Right (Pi v ta tb) -> return (v, ta, tb)
             Right expr         -> throwError $ "not a function: " ++ show (App f a) ++ " ~> " ++ show expr
             Left  err          -> throwError err
-        ta' <- inferType ctx a
+        ta' <- inferType tCtx a
         if ta `equivalent0` ta'
-          then return $ substitute v a tb
-          else throwError $ "type mismatch: " ++ show ta ++ " != " ++ show ta'
+            then return $ substitute v a tb
+            else throwError $ "type mismatch: " ++ show ta ++ " != " ++ show ta'
 
     -- `inferType0` is the same as `inferType` with an empty context, meaning that the
     -- expression must be closed (i.e. no free variables), otherwise type-checking
@@ -94,7 +112,7 @@ module L3.Core where
 
     -- Deduce if an expression e is well-typed
     wellTyped :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Bool
-    wellTyped ctx e = case inferType ctx e of
+    wellTyped tCtx e = case inferType tCtx e of
         Left _ -> False
         Right _ -> True
 

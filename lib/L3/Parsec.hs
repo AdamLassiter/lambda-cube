@@ -19,10 +19,9 @@ module L3.Parsec where
             _            -> throwError "parser error"
 
     item :: Parser Char
-    item = Parser $ \s ->
-        case s of
-            []     -> []
-            (c:cs) -> [(c, cs)]
+    item = Parser $ \case
+          []     -> []
+          (c:cs) -> [(c, cs)]
 
     bind :: Parser a -> (a -> Parser b) -> Parser b
     bind p f = Parser $ \s -> concatMap (\(a, s') -> parse (f a) s') $ parse p s
@@ -97,7 +96,7 @@ module L3.Parsec where
     char c = satisfy (c ==)
 
     letter :: Parser Char
-    letter = satisfy (`elem` ['a'..'z'] ++ ['A'..'Z'])
+    letter = satisfy (`elem` ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'])
 
     natural :: Parser Integer
     natural = read <$> some (satisfy isDigit)
