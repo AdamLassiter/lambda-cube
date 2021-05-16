@@ -15,12 +15,17 @@ module L3.Core where
 
     type Context a = [(a, Expr a)]
 
-    free :: (Eq a, Enum a) => a -> Expr a -> Bool
-    free v e = e /= substitute v (Var $ pred v) e
+    free :: (Eq a) => a -> Expr a -> Bool
+    free v (Var v')                = v == v'
+    free v (Lam v' _ _ ) | v == v' = True
+    free v (Lam v' ta b)           = free v ta && free v b
+    free v (Pi v' _   _) | v == v' = True
+    free v (Pi v' ta b )           = free v ta && free v b
+    free v (App f a    )           = free v f && free v a
 
     -- Substitute all occurrences of a variable v with an expression e
     -- substitute x n C B  ~  B[x@n := C]
-    substitute :: (Eq a, Enum a) => a -> Expr a -> Expr a -> Expr a
+    substitute :: (Eq a) => a -> Expr a -> Expr a -> Expr a
     substitute v e (Var v')       | v == v' = e
     substitute v e (Lam v' ta b ) | v == v' = Lam v' (substitute v e ta)            b
     substitute v e (Lam v' ta b )           = Lam v' (substitute v e ta) (substitute v e b )
@@ -29,7 +34,7 @@ module L3.Core where
     substitute v e (App f a     )           = App    (substitute v e f ) (substitute v e a )
     substitute v e e'                       = e'
 
-    normalize :: (Eq a, Enum a) => Expr a -> Expr a
+    normalize :: (Eq a) => Expr a -> Expr a
     normalize (Lam v ta b) = case normalize b of
         App vb (Var v') | v == v' && not (free v vb) -> vb
         b' -> Lam v (normalize ta) b'
@@ -39,34 +44,30 @@ module L3.Core where
         f' -> App f' (normalize a)
     normalize c = c
 
-    equivalent :: (Eq a, Enum a) => a -> Expr a -> Expr a -> Bool
-    equivalent n e e' = igo (normalize e) (normalize e') n where
-        igo (Lam v ta b) (Lam v' ta' b') n = igo ta ta' n && igo (substitute v (Var n)  b) (substitute v' (Var n)  b') (pred n)
-        igo (Pi v ta tb) (Pi v' ta' tb') n = igo ta ta' n && igo (substitute v (Var n) tb) (substitute v' (Var n) tb') (pred n)
-        igo (App f a) (App f' a') n = igo f f' n && igo a a' n
-        igo c c' n = c == c'
+    normalize0 :: (Eq a, Show a) => Expr a -> Expr a
+    normalize0 e = case normalize e of
+      e' | e `equivalent0` e' -> e
+      e'                      -> normalize0 e'
 
-    equivalent0 :: (Eq a, Enum a) => Expr a -> Expr a -> Bool
-    equivalent0 = equivalent (toEnum 0)
+    index :: Eq a => Int -> Expr (Either Int a) -> Expr (Either Int a)
+    index i (Var v)       = Var v
+    index i (Lam v ta b ) = Lam (Left i) (index (i + 1) ta) (substitute v (Var $ Left i) ta)
+    index i (Pi v ta b )  = Pi (Left i) (index (i + 1) ta) (substitute v (Var $ Left i) ta)
+    index i (App f a    ) = App (index i f) (index i  a)
+    index i Star = Star
+    index i Box  = Box
 
-    -- Evaluate an expression and return the expression's normal form if evaluation
-    -- succeeds or an error message if evaluation fails
-    -- Expression evaluation is within an expression context (list of global names
-    -- and their evaluations)
-    evalExpr :: (Eq a, Enum a, Show a) => Context a -> Context a -> Expr a -> Result (Expr a, Expr a)
-    evalExpr tCtx eCtx e = evalExpr1 tCtx (sExpr e)
-        where subs = map (uncurry substitute) eCtx
-              sExpr = foldl1 (.) subs
+    index0 :: Eq a => Expr a -> Expr (Either Int a)
+    index0 e = index 0 (fmap Right e)
+
+    equivalent0 :: (Eq a) => Expr a -> Expr a -> Bool
+    equivalent0 e e' = index0 e == index0 e'
 
     -- evaluate the type and normalized form of an expression
-    -- evalExpr0 is the same as evalExpr with an empty context
-    evalExpr1 :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
+    evalExpr1 :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
     evalExpr1 tCtx e = mapR (, normExpr) typ
         where normExpr = normalize e
-              typ = inferType tCtx normExpr
-
-    evalExpr0 :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a, Expr a)
-    evalExpr0 = evalExpr1 [] 
+              typ = inferType tCtx e
 
     -- Type-check an expression and return the expression's type if type-checking
     -- succeeds or an error message if type-checking fails
@@ -74,11 +75,11 @@ module L3.Core where
     -- is not necessary for just type-checking.  If you actually care about the
     -- returned type then you may want to `normalize` it afterwards.
     -- Type inference is within a type context (list of global names and their types)
-    inferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
+    inferType :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a)
     inferType _ Star = return Box
     inferType _ Box  = throwError "absurd box"
     inferType tCtx (Var v) = case lookup v tCtx of
-        Nothing -> throwError $ "unbound variable: " ++ show v
+        Nothing -> throwError $ "unbound variable: " ++ show v ++ "\n in context: " ++ show tCtx
         Just e  -> Right e
     inferType tCtx (Lam v ta b) = do
         tb <- inferType ((v, ta):tCtx) b
@@ -93,28 +94,28 @@ module L3.Core where
             (Box , Star) -> return Star
             (Star, Box ) -> return Box
             (Box , Box ) -> return Box
-            (l   , r   ) -> throwError $ "invalid type: " ++ show (Pi v ta tb) ++ " ~> " ++ show (l, r)
+            (l   , r   ) -> throwError $ "invalid type: " ++ show (Pi v ta tb) ++ "\n had kind: " ++ show (l, r)
     inferType tCtx (App f a) = do
         (v, ta, tb) <- case inferType tCtx f of
             Right (Pi v ta tb) -> return (v, ta, tb)
-            Right expr         -> throwError $ "not a function: " ++ show (App f a) ++ " ~> " ++ show expr
+            Right expr         -> throwError $ "cannot apply to non-function: " ++ show (App f a) ++ "\n had application: " ++ show expr
             Left  err          -> throwError err
         ta' <- inferType tCtx a
         if ta `equivalent0` ta'
             then return $ substitute v a tb
-            else throwError $ "type mismatch: " ++ show ta ++ " != " ++ show ta'
+            else throwError $ "type mismatch for function and arg: " ++ show (App f a) ++ "\n expected: " ++ show ta ++ "\n but got: " ++ show ta'
 
     -- `inferType0` is the same as `inferType` with an empty context, meaning that the
     -- expression must be closed (i.e. no free variables), otherwise type-checking
     -- will fail.
-    inferType0 :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
+    inferType0 :: (Eq a, Show a) => Expr a -> Result (Expr a)
     inferType0 = inferType []
 
     -- Deduce if an expression e is well-typed
-    wellTyped :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Bool
+    wellTyped :: (Eq a, Show a) => Context a -> Expr a -> Bool
     wellTyped tCtx e = case inferType tCtx e of
         Left _ -> False
         Right _ -> True
 
-    wellTyped0 :: (Eq a, Enum a, Show a) => Expr a -> Bool
+    wellTyped0 :: (Eq a, Show a) => Expr a -> Bool
     wellTyped0 = wellTyped []

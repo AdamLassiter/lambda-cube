@@ -1,11 +1,9 @@
 module Main (main) where
     import System.IO (FilePath)
-    import GHC.IO.Encoding
     import System.Exit (exitFailure, exitSuccess)
 
     main :: IO ()
     main = do
-        setLocaleEncoding utf8
         results <- sequence tests
         return ()
 

@@ -11,6 +11,10 @@ module L3.Util where
         Left err  -> throwError err
         Right rs' -> Right (r:rs')
 
+    mapL :: (String -> String) -> Result a -> Result a
+    mapL f (Left err)  = Left $ f err
+    mapL f (Right res) = Right res
+
     mapR :: (a -> b) -> Result a -> Result b
     mapR f (Left err)  = Left err
     mapR f (Right res) = Right $ f res

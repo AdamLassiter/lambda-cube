@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections #-}
 
 -- Reverse-parse of Pretty shows
 module L3.Parser (module L3.Parser, module L3.Parsec) where
@@ -9,53 +10,61 @@ module L3.Parser (module L3.Parser, module L3.Parsec) where
 
     import Control.Applicative hiding (some, many)
 
-
     -- parse a string to a named expression (using string labels)
     parseExpr :: String -> Result ShowExpr
-    parseExpr = runParser expr
+    parseExpr = runParser aexpr
 
-    expr :: Parser ShowExpr
-    expr = do
-        es <- many expr0
-        return $ foldl1 App es
+    -- applicative expression, infinite length
+    -- A :: A app A
+    aexpr :: Parser ShowExpr
+    aexpr = do
+       exprs <- many bexpr
+       return $ foldl1 App exprs
 
-    -- parser for calculus expressions
-    expr0 :: Parser ShowExpr
-    expr0 = star
-       <|> box
-       <|> var
-       <|> lam
-       <|> pi
-       <|> par
+    -- bounded expression, length linear with nesting
+    -- B :: * | # | n | λF | ∀F | (A)
+    bexpr :: Parser ShowExpr
+    bexpr = star
+        <|> box
+        <|> var
+        <|> lam
+        <|> pi
+        <|> parens aexpr
+
+    -- function expression
+    -- F :: (T) . B
+    fexpr :: Parser (Name, ShowExpr, ShowExpr)
+    fexpr = do
+        (i, τ) <- parens texpr
+        reserved "." <|> reserved "->" <|> reserved "→"
+        (i, τ,) <$> aexpr
+
+    -- type expression
+    -- T :: n : A
+    texpr :: Parser (Name, ShowExpr)
+    texpr = do
+        v <- word
+        reserved ":"
+        (Name v,) <$> aexpr
 
     star :: Parser ShowExpr
     star = do
         reserved "*"
-        return Star
+        pure Star
     box :: Parser ShowExpr
     box = do
         reserved "#"
-        return Box
+        pure Box
     var :: Parser ShowExpr
     var = do
         Var . Name <$> word
     lam :: Parser ShowExpr
     lam = do
         reserved "λ" <|> reserved "lambda " <|> reserved "\\"
-        (i, τ) <- typ
-        reserved "." <|> reserved "->" <|> reserved "→"
-        Lam i τ <$> expr
+        (i, τ, e) <- fexpr
+        pure (Lam i τ e)
     pi :: Parser ShowExpr
     pi = do
         reserved "∀" <|> reserved "forall " <|> reserved "π"
-        (i, τ) <- typ
-        reserved "." <|> reserved "->" <|> reserved "→"
-        Pi i τ <$> expr
-    par :: Parser ShowExpr
-    par = do
-        parens expr
-    typ = do
-        v <- word
-        reserved ":"
-        τ <- expr
-        return (Name v, τ)
+        (i, τ, e) <- fexpr
+        pure (Pi i τ e)

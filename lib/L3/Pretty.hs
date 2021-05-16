@@ -1,15 +1,10 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 -- Pretty-printing for expressions (ie. with Strings instead of Ints)
 module L3.Pretty (module L3.Pretty, module L3.Core) where
     import L3.Core
     import L3.Util
 
-    import Data.List
-    import Data.Either
-    import Data.Text.Encoding (encodeUtf8, decodeUtf8)
-    import Data.ByteString (pack, unpack)
-    import Data.Text (pack, unpack)
+    import Data.List (intercalate)
+    import Data.Char (isDigit)
 
     join :: String -> Int
     join [x] = fromEnum x
@@ -21,8 +16,11 @@ module L3.Pretty (module L3.Pretty, module L3.Core) where
 
     newtype Name = Name String deriving (Show, Eq)
     instance Enum Name where
-        toEnum int = Name $ split int
-        fromEnum (Name name) = join name
+        toEnum int = Name $ show int
+        fromEnum (Name name) = read $ digitsSuffix name
+
+    digitsSuffix :: String -> String
+    digitsSuffix = reverse . (++ "0") . takeWhile isDigit . reverse
 
     type ShowExpr = Expr Name
     type ShowCtx = Context Name
@@ -32,8 +30,8 @@ module L3.Pretty (module L3.Pretty, module L3.Core) where
     showExpr Star      = "*"
     showExpr Box       = "#"
     showExpr (Var (Name i)) = i
-    showExpr (Lam (Name i) typ e) = "\\ " ++ i ++ " : " ++ showExpr typ ++ " . " ++ showExpr e
-    showExpr (Pi (Name i) typ e)  = "forall " ++ i ++ " : " ++ showExpr typ ++ " . " ++ showExpr e
+    showExpr (Lam (Name i) typ e) = "\\ (" ++ i ++ " : " ++ showExpr typ ++ ") . " ++ showExpr e
+    showExpr (Pi (Name i) typ e)  = "forall (" ++ i ++ " : " ++ showExpr typ ++ ") . " ++ showExpr e
     showExpr (App e expr)         = "(" ++ showExpr e ++ ") (" ++ showExpr expr ++ ")"
 
     showCtx :: ShowCtx -> String

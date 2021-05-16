@@ -11,12 +11,12 @@ module L3.Parsec where
     newtype Parser a = Parser { parse :: String -> [(a, String)] }
 
 
-    runParser :: Parser a -> String -> Result a
+    runParser :: (Show a) => Parser a -> String -> Result a
     runParser m s =
         case parse m s of
-            [(res, [])] -> Right res
-            [(_, rem)]  -> throwError $ "parser failed to consume: " ++ rem
-            _            -> throwError "parser error"
+            [(res, [])]  -> Right res
+            [(res, rem)] -> throwError $ "parser did consume: " ++ show res ++ "\n but failed to consume: " ++ rem
+            []           -> throwError $ "parser failed to consume anything from " ++ show s
 
     item :: Parser Char
     item = Parser $ \case
@@ -96,7 +96,7 @@ module L3.Parsec where
     char c = satisfy (c ==)
 
     letter :: Parser Char
-    letter = satisfy (`elem` ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'])
+    letter = satisfy (`elem` ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'] ++ ['_', '\'', '@'])
 
     natural :: Parser Integer
     natural = read <$> some (satisfy isDigit)
