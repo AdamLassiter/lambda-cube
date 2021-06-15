@@ -19,7 +19,7 @@ jobs:
         cabal-version: '3.2'
     - name: Install CI tools
       run: |
-        apt install libcurl4
+        sudo apt-get install libcurl4
         cabal install hpc-coveralls
 
 
