@@ -40,6 +40,5 @@ jobs:
       run: cabal test all
     - name: Generate test coverage
       run: |
-        cabal sandbox init
         cabal install hpc-coveralls
-        .cabal-sandbox/bin/hpc-coveralls tests
+        hpc-coveralls tests
