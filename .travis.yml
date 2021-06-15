@@ -9,5 +9,6 @@ script:
   - cabal build
   - cabal test
 after_script:
-  - ln -s dist-newstyle/build/*/ghc-*/lambda-cube-*/ dist
+  - mkdir dist
+  - ln -s dist-newstyle/build/*/ghc-*/lambda-cube-*/hpc/vanilla dist/hpc
   - ~/.cabal/bin/hpc-coveralls tests

@@ -22,7 +22,6 @@ jobs:
         sudo apt-get install libcurl4 libcurl4-openssl-dev
         cabal install hpc-coveralls
 
-
     - name: Install dependencies
       run: |
         cabal update
@@ -50,5 +49,6 @@ jobs:
 
     - name: Generate test coverage
       run: |
-        ln -s dist-newstyle/build/*/ghc-*/lambda-cube-*/ dist
-        hpc-coveralls tests
+        mkdir dist
+        ln -s dist-newstyle/build/*/ghc-*/lambda-cube-*/hpc/vanilla dist/hpc
+        ~/.cabal/bin/hpc-coveralls tests
