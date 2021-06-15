@@ -2,12 +2,12 @@ language: haskell
 cabal: "2.4"
 ghc: "8.10.4"
 before_script:
+  - cabal install hpc-coveralls
   - cabal update
   - cabal install --only-dependencies
 script:
   - cabal build
   - cabal test
 after_script:
-  - cabal install hpc-coveralls
   - ln -s dist-newstyle/build/*/ghc-*/lambda-cube-*/ dist
-  - hpc-coveralls tests
+  - ~/.cabal/bin/hpc-coveralls tests
