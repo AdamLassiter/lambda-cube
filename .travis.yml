@@ -1,4 +1,7 @@
 language: haskell
 cabal: "2.4"
-ghc:
-  - "8.10.4"
+ghc: "8.10.4"
+script: "cabal build && cabal test"
+after_script:
+  - cabal install hpc-coveralls
+  - hpc-coveralls tests
