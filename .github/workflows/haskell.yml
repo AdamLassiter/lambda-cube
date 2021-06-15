@@ -26,7 +26,7 @@ jobs:
     - name: Install dependencies
       run: |
         cabal update
-        cabal build --only-dependencies
+        cabal install --only-dependencies
 
     - name: Cache
       uses: actions/cache@v1

@@ -3,7 +3,7 @@ cabal: "2.4"
 ghc: "8.10.4"
 before_script:
   - cabal update
-  - cabal build --only-dependencies
+  - cabal install --only-dependencies
 script:
   - cabal build
   - cabal test
