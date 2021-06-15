@@ -3,5 +3,6 @@ cabal: "2.4"
 ghc: "8.10.4"
 script: "cabal build && cabal test"
 after_script:
+  - cabal sandbox init
   - cabal install hpc-coveralls
-  - hpc-coveralls tests
+  - .cabal-sandbox/bin/hpc-coveralls tests
