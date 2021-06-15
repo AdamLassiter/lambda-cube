@@ -9,43 +9,53 @@ module L3.Parser (module L3.Parser, module L3.Parsec) where
     import L3.Util
 
     import Control.Applicative hiding (some, many)
+    import Debug.Trace
 
     -- parse a string to a named expression (using string labels)
     parseExpr :: String -> Result ShowExpr
-    parseExpr = runParser aexpr
+    parseExpr = runParser appE
 
     -- applicative expression, infinite length
     -- A :: A app A
-    aexpr :: Parser ShowExpr
-    aexpr = do
-       exprs <- many bexpr
-       return $ foldl1 App exprs
+    appE :: Parser ShowExpr
+    appE = do
+        expr <- sugarE
+        exprs <- many sugarE
+        return $ foldl App expr exprs
+
+    -- sugared expression, allows for anonymous pi types
+    sugarE :: Parser ShowExpr
+    sugarE = anonpiE
+        <|> bndE
 
     -- bounded expression, length linear with nesting
     -- B :: * | # | n | λF | ∀F | (A)
-    bexpr :: Parser ShowExpr
-    bexpr = star
+    bndE :: Parser ShowExpr
+    bndE = star
         <|> box
         <|> var
-        <|> lam
-        <|> pi
-        <|> parens aexpr
+        <|> lamE
+        <|> piE
+        <|> parens appE
 
+
+    fn :: Parser String
+    fn = reserved "." <|> reserved "->" <|> reserved "→"
     -- function expression
     -- F :: (T) . B
-    fexpr :: Parser (Name, ShowExpr, ShowExpr)
-    fexpr = do
-        (i, τ) <- parens texpr
-        reserved "." <|> reserved "->" <|> reserved "→"
-        (i, τ,) <$> aexpr
+    fnE :: Parser (Name, ShowExpr, ShowExpr)
+    fnE = do
+        (i, τ) <- parens typE
+        _ <- fn
+        (i, τ,) <$> appE
 
     -- type expression
     -- T :: n : A
-    texpr :: Parser (Name, ShowExpr)
-    texpr = do
+    typE :: Parser (Name, ShowExpr)
+    typE = do
         v <- word
         reserved ":"
-        (Name v,) <$> aexpr
+        (Name v,) <$> appE
 
     star :: Parser ShowExpr
     star = do
@@ -55,16 +65,28 @@ module L3.Parser (module L3.Parser, module L3.Parsec) where
     box = do
         reserved "#"
         pure Box
+
     var :: Parser ShowExpr
     var = do
         Var . Name <$> word
-    lam :: Parser ShowExpr
-    lam = do
-        reserved "λ" <|> reserved "lambda " <|> reserved "\\"
-        (i, τ, e) <- fexpr
+
+    lam :: Parser String
+    lam = reserved "λ" <|> reserved "lambda " <|> reserved "\\"
+    lamE :: Parser ShowExpr
+    lamE = do
+        _ <- lam
+        (i, τ, e) <- fnE
         pure (Lam i τ e)
-    pi :: Parser ShowExpr
-    pi = do
-        reserved "∀" <|> reserved "forall " <|> reserved "π"
-        (i, τ, e) <- fexpr
+
+    pi :: Parser String
+    pi = reserved "∀" <|> reserved "forall " <|> reserved "π"
+    piE :: Parser ShowExpr
+    piE = do
+        _ <- pi
+        (i, τ, e) <- fnE
         pure (Pi i τ e)
+    anonpiE :: Parser ShowExpr
+    anonpiE = do
+        τ <- var <|> parens (lamE <|> piE <|> anonpiE)
+        _ <- fn
+        Pi (Name "_") τ <$> bndE

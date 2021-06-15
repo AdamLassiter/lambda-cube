@@ -2,7 +2,6 @@ module L3.Loader where
     import Prelude hiding (FilePath)
 
     import Paths_lambda_cube
-    import L3.Core
     import L3.Parser
     import L3.Pretty
     import L3.Util

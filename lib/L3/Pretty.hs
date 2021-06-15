@@ -1,5 +1,5 @@
 -- Pretty-printing for expressions (ie. with Strings instead of Ints)
-module L3.Pretty (module L3.Pretty, module L3.Core) where
+module L3.Pretty (module L3.Pretty, module L3.Core, module L3.Util) where
     import L3.Core
     import L3.Util
 

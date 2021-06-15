@@ -2,7 +2,7 @@
 {-# LANGUAGE TupleSections #-}
 
 -- Type checking and type inference
-module L3.Core where
+module L3.Core (module L3.Core, module L3.Util) where
     import L3.Util
 
     data Expr a = Star
@@ -22,6 +22,7 @@ module L3.Core where
     free v (Pi v' _   _) | v == v' = True
     free v (Pi v' ta b )           = free v ta && free v b
     free v (App f a    )           = free v f && free v a
+    free v _                       = True
 
     -- Substitute all occurrences of a variable v with an expression e
     -- substitute x n C B  ~  B[x@n := C]
@@ -44,10 +45,10 @@ module L3.Core where
         f' -> App f' (normalize a)
     normalize c = c
 
-    normalize0 :: (Eq a, Show a) => Expr a -> Expr a
+    normalize0 :: (Eq a) => Expr a -> Expr a
     normalize0 e = case normalize e of
-      e' | e `equivalent0` e' -> e
-      e'                      -> normalize0 e'
+      e' | e == e' -> e
+      e'           -> normalize0 e'
 
     index :: Eq a => Int -> Expr (Either Int a) -> Expr (Either Int a)
     index i (Var v)       = Var v
@@ -65,9 +66,7 @@ module L3.Core where
 
     -- evaluate the type and normalized form of an expression
     evalExpr1 :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
-    evalExpr1 tCtx e = mapR (, normExpr) typ
-        where normExpr = normalize e
-              typ = inferType tCtx e
+    evalExpr1 tCtx e = mapR (, normalize e) (inferType tCtx e)
 
     -- Type-check an expression and return the expression's type if type-checking
     -- succeeds or an error message if type-checking fails
@@ -94,7 +93,7 @@ module L3.Core where
             (Box , Star) -> return Star
             (Star, Box ) -> return Box
             (Box , Box ) -> return Box
-            (l   , r   ) -> throwError $ "invalid type: " ++ show (Pi v ta tb) ++ "\n had kind: " ++ show (l, r)
+            (l   , r   ) -> throwError $ "invalid type: " ++ show (Pi v ta tb) ++ "\n had left kind: " ++ show l ++ "\n and right kind: " ++ show r
     inferType tCtx (App f a) = do
         (v, ta, tb) <- case inferType tCtx f of
             Right (Pi v ta tb) -> return (v, ta, tb)
@@ -103,7 +102,7 @@ module L3.Core where
         ta' <- inferType tCtx a
         if ta `equivalent0` ta'
             then return $ substitute v a tb
-            else throwError $ "type mismatch for function and arg: " ++ show (App f a) ++ "\n expected: " ++ show ta ++ "\n but got: " ++ show ta'
+            else throwError $ "type mismatch for function: " ++ show f ++ "\n given arg: " ++ show a ++ "\n expected type: " ++ show ta ++ "\n but was type: " ++ show ta'
 
     -- `inferType0` is the same as `inferType` with an empty context, meaning that the
     -- expression must be closed (i.e. no free variables), otherwise type-checking

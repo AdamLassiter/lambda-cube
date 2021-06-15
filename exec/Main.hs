@@ -1,10 +1,8 @@
 -- Parsing for REPL commands
 module Main where
-    import L3.Core (evalExpr1, normalize0)
-    import L3.Pretty (showExpr, ShowCtx, ShowExpr)
+    import L3.Pretty (showExpr, ShowCtx, ShowExpr, evalExpr1, normalize0, fmapR, mapR)
     import L3.Parser (parseExpr)
     import L3.Loader (wrapPrelude)
-    import L3.Util (fmapR, mapR)
 
     import Control.Applicative hiding (some, many)
     import Data.Foldable (forM_)
