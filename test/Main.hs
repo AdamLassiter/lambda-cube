@@ -1,25 +1,40 @@
 module Main (main) where
     import System.IO (FilePath)
     import System.Exit (exitFailure, exitSuccess)
-
+    
+    import L3.Pretty (showExpr, ShowCtx, ShowExpr, evalExpr1, normalize0, fmapR, mapR)
+    import L3.Parser (parseExpr)
+    import L3.Loader (wrapPrelude)
+    
     main :: IO ()
     main = do
         results <- sequence tests
         return ()
+     
+     parse tCtx prel inp = do 
+         let prEx = mapR prel $ parseExpr inp
+         case fmapR (evalExpr1 tCtx) prEx of
+             Left err -> error err
+             Right (t, e) -> do
+                 return (t, normalize0 e)
 
     example :: FilePath -> String -> String -> IO ()
     example file typ expr = do
-        contents <- readFile file
+        contents <- readFile file 
+        (tCtx, prel) <- wrapPrelude 
+        let (typ0, expr0) = parse tCtx prel contents
         putStrLn "=========="
         putStrLn file
         putStrLn "=========="
         putStrLn $ "Expression: " ++ contents
         putStrLn "== Type =="
         putStrLn $ "Expected: " ++ typ
-        putStrLn $ "Actual: " ++ "none"
+        putStrLn $ "Actual: " ++ typ0 
+        putStrLn $ "Equal: " ++ show (typ == typ0)
         putStrLn "== Expr =="
         putStrLn $ "Expected: " ++ expr
-        putStrLn $ "Actual: " ++ "none"
+        putStrLn $ "Actual: " ++ expr0
+        putStrLn $ "Equal: " ++ show (expr == expr0)
         putStrLn ""
         return ()
 
