@@ -22,19 +22,20 @@ module Main (main) where
     example file typ expr = do
         contents <- readFile file 
         (tCtx, prel) <- wrapPrelude 
-        let (typ0, expr0) = parse tCtx prel contents
+        let (typ', expr') = parse tCtx prel expr
+        let (typ0, expr0) = parse tCtx prel contents 
         putStrLn "=========="
         putStrLn file
         putStrLn "=========="
         putStrLn $ "Expression: " ++ contents
         putStrLn "== Type =="
-        putStrLn $ "Expected: " ++ typ
+        putStrLn $ "Expected: " ++ typ'
         putStrLn $ "Actual: " ++ typ0 
-        putStrLn $ "Equal: " ++ show (typ == typ0)
+        putStrLn $ "Equal: " ++ show (typ' == typ0)
         putStrLn "== Expr =="
-        putStrLn $ "Expected: " ++ expr
+        putStrLn $ "Expected: " ++ expr'
         putStrLn $ "Actual: " ++ expr0
-        putStrLn $ "Equal: " ++ show (expr == expr0)
+        putStrLn $ "Equal: " ++ show (expr' == expr0)
         putStrLn ""
         return ()
 
