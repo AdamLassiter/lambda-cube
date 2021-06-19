@@ -11,12 +11,12 @@ module Main (main) where
         results <- sequence tests
         return ()
      
-     parse tCtx prel inp = do 
-         let prEx = mapR prel $ parseExpr inp
-         case fmapR (evalExpr1 tCtx) prEx of
-             Left err -> error err
-             Right (t, e) -> do
-                 return (t, normalize0 e)
+    parse tCtx prel inp = do 
+        let prEx = mapR prel $ parseExpr inp
+        case fmapR (evalExpr1 tCtx) prEx of
+            Left err -> error err
+            Right (t, e) -> do
+                return (t, normalize0 e)
 
     example :: FilePath -> String -> String -> IO ()
     example file typ expr = do
