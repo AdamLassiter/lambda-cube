@@ -25,16 +25,18 @@ module Main (main) where
         let (typ', expr') = parse tCtx prel expr
         let (typ0, expr0) = parse tCtx prel contents 
         putStrLn "=========="
-        putStrLn file
+        putStrLn file 
+        putStrLn typ 
+        putStrLn expr
         putStrLn "=========="
         putStrLn $ "Expression: " ++ contents
         putStrLn "== Type =="
-        putStrLn $ "Expected: " ++ typ'
-        putStrLn $ "Actual: " ++ typ0 
+        putStrLn $ "Expected: " ++ showExpr typ'
+        putStrLn $ "Actual: " ++ showExpr typ0 
         putStrLn $ "Equal: " ++ show (typ' == typ0)
         putStrLn "== Expr =="
-        putStrLn $ "Expected: " ++ expr'
-        putStrLn $ "Actual: " ++ expr0
+        putStrLn $ "Expected: " ++ showExpr expr'
+        putStrLn $ "Actual: " ++ showExpr expr0
         putStrLn $ "Equal: " ++ show (expr' == expr0)
         putStrLn ""
         return ()
