@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -16,11 +17,6 @@ jobs:
       with:
         ghc-version: '8.10'
         cabal-version: '3.2'
-
-    - name: Install dependencies
-      run: |
-        cabal update
-        cabal install --only-dependencies
 
     - name: Cache
       uses: actions/cache@v1
@@ -34,10 +30,12 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
+    - name: Install dependencies
+      run: |
+        cabal update
+        cabal build --only-dependencies --enable-tests --enable-benchmarks
     - name: Build
-      run: |
-        cabal build
-
+      run: cabal build --enable-tests --enable-benchmarks all
     - name: Run tests
-      run: |
-        cabal test 
+      run: cabal test all
+
