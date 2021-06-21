@@ -5,3 +5,8 @@ packages:
 
 extra-include-dirs:
   - prelude
+
+extra-deps:
+  - extra-1.7.9
+  - clock-0.8.2
+  - haskeline-0.8.1.2
