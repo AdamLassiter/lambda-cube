@@ -1,5 +1,4 @@
-.*/
-target/
-dist*/
-*.lock
+.stack-work/
 *~
+*.tix
+*.lock

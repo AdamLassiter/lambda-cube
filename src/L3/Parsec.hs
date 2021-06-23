@@ -15,8 +15,9 @@ module L3.Parsec where
     runParser m s =
         case parse m s of
             [(res, [])]  -> Right res
-            [(res, rem)] -> throwError $ "parser did consume: " ++ show res ++ "\n but failed to consume: " ++ rem
+            [(res, rem')] -> throwError $ "parser did consume: " ++ show res ++ "\n but failed to consume: " ++ rem'
             []           -> throwError $ "parser failed to consume anything from " ++ show s
+            rs           -> throwError $ "parser produced multiple results " ++ show rs ++ " but this is not supported"
 
     item :: Parser Char
     item = Parser $ \case
@@ -103,10 +104,16 @@ module L3.Parsec where
 
     string :: String -> Parser String
     string [] = return []
-    string (c:cs) = do {char c; string cs; return (c:cs)}
+    string (c:cs) = do
+        _ <- char c
+        _ <- string cs
+        return (c:cs)
 
     token :: Parser a -> Parser a
-    token p = do {a <- p; spaces; return a}
+    token p = do
+        a <- p
+        _ <- spaces
+        return a
 
     reserved :: String -> Parser String
     reserved s = token (string s)
@@ -129,12 +136,12 @@ module L3.Parsec where
     word :: Parser String
     word = do
         cs <- some letter
-        spaces
+        _ <- spaces
         return cs
 
     parens :: Parser a -> Parser a
     parens m = do
-        reserved "("
+        _ <- reserved "("
         n <- m
-        reserved ")"
+        _ <- reserved ")"
         return n

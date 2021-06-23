@@ -6,7 +6,18 @@ Some thoughts on Calculus of Constructions
 
 ![lambda-cube](resources/Lambda_Cube_img.svg)
 
+## Compile, Test and Install
+
+*Cabal:*
 ```sh
+cabal build
 cabal test
-cabal run repl
+cabal run lambda-cube-exe
+```
+
+*Stack:*
+```sh
+stack build
+stack test
+stack run lambda-cube-exe
 ```

@@ -1,15 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
+{-# OPTIONS_GHC -Wno-unused-do-bind #-}
 
 -- Reverse-parse of Pretty shows
 module L3.Parser (module L3.Parser, module L3.Parsec) where
     import Prelude hiding (pi)
     import L3.Pretty
     import L3.Parsec
-    import L3.Util
 
     import Control.Applicative hiding (some, many)
-    import Debug.Trace
 
     -- parse a string to a named expression (using string labels)
     parseExpr :: String -> Result ShowExpr

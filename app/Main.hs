@@ -4,7 +4,6 @@ module Main where
     import L3.Parser (parseExpr)
     import L3.Loader (wrapPrelude)
 
-    import Control.Applicative hiding (some, many)
     import Data.Foldable (forM_)
 
     import System.Console.Haskeline

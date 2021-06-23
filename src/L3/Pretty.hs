@@ -7,7 +7,7 @@ module L3.Pretty (module L3.Pretty, module L3.Core, module L3.Util) where
     import Data.Char (isDigit)
 
     join :: String -> Int
-    join [x] = fromEnum x
+    join [] = 0
     join (x:xs) = fromEnum x + 256 * join xs
 
     split :: Int -> String

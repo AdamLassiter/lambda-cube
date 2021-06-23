@@ -15,14 +15,18 @@ module L3.Core (module L3.Core, module L3.Util) where
 
     type Context a = [(a, Expr a)]
 
+    showc :: (Show a) => Context a -> String
+    showc (c:cs) = "\n" ++ show c ++ showc cs
+    showc [] = ""
+
     free :: (Eq a) => a -> Expr a -> Bool
-    free v (Var v')                = v == v'
-    free v (Lam v' _ _ ) | v == v' = True
-    free v (Lam v' ta b)           = free v ta && free v b
-    free v (Pi v' _   _) | v == v' = True
-    free v (Pi v' ta b )           = free v ta && free v b
-    free v (App f a    )           = free v f && free v a
-    free v _                       = True
+    free v (Var v')               = v == v'
+    free v (Lam v' _ _) | v == v' = True
+    free v (Lam _ ta b)           = free v ta && free v b
+    free v (Pi v' _  _) | v == v' = True
+    free v (Pi _ ta b )           = free v ta && free v b
+    free v (App f a   )           = free v f && free v a
+    free _ _                      = True
 
     -- Substitute all occurrences of a variable v with an expression e
     -- substitute x n C B  ~  B[x@n := C]
@@ -33,7 +37,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     substitute v e (Pi  v' ta tb) | v == v' = Pi  v' (substitute v e ta)            tb
     substitute v e (Pi  v' ta tb)           = Pi  v' (substitute v e ta) (substitute v e tb)
     substitute v e (App f a     )           = App    (substitute v e f ) (substitute v e a )
-    substitute v e e'                       = e'
+    substitute _ _ e'                       = e'
 
     normalize :: (Eq a) => Expr a -> Expr a
     normalize (Lam v ta b) = case normalize b of
@@ -51,12 +55,12 @@ module L3.Core (module L3.Core, module L3.Util) where
       e'           -> normalize0 e'
 
     index :: Eq a => Int -> Expr (Either Int a) -> Expr (Either Int a)
-    index i (Var v)       = Var v
-    index i (Lam v ta b ) = Lam (Left i) (index (i + 1) ta) (substitute v (Var $ Left i) ta)
-    index i (Pi v ta b )  = Pi (Left i) (index (i + 1) ta) (substitute v (Var $ Left i) ta)
-    index i (App f a    ) = App (index i f) (index i  a)
-    index i Star = Star
-    index i Box  = Box
+    index _ (Var v)      = Var v
+    index i (Lam v ta _) = Lam (Left i) (index (i + 1) ta) (substitute v (Var $ Left i) ta)
+    index i (Pi v ta _ ) = Pi (Left i) (index (i + 1) ta) (substitute v (Var $ Left i) ta)
+    index i (App f a   ) = App (index i f) (index i  a)
+    index _ Star = Star
+    index _ Box  = Box
 
     index0 :: Eq a => Expr a -> Expr (Either Int a)
     index0 e = index 0 (fmap Right e)
@@ -78,12 +82,12 @@ module L3.Core (module L3.Core, module L3.Util) where
     inferType _ Star = return Box
     inferType _ Box  = throwError "absurd box"
     inferType tCtx (Var v) = case lookup v tCtx of
-        Nothing -> throwError $ "unbound variable: " ++ show v ++ "\n in context: " ++ show tCtx
+        Nothing -> throwError $ "in context: " ++ showc tCtx ++ "\n unbound variable: " ++ show v
         Just e  -> Right e
     inferType tCtx (Lam v ta b) = do
         tb <- inferType ((v, ta):tCtx) b
         let tf = Pi v ta tb
-        ttf <- inferType tCtx tf
+        _ <- inferType tCtx tf
         return tf
     inferType tCtx (Pi v ta tb) = do
         tta <- inferType tCtx ta

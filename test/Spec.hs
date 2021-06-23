@@ -1,15 +1,10 @@
 module Main (main) where
-    import System.IO (FilePath)
-    import System.Exit (exitFailure, exitSuccess)
-
     import L3.Pretty (showExpr, ShowCtx, ShowExpr, evalExpr1, normalize0, fmapR, mapR)
     import L3.Parser (parseExpr)
     import L3.Loader (wrapPrelude)
 
     main :: IO ()
-    main = do
-        results <- sequence tests
-        return ()
+    main = do sequence_ tests
 
     parse :: ShowCtx -> (ShowExpr -> ShowExpr) -> String -> (ShowExpr, ShowExpr)
     parse tCtx prel inp = case fmapR (evalExpr1 tCtx) prEx of

@@ -10,17 +10,18 @@ module L3.Util where
     unpack (Right r:rs) = case unpack rs of
         Left err  -> throwError err
         Right rs' -> Right (r:rs')
+    unpack []           = Right []
 
     mapL :: (String -> String) -> Result a -> Result a
     mapL f (Left err)  = Left $ f err
-    mapL f (Right res) = Right res
+    mapL _ (Right res) = Right res
 
     mapR :: (a -> b) -> Result a -> Result b
-    mapR f (Left err)  = Left err
+    mapR _ (Left err)  = Left err
     mapR f (Right res) = Right $ f res
 
     fmapR :: (a -> Result b) -> Result a -> Result b
-    fmapR f (Left err)  = Left err
+    fmapR _ (Left err)  = Left err
     fmapR f (Right res) = f res
 
     flatten :: Result (Result a) -> Result a
