@@ -3,8 +3,9 @@
 {-# OPTIONS_GHC -Wno-unused-do-bind #-}
 
 -- Parser from tokens into Expressions
-module L3.Parser (module L3.Parser) where
+module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Pretty) where
     import Prelude hiding (pi)
+
     import L3.Pretty
     import L3.Lexer
     import L3.TokenParsec

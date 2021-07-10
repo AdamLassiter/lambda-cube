@@ -1,7 +1,6 @@
 -- Pretty-printing for expressions (ie. with Strings instead of Ints)
-module L3.Pretty (module L3.Pretty, module L3.Core, module L3.Util) where
+module L3.Pretty (module L3.Pretty, module L3.Core) where
     import L3.Core
-    import L3.Util
 
     import Data.List (intercalate)
     import Data.Char (isDigit)
@@ -18,8 +17,8 @@ module L3.Pretty (module L3.Pretty, module L3.Core, module L3.Util) where
     showExpr Star      = "*"
     showExpr Box       = "#"
     showExpr (Var (Name i)) = i
-    showExpr (Lam (Name i) typ e) = "lambda (" ++ i ++ " : " ++ showExpr typ ++ ") . " ++ showExpr e
-    showExpr (Pi (Name i) typ e)  = "forall (" ++ i ++ " : " ++ showExpr typ ++ ") . " ++ showExpr e
+    showExpr (Lam (Name i) typ e) = "lambda (" ++ i ++ " : " ++ showExpr typ ++ ") -> " ++ showExpr e
+    showExpr (Pi (Name i) typ e)  = "forall (" ++ i ++ " : " ++ showExpr typ ++ ") -> " ++ showExpr e
     showExpr (App e expr)         = "(" ++ showExpr e ++ ") (" ++ showExpr expr ++ ")"
 
     type ShowCtx = Context Name

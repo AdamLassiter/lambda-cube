@@ -1,9 +1,6 @@
 -- Parsing for REPL commands
 module Main where
-    import L3.Pretty (showExpr, ShowCtx, ShowExpr, evalExpr1, normalize0, fmapR, mapR)
-    import L3.Lexer (lexSrc)
-    import L3.Parser (parseExpr)
-    import L3.Loader (wrapPrelude)
+    import L3.Loader
 
     import Data.Foldable (forM_)
 

@@ -1,11 +1,12 @@
 module Main (main) where
-    import L3.Pretty (showExpr, ShowCtx, ShowExpr, evalExpr1, normalize0, fmapR, mapR)
-    import L3.Lexer (lexSrc)
-    import L3.Parser (parseExpr)
-    import L3.Loader (wrapPrelude)
+    import L3.Loader
+
 
     main :: IO ()
-    main = do sequence_ tests
+    main = sequence_ tests
+
+    rstrip :: String -> String
+    rstrip = reverse . dropWhile (=='\n') . reverse
 
     parse :: ShowCtx -> (ShowExpr -> ShowExpr) -> String -> (ShowExpr, ShowExpr)
     parse tCtx prel inp = case fmapR (evalExpr1 tCtx) prEx of
@@ -19,26 +20,24 @@ module Main (main) where
         (tCtx, prel) <- wrapPrelude
         let (typ', expr') = parse tCtx prel expr
         let (typ0, expr0) = parse tCtx prel contents
-        putStrLn "=========="
-        putStrLn file
+        putStrLn $ "\n== " ++ show file ++ " =="
         putStrLn typ
         putStrLn expr
-        putStrLn "=========="
-        putStrLn "Expression:"
-        putStrLn contents
-        putStrLn "== Type =="
+        putStrLn "\n== Expression =="
+        putStrLn $ rstrip contents
+        putStrLn "\n== Type =="
         putStrLn $ "Expected: " ++ showExpr typ'
         putStrLn $ "Actual: " ++ showExpr typ0
-        if typ' == typ0
+        if typ' `alphaEq` typ0
           then putStrLn "PASS"
-          else error "FAIL"
-        putStrLn "== Expr =="
+          else putStrLn "FAIL"
+        putStrLn "\n== Normalization =="
         putStrLn $ "Expected: " ++ showExpr expr'
         putStrLn $ "Actual: " ++ showExpr expr0
-        if expr' == expr0
+        if expr' `alphaEq` expr0
           then putStrLn "PASS"
-          else error "FAIL"
-        putStrLn ""
+          else putStrLn "FAIL"
+        putStrLn "=============================="
         return ()
 
 
@@ -72,8 +71,8 @@ module Main (main) where
     example1 =
         example
             "test/morte/example1.mt"
-            "forall (Text : *) . forall (x : Text) . Text"
-            "lambda (Text : *) . lambda (x : Text) . x"
+            "forall (String : *) . forall (x : String) . String"
+            "lambda (String : *) . lambda (x : String) . x"
 
     example2 :: IO ()
     example2 =
@@ -163,12 +162,12 @@ module Main (main) where
     example14 =
         example
             "test/morte/example14.mt"
-            "forall (Text : *) . forall (U : *) . forall (Unit : U) . forall (x : *) . (Text . x . x) . ((Text . x) . x) . (U . x) . x"
-            "lambda (Text : *) . lambda (U : *) . lambda (Unit : U) . lambda (x : *) . lambda (PutStrLn : Text . x . x) . lambda (GetLine : (Text . x) . x) . lambda (Return : U . x) . GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (GetLine (lambda (va : Text) . PutStrLn va (Return Unit))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))"
+            "forall (String : *) . forall (U : *) . forall (Unit : U) . forall (x : *) . (String . x . x) . ((String . x) . x) . (U . x) . x"
+            "lambda (String : *) . lambda (U : *) . lambda (Unit : U) . lambda (x : *) . lambda (PutStrLn : String . x . x) . lambda (GetLine : (String . x) . x) . lambda (Return : U . x) . GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (Return Unit))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))"
 
     example15 :: IO ()
     example15 =
         example
             "test/morte/example15.mt"
-            "forall (Text : *) . forall (r : *) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (Text . s . x) . ((Text . s) . x) . (r . x) . x) . x) . x"
-            "lambda (Text : *) . lambda (r : *) . lambda (x : *) . lambda (k : forall (s : *) . s . (s . forall (x : *) . (Text . s . x) . ((Text . s) . x) . (r . x) . x) . x) . k (forall (x : *) . (Text . x) . x . x) (lambda (x : *) . lambda (Just : Text . x) . lambda (Nothing : x) . Nothing) (lambda (m : forall (x : *) . (Text . x) . x . x) . m (forall (x : *) . (Text . (forall (x : *) . (Text . x) . x . x) . x) . ((Text . forall (x : *) . (Text . x) . x . x) . x) . (r . x) . x) (lambda (str : Text) . lambda (x : *) . lambda (PutStrLn : Text . (forall (x : *) . (Text . x) . x . x) . x) . lambda (GetLine : (Text . forall (x : *) . (Text . x) . x . x) . x) . lambda (Return : r . x) . PutStrLn str (lambda (x : *) . lambda (Just : Text . x) . lambda (Nothing : x) . Nothing)) (lambda (x : *) . lambda (PutStrLn : Text . (forall (x : *) . (Text . x) . x . x) . x) . lambda (GetLine : (Text . forall (x : *) . (Text . x) . x . x) . x) . lambda (Return : r . x) . GetLine (lambda (va : Text) . lambda (x : *) . lambda (Just : Text . x) . lambda (Nothing : x) . Just va)))"
+            "forall (String : *) . forall (r : *) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (String . s . x) . ((String . s) . x) . (r . x) . x) . x) . x"
+            "lambda (String : *) . lambda (r : *) . lambda (x : *) . lambda (k : forall (s : *) . s . (s . forall (x : *) . (String . s . x) . ((String . s) . x) . (r . x) . x) . x) . k (forall (x : *) . (String . x) . x . x) (lambda (x : *) . lambda (Just : String . x) . lambda (Nothing : x) . Nothing) (lambda (m : forall (x : *) . (String . x) . x . x) . m (forall (x : *) . (String . (forall (x : *) . (String . x) . x . x) . x) . ((String . forall (x : *) . (String . x) . x . x) . x) . (r . x) . x) (lambda (str : String) . lambda (x : *) . lambda (PutStrLn : String . (forall (x : *) . (String . x) . x . x) . x) . lambda (GetLine : (String . forall (x : *) . (String . x) . x . x) . x) . lambda (Return : r . x) . PutStrLn str (lambda (x : *) . lambda (Just : String . x) . lambda (Nothing : x) . Nothing)) (lambda (x : *) . lambda (PutStrLn : String . (forall (x : *) . (String . x) . x . x) . x) . lambda (GetLine : (String . forall (x : *) . (String . x) . x . x) . x) . lambda (Return : r . x) . GetLine (lambda (va : String) . lambda (x : *) . lambda (Just : String . x) . lambda (Nothing : x) . Just va)))"

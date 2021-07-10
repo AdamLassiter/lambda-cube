@@ -4,6 +4,7 @@ module L3.TokenParsec (module L3.TokenParsec, module L3.Parsec) where
     import L3.Lexer
     import L3.Parsec
 
+
     item :: Parser [Token] Token
     item = Parser $ \case
           []     -> []
