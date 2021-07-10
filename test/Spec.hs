@@ -17,7 +17,7 @@ module Main (main) where
     example :: FilePath -> String -> String -> IO ()
     example file typ expr = do
         contents <- readFile file
-        (tCtx, prel) <- wrapPrelude
+        let (tCtx, prel) = wrapPrelude
         let (typ', expr') = parse tCtx prel expr
         let (typ0, expr0) = parse tCtx prel contents
         putStrLn $ "\n== " ++ show file ++ " =="

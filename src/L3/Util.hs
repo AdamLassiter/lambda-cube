@@ -1,8 +1,10 @@
 -- Utilites for result types and error throwing
 module L3.Util where
+    import System.Log.Logger
+    import GHC.IO (unsafePerformIO)
     type Result a = Either String a
 
-    
+
     throwError :: String -> Result a
     throwError = Left
 
@@ -36,3 +38,23 @@ module L3.Util where
 
     converge :: Eq a => (a -> a) -> a -> a
     converge = until =<< ((==) =<<)
+
+    -- Unsafe variants of logger functions
+    {-# NOINLINE logU #-}
+    {-# NOINLINE debugU #-}
+    {-# NOINLINE infoU #-}
+    {-# NOINLINE noticeU #-}
+    {-# NOINLINE warningU #-}
+    {-# NOINLINE errorU #-}
+    {-# NOINLINE criticalU #-}
+    {-# NOINLINE alertU #-}
+    {-# NOINLINE emergencyU #-}
+    logU = logM . unsafePerformIO
+    debugU = debugM . unsafePerformIO
+    infoU = infoM . unsafePerformIO
+    noticeU = noticeM . unsafePerformIO
+    warningU = warningM . unsafePerformIO
+    errorU = errorM . unsafePerformIO
+    criticalU = criticalM . unsafePerformIO
+    alertU = alertM . unsafePerformIO
+    emergencyU = emergencyM . unsafePerformIO

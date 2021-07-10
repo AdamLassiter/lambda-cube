@@ -10,7 +10,7 @@
 ->  lambda (if : Bool -> forall (r : *) -> r -> r -> r)
 ->  lambda (Int  : *)
 ->  lambda (Zero : Int)
- -> lambda (One  : Int)
+->  lambda (One  : Int)
 ->  if True Int One Zero
 )
 

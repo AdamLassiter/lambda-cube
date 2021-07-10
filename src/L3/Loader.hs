@@ -33,7 +33,6 @@ module L3.Loader (module L3.Loader, module L3.Parser) where
               tCtx = map (bimap (Name . takeDirectoryName) (throwL . inferType0)) types
               eCtx = map (first (Name . takeNamespacedFileName)) preludeExprs
 
-    wrapPrelude :: IO (ShowCtx, ShowExpr -> ShowExpr)
-    wrapPrelude = do
-        let (tCtx, eCtx) = loadPrelude
-        return (tCtx, foldl (\ f (n, e) x -> Lam n (throwL $ inferType0 e) (f x) `App` e) id eCtx)
+    wrapPrelude :: (ShowCtx, ShowExpr -> ShowExpr)
+    wrapPrelude = (tCtx, foldl (\ f (n, e) x -> Lam n (throwL $ inferType0 e) (f x) `App` e) id eCtx)
+        where (tCtx, eCtx) = loadPrelude
