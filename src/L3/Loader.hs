@@ -4,6 +4,7 @@
 module L3.Loader where
     import Prelude hiding (FilePath)
 
+    import L3.Lexer (lexSrc)
     import L3.Parser (parseExpr)
     import L3.Pretty (ShowCtx, ShowExpr, throwL, inferType0, Expr (Lam, App), Name (Name))
 
@@ -14,6 +15,7 @@ module L3.Loader where
     import Data.Text (unpack)
     import Data.Text.Encoding (decodeUtf8)
     import System.FilePath
+
 
     takeDirectoryName :: FilePath -> String
     takeDirectoryName = last . splitPath . takeDirectory
@@ -28,7 +30,7 @@ module L3.Loader where
 
     loadPrelude :: (ShowCtx, ShowCtx)
     loadPrelude = (tCtx, eCtx)
-        where preludeExprs = map (second (throwL . parseExpr . unpack . decodeUtf8)) embeddedPrelude
+        where preludeExprs = map (second (throwL . parseExpr . throwL . lexSrc . unpack . decodeUtf8)) embeddedPrelude
               types = filter ((== "@") . takeBaseName . fst) preludeExprs
               tCtx = map (bimap (Name . takeDirectoryName) (throwL . inferType0)) types
               eCtx = map (first (Name . takeNamespacedFileName)) preludeExprs

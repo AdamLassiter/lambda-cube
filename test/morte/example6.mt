@@ -1,24 +1,24 @@
 -- mapid1.mt
 
-(    \(List : * -> *)
-->   \(map  : forall (a : *) -> forall (b : *) -> (a -> b) -> List a -> List b)
-->   \(id   : forall (a : *) -> a -> a)
-    ->   \(a : *) -> map a a (id a)
+(    lambda (List : * -> *)
+->   lambda (map  : forall (a : *) -> forall (b : *) -> (a -> b) -> List a -> List b)
+->   lambda (id   : forall (a : *) -> a -> a)
+    ->   lambda (a : *) -> map a a (id a)
 )
 
 -- List
-(\(a : *) -> forall (x : *) -> (a -> x -> x) -> x -> x)
+(lambda (a : *) -> forall (x : *) -> (a -> x -> x) -> x -> x)
 
 -- map
-(   \(a : *)
-->  \(b : *)
-->  \(f : a -> b)
-->  \(l : forall (x : *) -> (a -> x -> x) -> x -> x)
-->  \(x : *)
-->  \(Cons : b -> x -> x)
-->  \(Nil: x)
-->  l x (\(va : a) -> \(vx : x) -> Cons (f va) vx) Nil
+(   lambda (a : *)
+->  lambda (b : *)
+->  lambda (f : a -> b)
+->  lambda (l : forall (x : *) -> (a -> x -> x) -> x -> x)
+->  lambda (x : *)
+->  lambda (Cons : b -> x -> x)
+->  lambda (Nil: x)
+->  l x (lambda (va : a) -> lambda (vx : x) -> Cons (f va) vx) Nil
 )
 
 -- id
-(\(a : *) -> \(va : a) -> va)
+(lambda (a : *) -> lambda (va : a) -> va)

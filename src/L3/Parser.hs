@@ -2,34 +2,39 @@
 {-# LANGUAGE TupleSections #-}
 {-# OPTIONS_GHC -Wno-unused-do-bind #-}
 
--- Reverse-parse of Pretty shows
-module L3.Parser (module L3.Parser, module L3.Parsec) where
+-- Parser from tokens into Expressions
+module L3.Parser (module L3.Parser) where
     import Prelude hiding (pi)
     import L3.Pretty
-    import L3.Parsec
+    import L3.Lexer
+    import L3.TokenParsec
 
     import Control.Applicative hiding (some, many)
 
+
     -- parse a string to a named expression (using string labels)
-    parseExpr :: String -> Result ShowExpr
-    parseExpr = runParser appE
+    parseExpr :: [Token] -> Result ShowExpr
+    parseExpr = runParser appE . filter (not . annotation)
+        where annotation (Comment c) = True
+              annotation EOL         = True
+              annotation _           = False
 
     -- applicative expression, infinite length
     -- A :: A app A
-    appE :: Parser ShowExpr
+    appE :: Parser [Token] ShowExpr
     appE = do
         expr <- sugarE
         exprs <- many sugarE
         return $ foldl App expr exprs
 
     -- sugared expression, allows for anonymous pi types
-    sugarE :: Parser ShowExpr
+    sugarE :: Parser [Token] ShowExpr
     sugarE = anonpiE
         <|> bndE
 
     -- bounded expression, length linear with nesting
     -- B :: * | # | n | λF | ∀F | (A)
-    bndE :: Parser ShowExpr
+    bndE :: Parser [Token] ShowExpr
     bndE = star
         <|> box
         <|> var
@@ -38,54 +43,54 @@ module L3.Parser (module L3.Parser, module L3.Parsec) where
         <|> parens appE
 
 
-    fn :: Parser String
-    fn = reserved "." <|> reserved "->" <|> reserved "→"
     -- function expression
     -- F :: (T) . B
-    fnE :: Parser (Name, ShowExpr, ShowExpr)
+    fnE :: Parser [Token] (Name, ShowExpr, ShowExpr)
     fnE = do
         (i, τ) <- parens typE
-        _ <- fn
+        _ <- one Arrow
         (i, τ,) <$> appE
 
     -- type expression
     -- T :: n : A
-    typE :: Parser (Name, ShowExpr)
+    typE :: Parser [Token] (Name, ShowExpr)
     typE = do
-        v <- word
-        reserved ":"
-        (Name v,) <$> appE
+        t <- symbol
+        case t of
+          (Symbol s) -> do
+              one HasType
+              (Name s,) <$> appE
+          _          -> empty
 
-    star :: Parser ShowExpr
+    star :: Parser [Token] ShowExpr
     star = do
-        reserved "*"
+        one StarT
         pure Star
-    box :: Parser ShowExpr
+    box :: Parser [Token] ShowExpr
     box = do
-        reserved "#"
+        one BoxT
         pure Box
 
-    var :: Parser ShowExpr
+    var :: Parser [Token] ShowExpr
     var = do
-        Var . Name <$> word
+        t <- symbol
+        case t of
+          (Symbol s) -> pure $ Var $ Name s
+          _          -> empty
 
-    lam :: Parser String
-    lam = reserved "λ" <|> reserved "lambda " <|> reserved "\\"
-    lamE :: Parser ShowExpr
+    lamE :: Parser [Token] ShowExpr
     lamE = do
-        _ <- lam
+        _ <- one LambdaT
         (i, τ, e) <- fnE
         pure (Lam i τ e)
 
-    pi :: Parser String
-    pi = reserved "∀" <|> reserved "forall " <|> reserved "π"
-    piE :: Parser ShowExpr
+    piE :: Parser [Token] ShowExpr
     piE = do
-        _ <- pi
+        _ <- one PiT
         (i, τ, e) <- fnE
         pure (Pi i τ e)
-    anonpiE :: Parser ShowExpr
+    anonpiE :: Parser [Token] ShowExpr
     anonpiE = do
         τ <- var <|> parens (lamE <|> piE <|> anonpiE)
-        _ <- fn
+        _ <- one Arrow
         Pi (Name "_") τ <$> bndE

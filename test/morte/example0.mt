@@ -1,1 +1,1 @@
-\(a : *) -> \(x : a) -> x
+lambda (a : *) -> lambda (x : a) -> x

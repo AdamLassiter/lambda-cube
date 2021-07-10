@@ -12,23 +12,23 @@
 --
 --     in  foldr bools (&&) True
 
-(   \(Bool : *)
-->  \(True  : Bool)
-->  \(False : Bool)
-->  \(if : Bool -> forall (r : *) -> r -> r -> r)
-->  \(List : * -> *)
-->  \(Cons : forall (a : *) -> a -> List a -> List a)
-->  \(Nil  : forall (a : *)                -> List a)
-->  \(  foldr
+(   lambda (Bool : *)
+->  lambda (True  : Bool)
+->  lambda (False : Bool)
+->  lambda (if : Bool -> forall (r : *) -> r -> r -> r)
+->  lambda (List : * -> *)
+->  lambda (Cons : forall (a : *) -> a -> List a -> List a)
+->  lambda (Nil  : forall (a : *)                -> List a)
+->  lambda (  foldr
     :   forall (a : *) -> List a -> forall (r : *) -> (a -> r -> r) -> r -> r
     )
-->  (   \((&&) : Bool -> Bool -> Bool)
-    ->  \(bools : List Bool)
+->  (   lambda ((&&) : Bool -> Bool -> Bool)
+    ->  lambda (bools : List Bool)
     ->  foldr Bool bools Bool (&&) True
     )
 
     -- (&&)
-    (\(x : Bool) -> \(y : Bool) -> if x Bool y False)
+    (lambda (x : Bool) -> lambda (y : Bool) -> if x Bool y False)
 
     -- bools
     (Cons Bool True (Cons Bool True (Cons Bool True (Nil Bool))))
@@ -38,16 +38,16 @@
 (forall (r : *) -> r -> r -> r)
 
 -- True
-(\(r : *) -> \(x : r) -> \(_ : r) -> x)
+(lambda (r : *) -> lambda (x : r) -> lambda (_ : r) -> x)
 
 -- False
-(\(r : *) -> \(_ : r) -> \(x : r) -> x)
+(lambda (r : *) -> lambda (_ : r) -> lambda (x : r) -> x)
 
 -- if
-(\(b : forall (r : *) -> r -> r -> r) -> b)
+(lambda (b : forall (r : *) -> r -> r -> r) -> b)
 
 -- List
-(   \(a : *)
+(   lambda (a : *)
 ->  forall (list : *)
 ->  (a -> list -> list)  -- Cons
 ->  list                 -- Nil
@@ -55,25 +55,25 @@
 )
 
 -- Cons
-(   \(a : *)
-->  \(va  : a)
-->  \(vas : forall (list : *) -> (a -> list -> list) -> list -> list)
-->  \(list : *)
-->  \(Cons : a -> list -> list)
-->  \(Nil  : list)
+(   lambda (a : *)
+->  lambda (va  : a)
+->  lambda (vas : forall (list : *) -> (a -> list -> list) -> list -> list)
+->  lambda (list : *)
+->  lambda (Cons : a -> list -> list)
+->  lambda (Nil  : list)
 ->  Cons va (vas list Cons Nil)
 )
 
 -- Nil
-(   \(a : *)
-->  \(list : *)
-->  \(Cons : a -> list -> list)
-->  \(Nil  : list)
+(   lambda (a : *)
+->  lambda (list : *)
+->  lambda (Cons : a -> list -> list)
+->  lambda (Nil  : list)
 ->  Nil
 )
 
 -- foldr
-(   \(a : *)
-->  \(vas : forall (list : *) -> (a -> list -> list) -> list -> list)
+(   lambda (a : *)
+->  lambda (vas : forall (list : *) -> (a -> list -> list) -> list -> list)
 ->  vas
 )

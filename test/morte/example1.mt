@@ -3,5 +3,5 @@
 -- Morte accepts comments
 
 -- Also, whitespace is not significant
-\(String : *) ->
-    (\(a : *) -> \(x : a) -> x) String
+lambda (String : *) ->
+    (lambda (a : *) -> lambda (x : a) -> x) String

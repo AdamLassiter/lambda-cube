@@ -5,6 +5,7 @@
 module L3.Core (module L3.Core, module L3.Util) where
     import L3.Util
 
+
     data Expr a = Star
                 | Box
                 | Var a
@@ -15,9 +16,10 @@ module L3.Core (module L3.Core, module L3.Util) where
 
     type Context a = [(a, Expr a)]
 
-    showc :: (Show a) => Context a -> String
-    showc (c:cs) = "\n" ++ show c ++ showc cs
-    showc [] = ""
+    showCtx :: (Show a) => Context a -> String
+    showCtx (c:cs) = "\n" ++ show c ++ showCtx cs
+    showCtx [] = ""
+
 
     free :: (Eq a) => a -> Expr a -> Bool
     free v (Var v')               = v == v'
@@ -79,10 +81,10 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- returned type then you may want to `normalize` it afterwards.
     -- Type inference is within a type context (list of global names and their types)
     inferType :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a)
-    inferType _ Star = return Box
-    inferType _ Box  = throwError "absurd box"
+    inferType _ Star       = return Box
+    inferType tCtx Box     = throwError $ "in context: " ++ showCtx tCtx ++ "\n absurd box"
     inferType tCtx (Var v) = case lookup v tCtx of
-        Nothing -> throwError $ "in context: " ++ showc tCtx ++ "\n unbound variable: " ++ show v
+        Nothing -> throwError $ "in context: " ++ showCtx tCtx ++ "\n unbound variable: " ++ show v
         Just e  -> Right e
     inferType tCtx (Lam v ta b) = do
         tb <- inferType ((v, ta):tCtx) b

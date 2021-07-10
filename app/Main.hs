@@ -1,6 +1,7 @@
 -- Parsing for REPL commands
 module Main where
     import L3.Pretty (showExpr, ShowCtx, ShowExpr, evalExpr1, normalize0, fmapR, mapR)
+    import L3.Lexer (lexSrc)
     import L3.Parser (parseExpr)
     import L3.Loader (wrapPrelude)
 
@@ -12,7 +13,8 @@ module Main where
     -- Run REPL
     main :: IO ()
     main = do
-      (tCtx, prel) <- wrapPrelude
+      -- (tCtx, prel) <- wrapPrelude
+      let (tCtx, prel) = ([], id)
       runInputT defaultSettings $ repl tCtx prel
 
     repl :: ShowCtx -> (ShowExpr -> ShowExpr) -> InputT IO ()
@@ -22,7 +24,7 @@ module Main where
         forM_ input' parse
         where parse :: String -> InputT IO ()
               parse inp = do
-                  let prEx = mapR prel $ parseExpr inp
+                  let prEx = mapR prel $ fmapR parseExpr $ lexSrc inp
                   case fmapR (evalExpr1 tCtx) prEx of
                       Left err -> outputStrLn err
                       Right (t, e) -> do

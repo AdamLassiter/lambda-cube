@@ -24,8 +24,8 @@
 -- exampleD :: (b -> c) -> (a -> b) -> Stream a -> Stream c
 -- exampleD f g = map f . map g
 
-(   \(id : forall (a : *) -> a -> a)
-->  \(  (.)
+(   lambda (id : forall (a : *) -> a -> a)
+->  lambda (  (.)
     :   forall (a : *)
     ->  forall (b : *)
     ->  forall (c : *)
@@ -33,9 +33,9 @@
     ->  (a -> b)
     ->  (a -> c)
     )
-->  \(Pair : * -> * -> *)
-->  \(P : forall (a : *) -> forall (b : *) -> a -> b -> Pair a b)
-->  \(  first
+->  lambda (Pair : * -> * -> *)
+->  lambda (P : forall (a : *) -> forall (b : *) -> a -> b -> Pair a b)
+->  lambda (  first
     :   forall (a : *)
     ->  forall (b : *)
     ->  forall (c : *)
@@ -44,8 +44,8 @@
     ->  Pair b c
     )
 
-->  (   \(Stream : * -> *)
-    ->  \(  map
+->  (   lambda (Stream : * -> *)
+    ->  lambda (  map
         :   forall (a : *)
         ->  forall (b : *)
         ->  (a -> b)
@@ -54,11 +54,11 @@
         )
 
         -- exampleA = exampleB
-    ->  (   \(exampleA : forall (a : *) -> Stream a -> Stream a)
-        ->  \(exampleB : forall (a : *) -> Stream a -> Stream a)
+    ->  (   lambda (exampleA : forall (a : *) -> Stream a -> Stream a)
+        ->  lambda (exampleB : forall (a : *) -> Stream a -> Stream a)
 
         -- exampleC = exampleD
-        ->  \(  exampleC
+        ->  lambda (  exampleC
             :   forall (a : *)
             ->  forall (b : *)
             ->  forall (c : *)
@@ -68,7 +68,7 @@
             ->  Stream c
             )
 
-        ->  \(  exampleD
+        ->  lambda (  exampleD
             :   forall (a : *)
             ->  forall (b : *)
             ->  forall (c : *)
@@ -86,92 +86,92 @@
         )
 
         -- exampleA
-        (\(a : *) -> map a a (id a))
+        (lambda (a : *) -> map a a (id a))
   
         -- exampleB
-        (\(a : *) -> id (Stream a))
+        (lambda (a : *) -> id (Stream a))
 
         -- exampleC
-        (   \(a : *)
-        ->  \(b : *)
-        ->  \(c : *)
-        ->  \(f : b -> c)
-        ->  \(g : a -> b)
+        (   lambda (a : *)
+        ->  lambda (b : *)
+        ->  lambda (c : *)
+        ->  lambda (f : b -> c)
+        ->  lambda (g : a -> b)
         ->  map a c ((.) a b c f g)
         )
 
         --  exampleD
-        (   \(a : *)
-        ->  \(b : *)
-        ->  \(c : *)
-        ->  \(f : b -> c)
-        ->  \(g : a -> b)
+        (   lambda (a : *)
+        ->  lambda (b : *)
+        ->  lambda (c : *)
+        ->  lambda (f : b -> c)
+        ->  lambda (g : a -> b)
         ->  (.) (Stream a) (Stream b) (Stream c) (map b c f) (map a b g)
         )
     )
 
     -- Stream
-    (   \(a : *)
+    (   lambda (a : *)
     ->  forall (x : *)
     ->  (forall (s : *) -> s -> (s -> Pair a s) -> x)
     ->  x
     )
 
     -- map
-    (   \(a : *)
-    ->  \(b : *)
-    ->  \(f : a -> b)
-    ->  \(  st
+    (   lambda (a : *)
+    ->  lambda (b : *)
+    ->  lambda (f : a -> b)
+    ->  lambda (  st
         :   forall (x : *) -> (forall (s : *) -> s -> (s -> Pair a s) -> x) -> x
         )
-    ->  \(x : *)
-    ->  \(S : forall (s : *) -> s -> (s -> Pair b s) -> x)
+    ->  lambda (x : *)
+    ->  lambda (S : forall (s : *) -> s -> (s -> Pair b s) -> x)
     ->  st
         x
-        (   \(s : *)
-        ->  \(seed : s)
-        ->  \(step : s -> Pair a s)
+        (   lambda (s : *)
+        ->  lambda (seed : s)
+        ->  lambda (step : s -> Pair a s)
         ->  S
             s
             seed
-            (\(seed : s) -> first a b s f (step seed))
+            (lambda (seed : s) -> first a b s f (step seed))
         )
     )
 )
 
 -- id
-(\(a : *) -> \(va : a) -> va)
+(lambda (a : *) -> lambda (va : a) -> va)
 
 -- (.)
-(   \(a : *)
-->  \(b : *)
-->  \(c : *)
-->  \(f : b -> c)
-->  \(g : a -> b)
-->  \(va : a)
+(   lambda (a : *)
+->  lambda (b : *)
+->  lambda (c : *)
+->  lambda (f : b -> c)
+->  lambda (g : a -> b)
+->  lambda (va : a)
 ->  f (g va)
 )
 
 -- Pair
-(\(a : *) -> \(b : *) -> forall (x : *) -> (a -> b -> x) -> x)
+(lambda (a : *) -> lambda (b : *) -> forall (x : *) -> (a -> b -> x) -> x)
 
 -- P
-(   \(a : *)
-->  \(b : *)
-->  \(va : a)
-->  \(vb : b)
-->  \(x : *)
-->  \(P : a -> b -> x)
+(   lambda (a : *)
+->  lambda (b : *)
+->  lambda (va : a)
+->  lambda (vb : b)
+->  lambda (x : *)
+->  lambda (P : a -> b -> x)
 ->  P va vb
 )
 
 -- first
-(   \(a : *)
-->  \(b : *)
-->  \(c : *)
-->  \(f : a -> b)
-->  \(p : forall (x : *) -> (a -> c -> x) -> x)
-->  \(x : *)
-->  \(Pair : b -> c -> x)
-->  p x (\(va : a) -> \(vc : c) -> Pair (f va) vc)
+(   lambda (a : *)
+->  lambda (b : *)
+->  lambda (c : *)
+->  lambda (f : a -> b)
+->  lambda (p : forall (x : *) -> (a -> c -> x) -> x)
+->  lambda (x : *)
+->  lambda (Pair : b -> c -> x)
+->  p x (lambda (va : a) -> lambda (vc : c) -> Pair (f va) vc)
 )

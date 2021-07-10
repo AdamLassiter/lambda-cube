@@ -85,48 +85,48 @@
 --     main_ = getLine >>= putStrLn
 
 -- "Free" variables
-(   \(String : *   )
-->  \(U : *)
-->  \(Unit : U)
+(   lambda (String : *   )
+->  lambda (U : *)
+->  lambda (Unit : U)
 
     -- Simple prelude
-->  (   \(Nat : *)
-    ->  \(zero : Nat)
-    ->  \(one : Nat)
-    ->  \((+) : Nat -> Nat -> Nat)
-    ->  \((*) : Nat -> Nat -> Nat)
-    ->  \(foldNat : Nat -> forall (a : *) -> (a -> a) -> a -> a)
-    ->  \(IO : * -> *)
-    ->  \(return : forall (a : *) -> a -> IO a)
-    ->  \((>>=)
+->  (   lambda (Nat : *)
+    ->  lambda (zero : Nat)
+    ->  lambda (one : Nat)
+    ->  lambda ((+) : Nat -> Nat -> Nat)
+    ->  lambda ((*) : Nat -> Nat -> Nat)
+    ->  lambda (foldNat : Nat -> forall (a : *) -> (a -> a) -> a -> a)
+    ->  lambda (IO : * -> *)
+    ->  lambda (return : forall (a : *) -> a -> IO a)
+    ->  lambda ((>>=)
         :   forall (a : *)
         ->  forall (b : *)
         ->  IO a
         ->  (a -> IO b)
         ->  IO b
         )
-    ->  \(putStrLn : String -> IO U)
-    ->  \(getLine : IO String)
+    ->  lambda (putStrLn : String -> IO U)
+    ->  lambda (getLine : IO String)
 
         -- Derived functions
-    ->  (   \((>>) : IO U -> IO U -> IO U)
-        ->  \(two   : Nat)
-        ->  \(three : Nat)
-        ->  \(four  : Nat)
-        ->  \(five  : Nat)
-        ->  \(six   : Nat)
-        ->  \(seven : Nat)
-        ->  \(eight : Nat)
-        ->  \(nine  : Nat)
-        ->  \(ten   : Nat)
-        ->  (   \(replicateM_ : Nat -> IO U -> IO U)
-            ->  \(ninetynine : Nat)
+    ->  (   lambda ((>>) : IO U -> IO U -> IO U)
+        ->  lambda (two   : Nat)
+        ->  lambda (three : Nat)
+        ->  lambda (four  : Nat)
+        ->  lambda (five  : Nat)
+        ->  lambda (six   : Nat)
+        ->  lambda (seven : Nat)
+        ->  lambda (eight : Nat)
+        ->  lambda (nine  : Nat)
+        ->  lambda (ten   : Nat)
+        ->  (   lambda (replicateM_ : Nat -> IO U -> IO U)
+            ->  lambda (ninetynine : Nat)
             ->  replicateM_ ninetynine ((>>=) String U getLine putStrLn)
             )
 
             -- replicateM_
-            (   \(n : Nat)
-            ->  \(io : IO U)
+            (   lambda (n : Nat)
+            ->  lambda (io : IO U)
             ->  foldNat n (IO U) ((>>) io) (return U Unit)
             )
 
@@ -135,9 +135,9 @@
         )
 
         -- (>>)
-        (   \(m : IO U)
-        ->  \(n : IO U)
-        ->  (>>=) U U m (\(_ : U) -> n)
+        (   lambda (m : IO U)
+        ->  lambda (n : IO U)
+        ->  (>>=) U U m (lambda (_ : U) -> n)
         )
 
         -- two
@@ -175,44 +175,44 @@
     )
 
     -- zero
-    (   \(a : *)
-    ->  \(Succ : a -> a)
-    ->  \(Zero : a)
+    (   lambda (a : *)
+    ->  lambda (Succ : a -> a)
+    ->  lambda (Zero : a)
     ->  Zero
     )
 
     -- one
-    (   \(a : *)
-    ->  \(Succ : a -> a)
-    ->  \(Zero : a)
+    (   lambda (a : *)
+    ->  lambda (Succ : a -> a)
+    ->  lambda (Zero : a)
     ->  Succ Zero
     )
 
     -- (+)
-    (   \(m : forall (a : *) -> (a -> a) -> a -> a)
-    ->  \(n : forall (a : *) -> (a -> a) -> a -> a)
-    ->  \(a : *)
-    ->  \(Succ : a -> a)
-    ->  \(Zero : a)
+    (   lambda (m : forall (a : *) -> (a -> a) -> a -> a)
+    ->  lambda (n : forall (a : *) -> (a -> a) -> a -> a)
+    ->  lambda (a : *)
+    ->  lambda (Succ : a -> a)
+    ->  lambda (Zero : a)
     ->  m a Succ (n a Succ Zero)
     )
 
     -- (*)
-    (   \(m : forall (a : *) -> (a -> a) -> a -> a)
-    ->  \(n : forall (a : *) -> (a -> a) -> a -> a)
-    ->  \(a : *)
-    ->  \(Succ : a -> a)
-    ->  \(Zero : a)
+    (   lambda (m : forall (a : *) -> (a -> a) -> a -> a)
+    ->  lambda (n : forall (a : *) -> (a -> a) -> a -> a)
+    ->  lambda (a : *)
+    ->  lambda (Succ : a -> a)
+    ->  lambda (Zero : a)
     ->  m a (n a Succ) Zero
     )
 
     -- foldNat
-    (   \(n : forall (a : *) -> (a -> a) -> a -> a)
+    (   lambda (n : forall (a : *) -> (a -> a) -> a -> a)
     ->  n
     )
 
     -- IO
-    (   \(r : *)
+    (   lambda (r : *)
     ->  forall (x : *)
     ->  (String -> x -> x)
     ->  ((String -> x) -> x)
@@ -221,52 +221,52 @@
     )
 
     -- return
-    (   \(a : *)
-    ->  \(va : a)
-    ->  \(x : *)
-    ->  \(PutStrLn : String -> x -> x)
-    ->  \(GetLine : (String -> x) -> x)
-    ->  \(Return : a -> x)
+    (   lambda (a : *)
+    ->  lambda (va : a)
+    ->  lambda (x : *)
+    ->  lambda (PutStrLn : String -> x -> x)
+    ->  lambda (GetLine : (String -> x) -> x)
+    ->  lambda (Return : a -> x)
     ->  Return va
     )
 
     -- (>>=)
-    (   \(a : *)
-    ->  \(b : *)
-    ->  \(m : forall (x : *)
+    (   lambda (a : *)
+    ->  lambda (b : *)
+    ->  lambda (m : forall (x : *)
         ->  (String -> x -> x)
         ->  ((String -> x) -> x)
         ->  (a -> x)
         ->  x
         )
-    ->  \(f : a
+    ->  lambda (f : a
         ->  forall (x : *)
         -> (String -> x -> x)
         -> ((String -> x) -> x)
         -> (b -> x)
         -> x
         )
-    ->  \(x : *)
-    ->  \(PutStrLn : String -> x -> x)
-    ->  \(GetLine : (String -> x) -> x)
-    ->  \(Return : b -> x)
-    ->  m x PutStrLn GetLine (\(va : a) -> f va x PutStrLn GetLine Return)
+    ->  lambda (x : *)
+    ->  lambda (PutStrLn : String -> x -> x)
+    ->  lambda (GetLine : (String -> x) -> x)
+    ->  lambda (Return : b -> x)
+    ->  m x PutStrLn GetLine (lambda (va : a) -> f va x PutStrLn GetLine Return)
     )
 
     -- putStrLn
-    (   \(str : String)
-    ->  \(x : *)
-    ->  \(PutStrLn : String -> x -> x  )
-    ->  \(GetLine  : (String -> x) -> x)
-    ->  \(Return   : U -> x)
+    (   lambda (str : String)
+    ->  lambda (x : *)
+    ->  lambda (PutStrLn : String -> x -> x  )
+    ->  lambda (GetLine  : (String -> x) -> x)
+    ->  lambda (Return   : U -> x)
     ->  PutStrLn str (Return Unit)
     )
 
     -- getLine
-    (   \(x : *)
-    ->  \(PutStrLn : String -> x -> x  )
-    ->  \(GetLine  : (String -> x) -> x)
-    ->  \(Return   : String -> x)
+    (   lambda (x : *)
+    ->  lambda (PutStrLn : String -> x -> x  )
+    ->  lambda (GetLine  : (String -> x) -> x)
+    ->  lambda (Return   : String -> x)
     -> GetLine Return
     )
 )

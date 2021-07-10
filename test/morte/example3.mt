@@ -4,13 +4,13 @@
 --
 -- in  if True then One else Zero
 
-(   \(Bool : *)
-->  \(True  : Bool)
-->  \(False : Bool)
-->  \(if : Bool -> forall (r : *) -> r -> r -> r)
-->  \(Int  : *)
-->  \(Zero : Int)
- -> \(One  : Int)
+(   lambda (Bool : *)
+->  lambda (True  : Bool)
+->  lambda (False : Bool)
+->  lambda (if : Bool -> forall (r : *) -> r -> r -> r)
+->  lambda (Int  : *)
+->  lambda (Zero : Int)
+ -> lambda (One  : Int)
 ->  if True Int One Zero
 )
 
@@ -18,10 +18,10 @@
 (forall (r : *) -> r -> r -> r)
 
 -- True
-(\(r : *) -> \(x : r) -> \(_ : r) -> x)
+(lambda (r : *) -> lambda (x : r) -> lambda (_ : r) -> x)
 
 -- False
-(\(r : *) -> \(_ : r) -> \(x : r) -> x)
+(lambda (r : *) -> lambda (_ : r) -> lambda (x : r) -> x)
 
 -- if
-(\(b : forall (r : *) -> r -> r -> r) -> b)
+(lambda (b : forall (r : *) -> r -> r -> r) -> b)

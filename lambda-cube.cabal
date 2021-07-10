@@ -30,6 +30,8 @@ library
       L3.Parsec
       L3.Parser
       L3.Pretty
+      L3.StringParsec
+      L3.TokenParsec
       L3.Util
   other-modules:
       Paths_lambda_cube

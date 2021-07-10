@@ -2,6 +2,7 @@
 module L3.Util where
     type Result a = Either String a
 
+    
     throwError :: String -> Result a
     throwError = Left
 
