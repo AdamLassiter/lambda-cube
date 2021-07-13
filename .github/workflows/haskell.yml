@@ -23,10 +23,10 @@ jobs:
     - name: Cache
       uses: actions/cache@v1
       env:
-        cache-name: cache-cabal
+        cache-name: cache-stack
       with:
-        path: ~/.cabal
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
+        path: ~/.stack
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.yaml') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
@@ -42,6 +42,7 @@ jobs:
       run: |
         stack --no-terminal test --haddock --no-haddock-deps --coverage
     - name: Report coverage
+      # Build coverage report and send to codecov.io
       run: |
         hpc-codecov --verbose --mix=$(stack path --dist-dir)/hpc -o codecov.json $(find $(stack path --local-hpc-root) -name '*.tix')
         bash <(curl -s https://codecov.io/bash)
