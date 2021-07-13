@@ -6,7 +6,7 @@ module Main where
 
     main = do
         start <- getCurrentTime
-        (tCtx, prel) <- wrapPrelude
+        let (tCtx, prel) = wrapPrelude
         let _ = prel Star
         end <- getCurrentTime
         putStrLn $ "WrapPrelude took " ++ show (diffUTCTime end start)
