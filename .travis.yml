@@ -1,9 +1,34 @@
-language: haskell
-cabal: "2.4"
-ghc: "8.10.4"
-before_script:
-  - cabal update
-  - cabal install --only-dependencies
+# Choose a build environment
+dist: xenial
+
+# Do not choose a language; we provide our own build tools.
+language: generic
+
+# Caching so the next build will be fast too.
+cache:
+  directories:
+    - $HOME/.stack
+
+# Ensure necessary system libraries are present
+addons:
+  apt:
+    packages:
+      - libgmp-dev
+
+before_install:
+  # Download and unpack the stack executable
+  - mkdir -p ~/.local/bin
+  - export PATH=$HOME/.local/bin:$PATH
+  - travis_retry curl -L https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+
+install:
+  # Build dependencies
+  - stack --no-terminal --install-ghc test --only-dependencies
+
 script:
-  - cabal build
-  - cabal test 
+  # Build the package, its tests, and its docs and run the tests
+  - stack --no-terminal test --haddock --no-haddock-deps --coverage
+
+after_script:
+  - travis_retry curl -L https://github.com/rubik/stack-hpc-coveralls/releases/download/v0.0.6.1/shc-linux-x64-8.10.4.tar.bz2 | tar -xj
+  - ./shc argon argon-test
