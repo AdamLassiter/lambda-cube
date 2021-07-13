@@ -31,5 +31,5 @@ script:
   - stack --no-terminal test --haddock --no-haddock-deps --coverage
 
 after_script:
-  - hpc-codecov --verbose -o codecov.json stack:lambda-cube-test
+  - hpc-codecov --verbose --mix=$(stack path --dist-dir)/hpc -o codecov.json $(find $(stack path --local-hpc-root) -name '*.tix')
   - bash <(curl -s https://codecov.io/bash)
