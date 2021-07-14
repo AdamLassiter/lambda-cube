@@ -64,7 +64,9 @@ test-suite lambda-cube-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      L3.CoreTest
+      L3.TestCore
+      Morte.TestMorte
+      TestUtil
       Paths_lambda_cube
   hs-source-dirs:
       test

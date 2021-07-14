@@ -24,7 +24,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     showCtx [] = ""
 
 
-    -- Is a name 'free' in an expression - i.e. is it not present as an unbound name.
+    -- Is a name 'free' in an expression
     free :: (Eq a) => a -> Expr a -> Bool
     free v (Var v')               = v == v'
     free v (Lam v' _ _) | v == v' = True
@@ -35,7 +35,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     free _ _                      = True
 
     -- Substitute all occurrences of a variable v with an expression e.
-    -- substitute x n C B  ~  B[x@n := C]
+    -- substitute v e E  ~  E[v := e]
     substitute :: (Eq a) => a -> Expr a -> Expr a -> Expr a
     substitute v e (Var v')       | v == v' = e
     substitute v e (Lam v' ta b ) | v == v' = Lam v' (substitute v e ta)            b
@@ -66,9 +66,9 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- Given an 'free' index, convert an expression in Right names into Left indexes.
     -- This uses DeBruijn indicies.
     index :: Eq a => Int -> Expr (Either Int a) -> Expr (Either Int a)
-    index _ (Var v)      = Var v
-    index i (Lam v ta _) = Lam (Left i) (index (i + 1) ta) (substitute v (Var $ Left i) ta)
-    index i (Pi v ta _ ) = Pi (Left i) (index (i + 1) ta) (substitute v (Var $ Left i) ta)
+    index _ (Var v     ) = Var v
+    index i (Lam v ta b) = Lam (Left i) (index i ta) (index (i + 1) $ substitute v (Var $ Left i) b)
+    index i (Pi v ta tb) = Pi  (Left i) (index i ta) (index (i + 1) $ substitute v (Var $ Left i) tb)
     index i (App f a   ) = App (index i f) (index i  a)
     index _ Star = Star
     index _ Box  = Box
