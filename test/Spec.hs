@@ -3,4 +3,9 @@ module Main (main) where
     import qualified Morte.TestMorte
 
     main :: IO ()
-    main = sequence_ $ Morte.TestMorte.tests ++ L3.TestCore.tests
+    main = sequence_ tests
+
+    tests :: [IO ()]
+    tests = foldl1 (++) [ L3.TestCore.tests
+                        , Morte.TestMorte.tests
+                        ]
