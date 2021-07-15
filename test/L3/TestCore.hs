@@ -9,7 +9,23 @@ module L3.TestCore (tests) where
             , testSubstitute
             , testNormalize
             , testIndex
+            , testAlphaEq
+            , testBetaEq
+            , testInferType
             ]
+
+    assertAlphaEq :: (Show a, Eq a) => Expr a -> Expr a -> String -> IO ()
+    assertAlphaEq = assert (alphaEq, "=α=")
+
+    assertNotAlphaEq :: (Show a, Eq a) => Expr a -> Expr a -> String -> IO ()
+    assertNotAlphaEq = assert ((not .) . alphaEq, "=α=")
+
+    assertBetaEq :: (Show a, Eq a) => Expr a -> Expr a -> String -> IO ()
+    assertBetaEq = assert (betaEq, "=β=")
+
+    assertNotBetaEq :: (Show a, Eq a) => Expr a -> Expr a -> String -> IO ()
+    assertNotBetaEq = assert ((not .) . betaEq, "=β=")
+
 
     testShowCtx :: IO ()
     testShowCtx = do
@@ -63,6 +79,7 @@ module L3.TestCore (tests) where
         let param a x e = Lam a Star (Lam x (Var a) e)
         assertEq (normalize (param 0 1 $ param 2 3 (Var 3) `App` Var 0 `App` Var 1)) (param 0 1 (Var 1)) "Id Id normalizes to Id"
 
+
     testIndex :: IO ()
     testIndex = do
         assertEq (index0 (Var "x")) (Var $ Right "x") "Unbound names cannot be indexed"
@@ -76,5 +93,30 @@ module L3.TestCore (tests) where
         assertEq (index0 $ Var "x" `App` Var "y") (Var (Right "x") `App` Var (Right "y")) "Unbound names cannot be indexed over applications"
         assertEq (index0 $ Lam "x" Star (Var "x") `App` Lam "y" Star (Var "y")) (Lam (Left 0) Star (Var $ Left 0) `App` Lam (Left 0) Star (Var $ Left 0)) "Bound names can be indexed over applications"
 
+
     testAlphaEq :: IO ()
-    testAlphaEq = undefined
+    testAlphaEq = do
+        assertAlphaEq (Var "x") (Var "x") "Matching unbound names are alpha-equivalent"
+        assertNotAlphaEq (Var "x") (Var "y") "Non-matching unbound names are not alpha-equivalent"
+
+        assertAlphaEq (Lam "x" Star (Var "x")) (Lam "y" Star (Var "y")) "Bound names are alpha-equivalent over lambdas"
+        assertAlphaEq (Pi "x" Star (Var "x")) (Pi "y" Star (Var "y")) "Bound names are alpha-equivalent over pis"
+
+        assertAlphaEq (Lam "x" Star (Var "x") `App` Var "y") (Lam "y" Star (Var "y") `App` Var "y") "Alpha-equivalence distributes over application"
+
+
+    testBetaEq :: IO ()
+    testBetaEq = do
+        assertBetaEq (Lam "A" Star (Lam "X" (Var "A") (Lam "a" Star (Lam "x" (Var "a") (Var "x")) `App` Var "A" `App` Var "X"))) (Lam "a" Star (Lam "x" (Var "a") (Var "x"))) "Id Id is equivalent to Id"
+
+
+    testInferType :: IO ()
+    testInferType = do
+        assertEq (inferType [] (Star :: Expr String)) (Right Box) "* :: #"
+        assertEq (inferType [] (Box :: Expr String)) (Left "in context: \n absurd box") "# :: absurd"
+
+        assertEq (inferType [] (Var "x")) (Left "in context: \n unbound variable: \"x\"") "x :: undefined"
+        assertEq (inferType [("x", Star)] (Var "x")) (Right Star) "x :: * ⊢ x :: *"
+
+        assertEq (inferType [] (Lam "x" Star (Var "x"))) (Right $ Pi "x" Star Star) "lam x : * -> x :: pi x : * -> *"
+        assertEq (inferType [] (Lam "x" Star (Var "x"))) (Right $ Pi "x" Star Star) "lam x : * -> x :: pi x : * -> *"

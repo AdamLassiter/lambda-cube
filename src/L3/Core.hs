@@ -5,6 +5,9 @@
 module L3.Core (module L3.Core, module L3.Util) where
     import L3.Util
 
+    import Data.List (intercalate)
+    import Data.Char (isDigit)
+
 
     -- An expression in the calculus of constructions.
     data Expr a = Star
@@ -17,6 +20,23 @@ module L3.Core (module L3.Core, module L3.Util) where
 
     -- A context is a stack, mapping names to bound values.
     type Context a = [(a, Expr a)]
+
+    newtype Name = Name String deriving (Show, Eq)
+
+    type ShowExpr = Expr Name
+    -- Show an expression
+    showExpr :: ShowExpr -> String
+    showExpr Star      = "*"
+    showExpr Box       = "#"
+    showExpr (Var (Name i)) = i
+    showExpr (Lam (Name i) typ e) = "lambda (" ++ i ++ " : " ++ showExpr typ ++ ") -> " ++ showExpr e
+    showExpr (Pi (Name i) typ e)  = "forall (" ++ i ++ " : " ++ showExpr typ ++ ") -> " ++ showExpr e
+    showExpr (App e expr)         = "(" ++ showExpr e ++ ") (" ++ showExpr expr ++ ")"
+
+    type ShowCtx = Context Name
+    -- Show a context
+    prettyShowCtx :: ShowCtx -> String
+    prettyShowCtx ctx = intercalate ", " (map (\(Name n, typ) -> n ++ " : " ++ showExpr typ) ctx)
 
     -- Show for a context, printing each binding on a separate line.
     showCtx :: (Show a) => Context a -> String
@@ -110,7 +130,8 @@ module L3.Core (module L3.Core, module L3.Util) where
     inferType tCtx (Lam v ta b) = do
         tb <- inferType ((v, ta):tCtx) b
         let tf = Pi v ta tb
-        _ <- inferType tCtx tf
+        -- Types may themselves be well-typed, since they are expressions
+        -- _ <- inferType tCtx tf
         return tf
     inferType tCtx (Pi v ta tb) = do
         tta <- inferType tCtx ta

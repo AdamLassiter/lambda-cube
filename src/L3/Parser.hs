@@ -3,10 +3,10 @@
 {-# OPTIONS_GHC -Wno-unused-do-bind #-}
 
 -- Parser from tokens into Expressions
-module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Pretty) where
+module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
     import Prelude hiding (pi)
 
-    import L3.Pretty
+    import L3.Core
     import L3.Lexer
     import L3.TokenParsec
 
@@ -24,23 +24,18 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Pretty) where
     -- A :: A app A
     appE :: Parser [Token] ShowExpr
     appE = do
-        expr <- sugarE
-        exprs <- many sugarE
+        expr <- bndE
+        exprs <- many bndE
         return $ foldl App expr exprs
-
-    -- sugared expression, allows for anonymous pi types
-    sugarE :: Parser [Token] ShowExpr
-    sugarE = anonpiE
-        <|> bndE
 
     -- bounded expression, length linear with nesting
     -- B :: * | # | n | λF | ∀F | (A)
     bndE :: Parser [Token] ShowExpr
     bndE = star
         <|> box
-        <|> var
+        <|> nsVar <|> var
         <|> lamE
-        <|> piE
+        <|> piE <|> anonpiE
         <|> parens appE
 
 
@@ -78,6 +73,14 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Pretty) where
         case t of
           (Symbol s) -> pure $ Var $ Name s
           _          -> empty
+    nsVar :: Parser [Token] ShowExpr
+    nsVar = do
+        ns <- symbol
+        _ <- Left <$> one At
+        t <- var <|> nsVar
+        case (ns, t) of
+          (Symbol n, Var (Name s)) -> pure $ Var $ Name $ n ++ "@" ++ s
+          _                        -> empty
 
     lamE :: Parser [Token] ShowExpr
     lamE = do

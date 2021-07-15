@@ -10,8 +10,8 @@ module Main where
     -- Run REPL
     main :: IO ()
     main = do
-      -- let (tCtx, prel) = wrapPrelude
-      let (tCtx, prel) = ([], id)
+      let (tCtx, prel) = wrapPrelude
+      -- let (tCtx, prel) = ([], id)
       runInputT defaultSettings $ repl tCtx prel
 
     repl :: ShowCtx -> (ShowExpr -> ShowExpr) -> InputT IO ()
