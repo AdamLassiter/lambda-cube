@@ -7,19 +7,19 @@ module Morte.TestMorte (tests) where
     tests = [ example0
             , example1
             , example2
-            --, example3
-            --, example4
-            --, example5
-            --, example6
-            --, example7
-            --, example8
-            --, example9
-            --, example10
-            --, example11
-            --, example12
-            --, example13
-            --, example14
-            --, example15
+            , example3
+            , example4
+            , example5
+            , example6
+            , example7
+            , example8
+            , example9
+            , example10
+            , example11
+            , example12
+            , example13
+            , example14
+            , example15
             ]
 
     rstrip :: String -> String
@@ -45,11 +45,11 @@ module Morte.TestMorte (tests) where
         putStrLn "== Type =="
         putStrLn $ "Expected: " ++ showExpr typ'
         putStrLn $ "Actual: " ++ showExpr typ0
-        assert (alphaEq, "=α=") typ' typ0 "Expected type is alpha-equivalent to inferred actual type"
+        assertShowing showExpr (alphaEq, "=α=") typ' typ0 "Expected type is alpha-equivalent to inferred actual type"
         putStrLn "== Normalization =="
         putStrLn $ "Expected: " ++ showExpr expr'
         putStrLn $ "Actual: " ++ showExpr expr0
-        assert (alphaEq, "=α=") expr' expr0 "Expected expression is alpha-equivalent to normalized actual expression"
+        assertShowing showExpr (alphaEq, "=α=") expr' expr0 "Expected expression is alpha-equivalent to normalized actual expression"
         return ()
 
 

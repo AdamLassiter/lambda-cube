@@ -21,7 +21,9 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- A context is a stack, mapping names to bound values.
     type Context a = [(a, Expr a)]
 
-    newtype Name = Name String deriving (Show, Eq)
+    newtype Name = Name String deriving (Eq)
+    instance Show Name where
+        show (Name s) = s
 
     type ShowExpr = Expr Name
     -- Show an expression
@@ -145,7 +147,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     inferType tCtx (App f a) = do
         (v, ta, tb) <- case inferType tCtx f of
             Right (Pi v ta tb) -> return (v, ta, tb)
-            Right expr         -> throwError $ "cannot apply to non-function: " ++ show (App f a) ++ "\n had application: " ++ show expr
+            Right expr         -> throwError $ "cannot apply to non-function: " ++ show f ++ "\n had type: " ++ show expr ++ "\n had application: " ++ show a
             Left  err          -> throwError err
         ta' <- inferType tCtx a
         if ta `alphaEq` ta'

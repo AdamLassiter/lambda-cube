@@ -16,29 +16,34 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
 
     -- parse a string to a named expression (using string labels)
     parseExpr :: [Token] -> Result ShowExpr
-    parseExpr = runParser appE . filter (not . ann)
+    parseExpr = runParser sugarE . filter (not . ann)
         where ann (Comment c) = True
               ann EOL         = True
               ann _           = False
+
+    -- sugared expression
+    sugarE :: Parser [Token] ShowExpr
+    sugarE = anonPiE <|> appE
 
     -- applicative expression, infinite length
     -- A :: A app A
     appE :: Parser [Token] ShowExpr
     appE = do
-        expr <- bndE
-        exprs <- many bndE
+        expr <- funE
+        exprs <- many funE
         return $ foldl App expr exprs
 
-    -- bounded expression, length linear with nesting
-    -- B :: * | # | n | λF | ∀F | (A)
-    bndE :: Parser [Token] ShowExpr
-    bndE = star
+    funE :: Parser [Token] ShowExpr
+    funE = lamE
+       <|> piE
+       <|> termE
+       <|> parens funE
+
+    termE :: Parser [Token] ShowExpr
+    termE = star
         <|> box
         <|> nsVar <|> var
-        <|> lamE
-        <|> piE
-        <|> parens appE
-
+        <|> parens termE
 
     fnArr :: Parser [Token] (Name, ShowExpr)
     fnArr = do
@@ -54,7 +59,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         case t of
           (Symbol s) -> do
               one HasType
-              (Name s,) <$> appE
+              (Name s,) <$> sugarE
           _          -> empty
 
     star :: Parser [Token] ShowExpr
@@ -85,18 +90,16 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
     lamE = do
         _ <- one LambdaT
         (i, τ) <- fnArr
-        Lam i τ <$> appE
+        Lam i τ <$> sugarE
 
     piE :: Parser [Token] ShowExpr
     piE = do
         _ <- one PiT
         (i, τ) <- fnArr
-        anonτ <- many anonPiArr
-        let piArrs = uncurry Pi <$> (i, τ) : map (Name "_",) anonτ
-        let piFold = foldl1 (.) piArrs
-        piFold <$> appE
-    anonPiArr :: Parser [Token] ShowExpr
-    anonPiArr = do
-        τ <- appE
+        Pi i τ <$> sugarE
+
+    anonPiE :: Parser [Token] ShowExpr
+    anonPiE = do
+        τ <- termE
         _ <- one Arrow
-        return τ
+        Pi (Name "_") τ <$> sugarE
