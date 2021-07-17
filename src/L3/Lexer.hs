@@ -23,41 +23,42 @@ module L3.Lexer (module L3.Lexer) where
 
     -- A list of Alternatives that may be used to lex a string into tokens.
     alternatives :: [Parser String Token]
-    alternatives = [
-        reserved "(" >> pure OpenParen,
-        reserved ")" >> pure CloseParen,
+    alternatives = [ reserved "(" >> pure OpenParen
+                   , reserved ")" >> pure CloseParen
 
-        reserved "*" >> pure StarT,
+                   , reserved "*" >> pure StarT
+                   , reserved "⊤" >> pure StarT
 
-        reserved "#" >> pure BoxT,
-        reserved "∎" >> pure BoxT,
+                   , reserved "#" >> pure BoxT
+                   , reserved "⊥" >> pure BoxT
 
-        reserved ":" >> pure HasType,
-        reserved "∈" >> pure HasType,
+                   , reserved ":" >> pure HasType
+                   , reserved "∈" >> pure HasType
 
-        reserved "." >> pure Arrow,
-        reserved "->" >> pure Arrow,
-        reserved "→" >> pure Arrow,
+                   , reserved "." >> pure Arrow
+                   , reserved "→" >> pure Arrow
+                   , reserved "->" >> pure Arrow
 
-        reserved "lambda" >> pure LambdaT,
-        reserved "∃" >> pure LambdaT,
-        reserved "λ" >> pure LambdaT,
+                   , reserved "lambda" >> pure LambdaT
+                   , reserved "∃" >> pure LambdaT
+                   , reserved "λ" >> pure LambdaT
 
-        reserved "forall" >> pure PiT,
-        reserved "∀" >> pure PiT,
-        reserved "π" >> pure PiT,
+                   , reserved "forall" >> pure PiT
+                   , reserved "∀" >> pure PiT
+                   , reserved "π" >> pure PiT
 
-        reserved "@" >> pure At,
+                   , reserved "@" >> pure At
 
-        Number <$> number,
-        Symbol <$> word,
+                   , reserved "--" >> comment
+                   , reserved "\n" >> pure EOL
 
-        do
-          reserved "--"
+                   , Number <$> number
+                   , Symbol <$> word
+                   ]
+
+    comment = do
           cs <- many $ satisfy (/= '\n')
-          pure $ Comment cs,
-        reserved "\n" >> pure EOL
-      ]
+          pure $ Comment cs
 
     -- Parse a string into canonical form using tokens
     lexSrc :: String -> Result [Token]

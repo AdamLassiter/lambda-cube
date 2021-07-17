@@ -6,7 +6,6 @@ module L3.StringParsec (module L3.StringParsec, module L3.Parsec) where
     import Control.Applicative hiding (many, some)
     import Data.Char (isDigit)
 
-
     item :: Parser String Char
     item = Parser $ \case
           []     -> []
@@ -59,6 +58,7 @@ module L3.StringParsec (module L3.StringParsec, module L3.Parsec) where
     number = do
         s <- string "-" <|> return []
         cs <- some digit
+        _ <- spaces
         return $ read (s ++ cs)
 
     word :: Parser String String

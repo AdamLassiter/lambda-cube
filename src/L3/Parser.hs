@@ -11,14 +11,15 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
     import L3.TokenParsec
 
     import Control.Applicative hiding (some, many)
+    import Debug.Trace
 
 
     -- parse a string to a named expression (using string labels)
     parseExpr :: [Token] -> Result ShowExpr
-    parseExpr = runParser appE . filter (not . annotation)
-        where annotation (Comment c) = True
-              annotation EOL         = True
-              annotation _           = False
+    parseExpr = runParser appE . filter (not . ann)
+        where ann (Comment c) = True
+              ann EOL         = True
+              ann _           = False
 
     -- applicative expression, infinite length
     -- A :: A app A
@@ -35,17 +36,15 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         <|> box
         <|> nsVar <|> var
         <|> lamE
-        <|> piE <|> anonpiE
+        <|> piE
         <|> parens appE
 
 
-    -- function expression
-    -- F :: (T) . B
-    fnE :: Parser [Token] (Name, ShowExpr, ShowExpr)
-    fnE = do
+    fnArr :: Parser [Token] (Name, ShowExpr)
+    fnArr = do
         (i, τ) <- parens typE
         _ <- one Arrow
-        (i, τ,) <$> appE
+        pure (i, τ)
 
     -- type expression
     -- T :: n : A
@@ -85,16 +84,19 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
     lamE :: Parser [Token] ShowExpr
     lamE = do
         _ <- one LambdaT
-        (i, τ, e) <- fnE
-        pure (Lam i τ e)
+        (i, τ) <- fnArr
+        Lam i τ <$> appE
 
     piE :: Parser [Token] ShowExpr
     piE = do
         _ <- one PiT
-        (i, τ, e) <- fnE
-        pure (Pi i τ e)
-    anonpiE :: Parser [Token] ShowExpr
-    anonpiE = do
-        τ <- var <|> parens (lamE <|> piE <|> anonpiE)
+        (i, τ) <- fnArr
+        anonτ <- many anonPiArr
+        let piArrs = uncurry Pi <$> (i, τ) : map (Name "_",) anonτ
+        let piFold = foldl1 (.) piArrs
+        piFold <$> appE
+    anonPiArr :: Parser [Token] ShowExpr
+    anonPiArr = do
+        τ <- appE
         _ <- one Arrow
-        Pi (Name "_") τ <$> bndE
+        return τ

@@ -64,6 +64,8 @@ test-suite lambda-cube-test
   main-is: Spec.hs
   other-modules:
       L3.TestCore
+      L3.TestLexer
+      L3.TestParser
       Morte.TestMorte
       TestUtil
       Paths_lambda_cube

@@ -112,11 +112,16 @@ module L3.TestCore (tests) where
 
     testInferType :: IO ()
     testInferType = do
-        assertEq (inferType [] (Star :: Expr String)) (Right Box) "* :: #"
-        assertEq (inferType [] (Box :: Expr String)) (Left "in context: \n absurd box") "# :: absurd"
+        assertEq (inferType0 (Star :: Expr String)) (Right Box) "* :: #"
+        assertEq (inferType0 (Box :: Expr String)) (Left "in context: \n absurd box") "# :: absurd"
 
-        assertEq (inferType [] (Var "x")) (Left "in context: \n unbound variable: \"x\"") "x :: undefined"
+        assertEq (inferType0 (Var "x")) (Left "in context: \n unbound variable: \"x\"") "x :: undefined"
         assertEq (inferType [("x", Star)] (Var "x")) (Right Star) "x :: * ⊢ x :: *"
 
-        assertEq (inferType [] (Lam "x" Star (Var "x"))) (Right $ Pi "x" Star Star) "lam x : * -> x :: pi x : * -> *"
-        assertEq (inferType [] (Lam "x" Star (Var "x"))) (Right $ Pi "x" Star Star) "lam x : * -> x :: pi x : * -> *"
+        assertEq (inferType0 (Lam "x" Star (Var "x"))) (Right $ Pi "x" Star Star) "lam x : * -> x :: pi x : * -> *"
+        assertEq (inferType0 (Lam "x" Star (Var "x"))) (Right $ Pi "x" Star Star) "lam x : * -> x :: pi x : * -> *"
+
+        assertEq (inferType [("a", Star)] (Pi "x" (Var "a") (Var "a"))) (Right Star) "a :: * ⊢ pi x : a -> a :: *"
+        assertEq (inferType0 (Pi "x" Star (Var "x"))) (Right Star) "pi x : * -> x :: *"
+        assertEq (inferType [("a", Star)] (Pi "x" (Var "a") Star)) (Right Box) "a :: * ⊢ pi x : * -> * :: #"
+        assertEq (inferType0 (Pi "x" Star Star)) (Right Box) "pi x : * -> * :: #"
