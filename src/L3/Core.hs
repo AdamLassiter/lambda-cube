@@ -133,7 +133,7 @@ module L3.Core (module L3.Core, module L3.Util) where
         tb <- inferType ((v, ta):tCtx) b
         let tf = Pi v ta tb
         -- Types may themselves be well-typed, since they are expressions
-        -- _ <- inferType tCtx tf
+        _ <- inferType tCtx tf
         return tf
     inferType tCtx (Pi v ta tb) = do
         tta <- inferType tCtx ta

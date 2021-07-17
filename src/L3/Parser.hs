@@ -37,7 +37,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
     funE = lamE
        <|> piE
        <|> termE
-       <|> parens funE
+       <|> parens sugarE
 
     termE :: Parser [Token] ShowExpr
     termE = star
@@ -45,8 +45,8 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         <|> nsVar <|> var
         <|> parens termE
 
-    fnArr :: Parser [Token] (Name, ShowExpr)
-    fnArr = do
+    arrE :: Parser [Token] (Name, ShowExpr)
+    arrE = do
         (i, τ) <- parens typE
         _ <- one Arrow
         pure (i, τ)
@@ -89,13 +89,13 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
     lamE :: Parser [Token] ShowExpr
     lamE = do
         _ <- one LambdaT
-        (i, τ) <- fnArr
+        (i, τ) <- arrE
         Lam i τ <$> sugarE
 
     piE :: Parser [Token] ShowExpr
     piE = do
         _ <- one PiT
-        (i, τ) <- fnArr
+        (i, τ) <- arrE
         Pi i τ <$> sugarE
 
     anonPiE :: Parser [Token] ShowExpr
