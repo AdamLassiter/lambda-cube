@@ -52,7 +52,6 @@ executable lambda-cube-exe
       Paths_lambda_cube
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , haskeline ==0.8.*
@@ -71,7 +70,6 @@ test-suite lambda-cube-test
       Paths_lambda_cube
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , lambda-cube
@@ -84,6 +82,7 @@ benchmark lambda-cube-bench
       Paths_lambda_cube
   hs-source-dirs:
       bench
+  ghc-options: -threaded -O2 -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , lambda-cube

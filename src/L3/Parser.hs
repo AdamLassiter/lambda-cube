@@ -17,7 +17,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
     -- | Parse a string to a named expression (using string labels)
     -- | Strip comments here, as they apply inside any context and are difficult to deal with otherwise
     parseExpr :: [Token] -> Result ShowExpr
-    parseExpr tks = mapR (foldl1 App) es
+    parseExpr tks = es
         where es = runParser sugarE . filter (not . ann) $ tks
               ann (Comment c) = True
               ann EOL         = True
