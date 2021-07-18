@@ -43,44 +43,44 @@ module L3.Util where
     {-# NOINLINE logU #-}
     -- | Unsafe log to logger-name at priority-level with log-message
     logU :: String -> Priority -> String -> ()
-    logU = logM . unsafePerformIO
+    logU name priority mesg = unsafePerformIO $ logM name priority mesg
 
     {-# NOINLINE debugU #-}
     -- | Unsafe debug-log to logger-name with log-message
     debugU :: String -> String -> ()
-    debugU = debugM . unsafePerformIO
+    debugU name mesg = unsafePerformIO $ debugM name mesg
 
     {-# NOINLINE infoU #-}
     -- | Unsafe info-log to logger-name with log-message
     infoU :: String -> String -> ()
-    infoU = infoM . unsafePerformIO
+    infoU name mesg = unsafePerformIO $ infoM name mesg
 
     {-# NOINLINE noticeU #-}
     -- | Unsafe notice-log to logger-name with log-message
     noticeU :: String -> String -> ()
-    noticeU = noticeM . unsafePerformIO
+    noticeU name mesg = unsafePerformIO $ noticeM name mesg
 
     {-# NOINLINE warningU #-}
     -- | Unsafe warning-log to logger-name with log-message
     warningU :: String -> String -> ()
-    warningU = warningM . unsafePerformIO
+    warningU name mesg = unsafePerformIO $ warningM name mesg
 
     {-# NOINLINE errorU #-}
     -- | Unsafe error-log to logger-name with log-message
     errorU :: String -> String -> ()
-    errorU = errorM . unsafePerformIO
+    errorU name mesg = unsafePerformIO $ errorM name mesg
 
     {-# NOINLINE criticalU #-}
     -- | Unsafe critical-log to logger-name with log-message
     criticalU :: String -> String -> ()
-    criticalU = criticalM . unsafePerformIO
+    criticalU name mesg = unsafePerformIO $ criticalM name mesg
 
     {-# NOINLINE alertU #-}
     -- | Unsafe alert-log to logger-name with log-message
     alertU :: String -> String -> ()
-    alertU = alertM . unsafePerformIO
+    alertU name mesg = unsafePerformIO $ alertM name mesg
 
     {-# NOINLINE emergencyU #-}
     -- | Unsafe emergency-log to logger-name with log-message
     emergencyU :: String -> String -> ()
-    emergencyU = emergencyM . unsafePerformIO
+    emergencyU name mesg = unsafePerformIO $ emergencyM name mesg
