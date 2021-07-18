@@ -2,7 +2,7 @@
 git checkout master
 pname=`cat package.yaml | grep "name:" | awk '{ print $2 }'`
 echo ">>> Building Haddock for $pname"
-time stack haddock --no-haddock-deps --fast
+time stack haddock --no-haddock-deps
 doc_root=`stack path --local-doc-root`/$pname*
 du -h $doc_root
 git branch -D gh-pages || echo "gh-pages branch didn't exist"
