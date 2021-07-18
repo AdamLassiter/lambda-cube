@@ -150,7 +150,7 @@ module L3.Core (module L3.Core, module L3.Util) where
             Right expr         -> throwError $ "cannot apply to non-function: " ++ show f ++ "\n had type: " ++ show expr ++ "\n had application: " ++ show a
             Left  err          -> throwError err
         ta' <- inferType tCtx a
-        if ta `alphaEq` ta'
+        if ta `betaEq` ta'
             then return $ substitute v a tb
             else throwError $ "type mismatch for function: " ++ show f ++ "\n given arg: " ++ show a ++ "\n expected type: " ++ show ta ++ "\n but was type: " ++ show ta'
 

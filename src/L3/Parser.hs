@@ -16,8 +16,9 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
 
     -- parse a string to a named expression (using string labels)
     parseExpr :: [Token] -> Result ShowExpr
-    parseExpr = runParser sugarE . filter (not . ann)
-        where ann (Comment c) = True
+    parseExpr tks = mapR (foldl1 App) es
+        where es = runParser (some funE) . filter (not . ann) $ tks
+              ann (Comment c) = True
               ann EOL         = True
               ann _           = False
 
@@ -43,7 +44,6 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
     termE = star
         <|> box
         <|> nsVar <|> var
-        <|> parens termE
 
     arrE :: Parser [Token] (Name, ShowExpr)
     arrE = do
@@ -58,8 +58,8 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         t <- symbol
         case t of
           (Symbol s) -> do
-              one HasType
-              (Name s,) <$> sugarE
+            one HasType
+            (Name s,) <$> sugarE
           _          -> empty
 
     star :: Parser [Token] ShowExpr
@@ -100,6 +100,6 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
 
     anonPiE :: Parser [Token] ShowExpr
     anonPiE = do
-        τ <- termE
+        τ <- appE
         _ <- one Arrow
         Pi (Name "_") τ <$> sugarE
