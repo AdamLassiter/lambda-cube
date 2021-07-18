@@ -1,5 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 
+-- | Parsec utils for parsing Strings into Strings
 module L3.StringParsec (module L3.StringParsec, module L3.Parsec) where
     import L3.Parsec
 

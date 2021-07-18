@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveTraversable #-} -- derive Traversable, Functor, Foldable
 {-# LANGUAGE TupleSections #-}
 
--- Type checking and type inference
+-- | Type checking and type inference
 module L3.Core (module L3.Core, module L3.Util) where
     import L3.Util
 
@@ -9,7 +9,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     import Data.Char (isDigit)
 
 
-    -- An expression in the calculus of constructions.
+    -- | An expression in the calculus of constructions.
     data Expr a = Star
                 | Box
                 | Var a
@@ -18,7 +18,7 @@ module L3.Core (module L3.Core, module L3.Util) where
                 | App (Expr a) (Expr a)
                 deriving (Eq, Show, Traversable, Functor, Foldable)
 
-    -- A context is a stack, mapping names to bound values.
+    -- | A context is a stack, mapping names to bound values.
     type Context a = [(a, Expr a)]
 
     newtype Name = Name String deriving (Eq)
@@ -26,7 +26,7 @@ module L3.Core (module L3.Core, module L3.Util) where
         show (Name s) = s
 
     type ShowExpr = Expr Name
-    -- Show an expression
+    -- | Show an expression
     showExpr :: ShowExpr -> String
     showExpr Star      = "*"
     showExpr Box       = "#"
@@ -36,17 +36,17 @@ module L3.Core (module L3.Core, module L3.Util) where
     showExpr (App e expr)         = "(" ++ showExpr e ++ ") (" ++ showExpr expr ++ ")"
 
     type ShowCtx = Context Name
-    -- Show a context
+    -- | Show a context
     prettyShowCtx :: ShowCtx -> String
     prettyShowCtx ctx = intercalate ", " (map (\(Name n, typ) -> n ++ " : " ++ showExpr typ) ctx)
 
-    -- Show for a context, printing each binding on a separate line.
+    -- | Show for a context, printing each binding on a separate line.
     showCtx :: (Show a) => Context a -> String
     showCtx (c:cs) = "\n" ++ show c ++ showCtx cs
     showCtx [] = ""
 
 
-    -- Is a name 'free' in an expression
+    -- | Is a name 'free' in an expression
     free :: (Eq a) => a -> Expr a -> Bool
     free v (Var v')               = v == v'
     free v (Lam v' _ _) | v == v' = True
@@ -56,8 +56,8 @@ module L3.Core (module L3.Core, module L3.Util) where
     free v (App f a   )           = free v f && free v a
     free _ _                      = True
 
-    -- Substitute all occurrences of a variable v with an expression e.
-    -- substitute v e E  ~  E[v := e]
+    -- | Substitute all occurrences of a variable v with an expression e.
+    -- | substitute v e E  ~  E[v := e]
     substitute :: (Eq a) => a -> Expr a -> Expr a -> Expr a
     substitute v e (Var v')       | v == v' = e
     substitute v e (Lam v' ta b ) | v == v' = Lam v' (substitute v e ta)            b
@@ -67,7 +67,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     substitute v e (App f a     )           = App    (substitute v e f ) (substitute v e a )
     substitute _ _ e'                       = e'
 
-    -- Given an expression, reduce it one step towards its normal form.
+    -- | Given an expression, reduce it one step towards its normal form.
     normalize :: (Eq a) => Expr a -> Expr a
     normalize (Lam v ta b) = case normalize b of
         App vb (Var v') | v == v' && not (free v vb) -> vb
@@ -78,15 +78,15 @@ module L3.Core (module L3.Core, module L3.Util) where
         f' -> App f' (normalize a)
     normalize c = c
 
-    -- Given an expression, totally reduce it over all steps towards normal form,
-    -- returning this normal.
+    -- | Given an expression, totally reduce it over all steps towards normal form,
+    -- | returning this normal.
     normalize0 :: (Eq a) => Expr a -> Expr a
     normalize0 e = case normalize e of
       e' | e == e' -> e
       e'           -> normalize0 e'
 
-    -- Given an 'free' index, convert an expression in Right names into Left indexes.
-    -- This uses DeBruijn indicies.
+    -- | Given an 'free' index, convert an expression in Right names into Left indexes.
+    -- | This uses DeBruijn indicies.
     index :: Eq a => Int -> Expr (Either Int a) -> Expr (Either Int a)
     index _ (Var v     ) = Var v
     index i (Lam v ta b) = Lam (Left i) (index i ta) (index (i + 1) $ substitute v (Var $ Left i) b)
@@ -95,34 +95,34 @@ module L3.Core (module L3.Core, module L3.Util) where
     index _ Star = Star
     index _ Box  = Box
 
-    -- Provide an initial 'free' index of 0 and index an expression.
-    -- This converts any expression to its DeBruijn indexed form, leaving global
-    -- names untouched.
+    -- | Provide an initial 'free' index of 0 and index an expression.
+    -- | This converts any expression to its DeBruijn indexed form, leaving global
+    -- | names untouched.
     index0 :: Eq a => Expr a -> Expr (Either Int a)
     index0 e = index 0 (fmap Right e)
 
-    -- Deduce whether two expressions are equivalent by converting to indexed form
-    -- and checking for exact equality. This does not apply normalisation, so
-    -- represents only alpha-equivalence of expressions.
+    -- | Deduce whether two expressions are equivalent by converting to indexed form
+    -- | and checking for exact equality. This does not apply normalisation, so
+    -- | represents only alpha-equivalence of expressions.
     alphaEq :: (Eq a) => Expr a -> Expr a -> Bool
     alphaEq e e' = index0 e == index0 e'
 
-    -- Deduce whether two expressions are equivalent by converting to indexed form
-    -- and checking for exact equality. This does apply normalisation, so represents
-    -- beta-equivalence (and implicitly alpha-equivalence) of expressions.
+    -- | Deduce whether two expressions are equivalent by converting to indexed form
+    -- | and checking for exact equality. This does apply normalisation, so represents
+    -- | beta-equivalence (and implicitly alpha-equivalence) of expressions.
     betaEq :: (Eq a) => Expr a -> Expr a -> Bool
     betaEq e e' = normalize0 e `alphaEq` normalize0 e'
 
-    -- Evaluate an expression, returning its type and normalized form
+    -- | Evaluate an expression, returning its type and normalized form
     evalExpr1 :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
     evalExpr1 tCtx e = mapR (, normalize e) (inferType tCtx e)
 
-    -- Type-check an expression and return the expression's type if type-checking
-    -- succeeds or an error message if type-checking fails
-    -- `inferType` does not necessarily normalize the type since full normalization
-    -- is not necessary for just type-checking.  If you actually care about the
-    -- returned type then you may want to `normalize` it afterwards.
-    -- Type inference is within a type context (list of global names and their types)
+    -- | Type-check an expression and return the expression's type if type-checking
+    -- | succeeds or an error message if type-checking fails
+    -- | `inferType` does not necessarily normalize the type since full normalization
+    -- | is not necessary for just type-checking.  If you actually care about the
+    -- | returned type then you may want to `normalize` it afterwards.
+    -- | Type inference is within a type context (list of global names and their types)
     inferType :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a)
     inferType _ Star       = return Box
     inferType tCtx Box     = throwError $ "in context: " ++ showCtx tCtx ++ "\n absurd box"
@@ -154,19 +154,19 @@ module L3.Core (module L3.Core, module L3.Util) where
             then return $ substitute v a tb
             else throwError $ "type mismatch for function: " ++ show f ++ "\n given arg: " ++ show a ++ "\n expected type: " ++ show ta ++ "\n but was type: " ++ show ta'
 
-    -- `inferType0` is the same as `inferType` with an empty context, meaning that
-    -- the expression must be closed (i.e. no free variables), otherwise type-checking
-    -- will fail.
+    -- | `inferType0` is the same as `inferType` with an empty context, meaning that
+    -- | the expression must be closed (i.e. no free variables), otherwise type-checking
+    -- | will fail.
     inferType0 :: (Eq a, Show a) => Expr a -> Result (Expr a)
     inferType0 = inferType []
 
-    -- Deduce if an expression e is well-typed - i.e. its type can be inferred.
+    -- | Deduce if an expression e is well-typed - i.e. its type can be inferred.
     wellTyped :: (Eq a, Show a) => Context a -> Expr a -> Bool
     wellTyped tCtx e = case inferType tCtx e of
         Left _ -> False
         Right _ -> True
 
-    -- Deduce if an expression is well-typed context-free - i.e. it is additionally
-    -- closed and therefore well-typed without additional context.
+    -- | Deduce if an expression is well-typed context-free - i.e. it is additionally
+    -- | closed and therefore well-typed without additional context.
     wellTyped0 :: (Eq a, Show a) => Expr a -> Bool
     wellTyped0 = wellTyped []

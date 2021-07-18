@@ -32,17 +32,21 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
-    - name: Install dependencies
+    - name: Install Dependencies
       # Build dependencies required by 'test' (and hpc-codecov)
       run: |
         stack --no-terminal --install-ghc test --only-dependencies
         stack install hpc-codecov
-    - name: Build
-      # Build the package, its tests, and its docs and run the tests
+    - name: Build and Test
+      # Build the package, its tests, and run the tests tracking code coverage
       run: |
-        stack --no-terminal test --haddock --no-haddock-deps --coverage
-    - name: Report coverage
+        stack --no-terminal test --coverage
+    - name: Report Codecov Coverage
       # Build coverage report and send to codecov.io
       run: |
         hpc-codecov --verbose --mix=$(stack path --dist-dir)/hpc -o codecov.json $(find $(stack path --local-hpc-root) -name '*.tix')
         bash <(curl -s https://codecov.io/bash)
+    - name: Push Haddock Github-Pages
+      # Build docs and push to gh-pages branch
+      run: |
+        bash ./stack-gh-pages
