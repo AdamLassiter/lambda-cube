@@ -46,7 +46,3 @@ jobs:
       run: |
         hpc-codecov --verbose --mix=$(stack path --dist-dir)/hpc -o codecov.json $(find $(stack path --local-hpc-root) -name '*.tix')
         bash <(curl -s https://codecov.io/bash)
-    - name: Push Haddock Github-Pages
-      # Build docs and push to gh-pages branch
-      run: |
-        bash ./stack-gh-pages
