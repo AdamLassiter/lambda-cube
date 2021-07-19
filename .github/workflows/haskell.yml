@@ -13,10 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - uses: haskell/actions/setup@v1
       with:
         ghc-version: '8.10.4' # Exact version of ghc to use
-        # cabal-version: 'latest'. Omitted, but defaults to 'latest'
         enable-stack: true
         stack-version: 'latest'
 
@@ -37,12 +37,22 @@ jobs:
       run: |
         stack --no-terminal --install-ghc test --only-dependencies
         stack install hpc-codecov
-    - name: Build and Test
+    - name: Build Library and Test
       # Build the package, its tests, and run the tests tracking code coverage
       run: |
         stack --no-terminal test --coverage
+
     - name: Report Codecov Coverage
       # Build coverage report and send to codecov.io
       run: |
         hpc-codecov --verbose --mix=$(stack path --dist-dir)/hpc -o codecov.json $(find $(stack path --local-hpc-root) -name '*.tix')
         bash <(curl -s https://codecov.io/bash)
+
+    - name: Build gh-pages Documentation
+      run: |
+        sh ./stack-gh-pages
+    - name: Push to Branch
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
