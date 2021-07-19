@@ -47,24 +47,3 @@ jobs:
       run: |
         hpc-codecov --verbose --mix=$(stack path --dist-dir)/hpc -o codecov.json $(find $(stack path --local-hpc-root) -name '*.tix')
         bash <(curl -s https://codecov.io/bash)
-
-    - name: Build gh-pages Documentation
-      run: |
-        git config --global user.email "23099842+github-actions-bot@users.noreply.github.com"
-        git config --global user.name "GitHub Actions [Bot]"
-        rm lambda-cube.cabal
-        pname=`cat package.yaml | grep "name:" | awk '{ print $2 }'`
-        time stack haddock --no-haddock-deps
-        doc_root=`stack path --local-doc-root`/$pname*
-        du -h $doc_root
-        git branch -D gh-pages || echo "gh-pages branch didn't exist"
-        git checkout --orphan gh-pages
-        rm -rf *
-        cp -r $doc_root/* .
-        git add .
-        git commit -m "Automatic Haddock commit"
-    - name: Push to Branch
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: gh-pages
