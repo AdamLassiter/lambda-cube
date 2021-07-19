@@ -64,6 +64,7 @@ test-suite lambda-cube-test
   other-modules:
       L3.TestCore
       L3.TestLexer
+      L3.TestLoader
       L3.TestParser
       Morte.TestMorte
       TestUtil
@@ -72,6 +73,7 @@ test-suite lambda-cube-test
       test
   build-depends:
       base >=4.7 && <5
+    , filepath ==1.4.*
     , lambda-cube
   default-language: Haskell2010
 
@@ -85,6 +87,6 @@ benchmark lambda-cube-bench
   ghc-options: -threaded -O2 -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , criterion ==1.5.*
     , lambda-cube
-    , time ==1.9.*
   default-language: Haskell2010

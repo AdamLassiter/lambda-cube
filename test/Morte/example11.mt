@@ -25,7 +25,7 @@
 -- exampleD f g = map f . map g
 
 (   lambda (id : forall (a : *) -> a -> a)
-->  lambda (  (.)
+->  lambda (  app
     :   forall (a : *)
     ->  forall (b : *)
     ->  forall (c : *)
@@ -97,7 +97,7 @@
         ->  lambda (c : *)
         ->  lambda (f : b -> c)
         ->  lambda (g : a -> b)
-        ->  map a c ((.) a b c f g)
+        ->  map a c (app a b c f g)
         )
 
         --  exampleD
@@ -106,7 +106,7 @@
         ->  lambda (c : *)
         ->  lambda (f : b -> c)
         ->  lambda (g : a -> b)
-        ->  (.) (Stream a) (Stream b) (Stream c) (map b c f) (map a b g)
+        ->  app (Stream a) (Stream b) (Stream c) (map b c f) (map a b g)
         )
     )
 
@@ -142,7 +142,7 @@
 -- id
 (lambda (a : *) -> lambda (va : a) -> va)
 
--- (.)
+-- app
 (   lambda (a : *)
 ->  lambda (b : *)
 ->  lambda (c : *)

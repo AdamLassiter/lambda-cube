@@ -4,7 +4,7 @@
 
 (   lambda (List : * -> *)
 ->  lambda (map  : forall (a : *) -> forall (b : *) -> (a -> b) -> List a -> List b)
-->  lambda (  (.)
+->  lambda (  app
     :   forall (a : *)
     ->  forall (b : *)
     ->  forall (c : *)
@@ -17,7 +17,7 @@
     ->  lambda (c : *)
     ->  lambda (f : b -> c)
     ->  lambda (g : a -> b)
-    ->  map a c ((.) a b c f g)
+    ->  map a c (app a b c f g)
 )
 
 -- List
@@ -34,7 +34,7 @@
 ->  l x (lambda (va : a) -> lambda (vx : x) -> Cons (f va) vx) Nil
 )
 
--- (.)
+-- app
 (   lambda (a : *)
 ->  lambda (b : *)
 ->  lambda (c : *)

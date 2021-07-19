@@ -10,7 +10,7 @@ module Main where
     -- Run REPL
     main :: IO ()
     main = do
-      let (tCtx, prel) = wrapPrelude
+      let (tCtx, prel) = wrapPrelude embeddedPrelude
       -- let (tCtx, prel) = ([], id)
       runInputT defaultSettings $ repl tCtx prel
 

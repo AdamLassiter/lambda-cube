@@ -9,7 +9,7 @@ module Morte.TestMorte (tests) where
             , example2
             , example3
             , example4
-            -- , example5
+            , example5
             -- , example6
             -- , example7
             -- , example8
@@ -34,7 +34,7 @@ module Morte.TestMorte (tests) where
     example :: FilePath -> String -> String -> IO ()
     example file typ expr = do
         contents <- readFile file
-        let (tCtx, prel) = wrapPrelude
+        let (tCtx, prel) = wrapPrelude embeddedPrelude
         let (typ', expr') = parse tCtx prel expr
         let (typ0, expr0) = parse tCtx prel contents
         putStrLn $ "\n== " ++ show file ++ " =="

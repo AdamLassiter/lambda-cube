@@ -4,13 +4,13 @@
 --
 --     data List a = Cons a (List a) | Nil
 --
--- in  let (&&) :: Bool -> Bool -> Bool
---         (&&) b1 b2 = if b1 then b2 else False
+-- in  let and :: Bool -> Bool -> Bool
+--         and b1 b2 = if b1 then b2 else False
 --
 --         bools :: List Bool
 --         bools = Cons True (Cons True (Cons True Nil))
 --
---     in  foldr bools (&&) True
+--     in  foldr bools and True
 
 (   lambda (Bool : *)
 ->  lambda (True  : Bool)
@@ -22,12 +22,12 @@
 ->  lambda (  foldr
     :   forall (a : *) -> List a -> forall (r : *) -> (a -> r -> r) -> r -> r
     )
-->  (   lambda ((&&) : Bool -> Bool -> Bool)
+->  (   lambda (and : Bool -> Bool -> Bool)
     ->  lambda (bools : List Bool)
-    ->  foldr Bool bools Bool (&&) True
+    ->  foldr Bool bools Bool and True
     )
 
-    -- (&&)
+    -- and
     (lambda (x : Bool) -> lambda (y : Bool) -> if x Bool y False)
 
     -- bools

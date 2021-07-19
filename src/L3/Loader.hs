@@ -6,7 +6,7 @@ module L3.Loader (module L3.Loader, module L3.Parser) where
 
     import L3.Parser
 
-    import Data.FileEmbed (embedDir, embedDirListing)
+    import Data.FileEmbed (embedDir, embedDirListing, getDir)
     import Data.Bifunctor (first, second, bimap)
     import Data.ByteString (ByteString)
     import Data.List (partition)
@@ -25,20 +25,23 @@ module L3.Loader (module L3.Loader, module L3.Parser) where
         ("./", file) -> file
         (ns, file)   -> init ns ++ "@" ++ file
 
+    embeddedPreludeIO :: IO [(FilePath, ByteString)]
+    embeddedPreludeIO = filter ((== ".l3") . takeExtension . fst) <$> getDir "prelude"
+
     -- | Embed and retrieve all '.l3' files in the prelude directory
     embeddedPrelude :: [(FilePath, ByteString)]
     embeddedPrelude = filter ((== ".l3") . takeExtension . fst) $(embedDir "prelude")
 
     -- | Lex and parse the prelude into a type-context and expression-context
-    loadPrelude :: (ShowCtx, ShowCtx)
-    loadPrelude = (tCtx, eCtx)
-        where preludeExprs = map (second (throwL . parseExpr . throwL . lexSrc . Data.Text.unpack . decodeUtf8)) embeddedPrelude
+    loadPrelude :: [(FilePath, ByteString)] -> (ShowCtx, ShowCtx)
+    loadPrelude embedded = (tCtx, eCtx)
+        where preludeExprs = map (second (throwL . parseExpr . throwL . lexSrc . Data.Text.unpack . decodeUtf8)) embedded
               types = filter ((== "@") . takeBaseName . fst) preludeExprs
               tCtx = map (bimap (Name . takeDirectoryName) (throwL . inferType0)) types
               eCtx = map (first (Name . takeNamespacedFileName)) preludeExprs
 
     -- | Fold the prelude context through lambda application into a type-context and expression-context-mapper.
     -- | That is, `let a = x in b` <=> `(λ a -> b) x`
-    wrapPrelude :: (ShowCtx, ShowExpr -> ShowExpr)
-    wrapPrelude = (tCtx, foldl (\ f (n, e) x -> Lam n (throwL $ inferType0 e) (f x) `App` e) id eCtx)
-        where (tCtx, eCtx) = loadPrelude
+    wrapPrelude :: [(FilePath, ByteString)] -> (ShowCtx, ShowExpr -> ShowExpr)
+    wrapPrelude embedded = (tCtx, foldl (\ f (n, e) x -> Lam n (throwL $ inferType0 e) (f x) `App` e) id eCtx)
+        where (tCtx, eCtx) = loadPrelude embedded

@@ -93,12 +93,12 @@
 ->  (   lambda (Nat : *)
     ->  lambda (zero : Nat)
     ->  lambda (one : Nat)
-    ->  lambda ((+) : Nat -> Nat -> Nat)
-    ->  lambda ((*) : Nat -> Nat -> Nat)
+    ->  lambda (plus : Nat -> Nat -> Nat)
+    ->  lambda (times : Nat -> Nat -> Nat)
     ->  lambda (foldNat : Nat -> forall (a : *) -> (a -> a) -> a -> a)
     ->  lambda (IO : * -> *)
     ->  lambda (return : forall (a : *) -> a -> IO a)
-    ->  lambda ((>>=)
+    ->  lambda (mApp
         :   forall (a : *)
         ->  forall (b : *)
         ->  IO a
@@ -109,7 +109,7 @@
     ->  lambda (getLine : IO String)
 
         -- Derived functions
-    ->  (   lambda ((>>) : IO U -> IO U -> IO U)
+    ->  (   lambda (mThen : IO U -> IO U -> IO U)
         ->  lambda (two   : Nat)
         ->  lambda (three : Nat)
         ->  lambda (four  : Nat)
@@ -121,50 +121,50 @@
         ->  lambda (ten   : Nat)
         ->  (   lambda (replicateM_ : Nat -> IO U -> IO U)
             ->  lambda (ninetynine : Nat)
-            ->  replicateM_ ninetynine ((>>=) String U getLine putStrLn)
+            ->  replicateM_ ninetynine (mApp String U getLine putStrLn)
             )
 
             -- replicateM_
             (   lambda (n : Nat)
             ->  lambda (io : IO U)
-            ->  foldNat n (IO U) ((>>) io) (return U Unit)
+            ->  foldNat n (IO U) (mThen io) (return U Unit)
             )
 
             -- ninetynine
-            ((+) ((*) nine ten) nine)
+            (plus (times nine ten) nine)
         )
 
-        -- (>>)
+        -- mThen
         (   lambda (m : IO U)
         ->  lambda (n : IO U)
-        ->  (>>=) U U m (lambda (_ : U) -> n)
+        ->  mApp U U m (lambda (_ : U) -> n)
         )
 
         -- two
-        ((+) one one)
+        (plus one one)
 
         -- three
-        ((+) one ((+) one one))
+        (plus one (plus one one))
 
         -- four
-        ((+) one ((+) one ((+) one one)))
+        (plus one (plus one (plus one one)))
 
         -- five
-        ((+) one ((+) one ((+) one ((+) one one))))
+        (plus one (plus one (plus one (plus one one))))
 
         -- six
-        ((+) one ((+) one ((+) one ((+) one ((+) one one)))))
+        (plus one (plus one (plus one (plus one (plus one one)))))
 
         -- seven
-        ((+) one ((+) one ((+) one ((+) one ((+) one ((+) one one))))))
+        (plus one (plus one (plus one (plus one (plus one (plus one one))))))
 
         -- eight
-        ((+) one ((+) one ((+) one ((+) one ((+) one ((+) one ((+) one one)))))))
+        (plus one (plus one (plus one (plus one (plus one (plus one (plus one one)))))))
         -- nine
-        ((+) one ((+) one ((+) one ((+) one ((+) one ((+) one ((+) one ((+) one one))))))))
+        (plus one (plus one (plus one (plus one (plus one (plus one (plus one (plus one one))))))))
 
         -- ten
-        ((+) one ((+) one ((+) one ((+) one ((+) one ((+) one ((+) one ((+) one ((+) one one)))))))))
+        (plus one (plus one (plus one (plus one (plus one (plus one (plus one (plus one (plus one one)))))))))
     )
 
     -- Nat
@@ -188,7 +188,7 @@
     ->  Succ Zero
     )
 
-    -- (+)
+    -- plus
     (   lambda (m : forall (a : *) -> (a -> a) -> a -> a)
     ->  lambda (n : forall (a : *) -> (a -> a) -> a -> a)
     ->  lambda (a : *)
@@ -197,7 +197,7 @@
     ->  m a Succ (n a Succ Zero)
     )
 
-    -- (*)
+    -- times
     (   lambda (m : forall (a : *) -> (a -> a) -> a -> a)
     ->  lambda (n : forall (a : *) -> (a -> a) -> a -> a)
     ->  lambda (a : *)
@@ -230,7 +230,7 @@
     ->  Return va
     )
 
-    -- (>>=)
+    -- mApp
     (   lambda (a : *)
     ->  lambda (b : *)
     ->  lambda (m : forall (x : *)
