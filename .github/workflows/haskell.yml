@@ -52,6 +52,7 @@ jobs:
       run: |
         git config --global user.email "23099842+github-actions-bot@users.noreply.github.com"
         git config --global user.name "GitHub Actions [Bot]"
+        rm lambda-cube.cabal
         pname=`cat package.yaml | grep "name:" | awk '{ print $2 }'`
         time stack haddock --no-haddock-deps
         doc_root=`stack path --local-doc-root`/$pname*
