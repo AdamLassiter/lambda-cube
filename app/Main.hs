@@ -10,8 +10,8 @@ module Main where
     -- Run REPL
     main :: IO ()
     main = do
-      let (tCtx, prel) = wrapPrelude embeddedPrelude
-      -- let (tCtx, prel) = ([], id)
+      -- let (tCtx, prel) = wrapPrelude embeddedPrelude
+      let (tCtx, prel) = ([], id)
       runInputT defaultSettings $ repl tCtx prel
 
     repl :: ShowCtx -> (ShowExpr -> ShowExpr) -> InputT IO ()
@@ -22,7 +22,7 @@ module Main where
         where parse :: String -> InputT IO ()
               parse inp = do
                   let prEx = mapR prel $ fmapR parseExpr $ lexSrc inp
-                  case fmapR (evalExpr1 tCtx) prEx of
+                  case fmapR (evalExpr tCtx) prEx of
                       Left err -> outputStrLn err
                       Right (t, e) -> do
                           outputStrLn $ showExpr t

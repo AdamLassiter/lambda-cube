@@ -10,9 +10,9 @@ module Morte.TestMorte (tests) where
             , example3
             , example4
             , example5
-            -- , example6
-            -- , example7
-            -- , example8
+            , example6
+            , example7
+            , example8
             -- , example9
             -- , example10
             -- , example11
@@ -25,18 +25,17 @@ module Morte.TestMorte (tests) where
     rstrip :: String -> String
     rstrip = reverse . dropWhile (=='\n') . reverse
 
-    parse :: ShowCtx -> (ShowExpr -> ShowExpr) -> String -> (ShowExpr, ShowExpr)
-    parse tCtx prel inp = case fmapR (evalExpr1 tCtx) prEx of
+    parse :: ShowCtx -> String -> (ShowExpr, ShowExpr)
+    parse tCtx inp = case fmapR (evalExpr tCtx) prEx of
             Left err -> error err
             Right (t, e) -> (t, normalize0 e)
-        where prEx = mapR prel $ fmapR parseExpr $ lexSrc inp
+        where prEx = fmapR parseExpr $ lexSrc inp
 
     example :: FilePath -> String -> String -> IO ()
     example file typ expr = do
         contents <- readFile file
-        let (tCtx, prel) = wrapPrelude embeddedPrelude
-        let (typ', expr') = parse tCtx prel expr
-        let (typ0, expr0) = parse tCtx prel contents
+        let (typ', expr') = parse [] expr
+        let (typ0, expr0) = parse [] contents
         putStrLn $ "\n== " ++ show file ++ " =="
         putStrLn typ
         putStrLn expr

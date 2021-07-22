@@ -36,6 +36,8 @@ executables:
   lambda-cube-exe:
     main:                Main.hs
     source-dirs:         app
+    ghc-options:
+    - -O2
     dependencies:
     - lambda-cube
     - base >=4.7 && <5
@@ -45,6 +47,8 @@ tests:
   lambda-cube-test:
     main:                Spec.hs
     source-dirs:         test
+    ghc-options:
+    - -O2
     dependencies:
     - lambda-cube
     - base >=4.7 && <5
@@ -55,10 +59,10 @@ benchmarks:
     main:                Crit.hs
     source-dirs:         bench
     ghc-options:
-    - -threaded
     - -O2
+    - -fprof-auto
     - -rtsopts
-    - -with-rtsopts=-N
+    - '"-with-rtsopts=-pj -h"'
     dependencies:
     - lambda-cube
     - base >=4.7 && <5

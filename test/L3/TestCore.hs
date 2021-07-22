@@ -35,25 +35,30 @@ module L3.TestCore (tests) where
 
     testFree :: IO ()
     testFree = do
-        assertTrue (free 0 Star) "0 is free in Star"
-        assertTrue (free 0 Box) "0 is free in Box"
+        assertFalse (free 0 Star) "0 is not free in Star"
+        assertFalse (free 0 Box) "0 is not free in Box"
 
         assertTrue (free 0 (Var 0)) "0 is free in Var 0"
         assertFalse (free 0 (Var 1)) "0 is not free in Var 1"
 
-        assertTrue (free 0 (Lam 0 (Var 1) (Var 1))) "0 is free in Lam 0 : 1 . 1"
-        assertTrue (free 0 (Lam 1 Star Star)) "0 is free in Lam 1 : a . b if free in a and b"
-        assertFalse (free 0 (Lam 1 (Var 1) Star)) "0 is not free in Lam 1 : 1 . _"
-        assertFalse (free 0 (Lam 1 Star (Var 1))) "0 is not free in Lam 1 : _ . 1"
+        assertFalse (free 0 (Lam 0 (Var 1) (Var 1))) "0 is not free in Lam 0 : 1 . 1"
+        assertTrue (free 0 (Lam 0 (Var 0) (Var 1))) "0 is free in Lam 0 : 0 . 1"
+        assertFalse (free 0 (Lam 0 (Var 1) (Var 0))) "0 is not free in Lam 0 : 1 . 0"
+        assertTrue (free 0 (Lam 1 (Var 0) Star)) "0 is free in Lam 1 : 0 . *"
+        assertTrue (free 0 (Lam 1 Star (Var 0))) "0 is free in Lam 1 : 0 . *"
+        assertFalse (free 0 (Lam 1 (Var 1) (Var 1))) "0 is not free in Lam 1 : 1 . 1"
 
-        assertTrue (free 0 (Pi 0 (Var 1) (Var 1))) "0 is free in Pi 0 : 1 . 1"
-        assertTrue (free 0 (Pi 1 Star Star)) "0 is free in Pi 1 : a . b if free in a and b"
-        assertFalse (free 0 (Pi 1 (Var 1) Star)) "0 is not free in Pi 1 : 1 . _"
-        assertFalse (free 0 (Pi 1 Star (Var 1))) "0 is not free in Pi 1 : _ . 1"
+        assertFalse (free 0 (Pi 0 (Var 1) (Var 1))) "0 is not free in Pi 0 : 1 . 1"
+        assertTrue (free 0 (Pi 0 (Var 0) (Var 1))) "0 is free in Pi 0 : 0 . 1"
+        assertFalse (free 0 (Pi 0 (Var 1) (Var 0))) "0 is not free in Pi 0 : 1 . 0"
+        assertTrue (free 0 (Pi 1 (Var 0) Star)) "0 is free in Pi 1 : 0 . *"
+        assertTrue (free 0 (Pi 1 Star (Var 0))) "0 is free in Pi 1 : 0 . *"
+        assertFalse (free 0 (Pi 1 (Var 1) (Var 1))) "0 is not free in Pi 1 : 1 . 1"
 
-        assertTrue (free 0 (Star `App` Star)) "0 is free in a b if free in a and b"
-        assertFalse (free 0 (Var 1 `App` Star)) "0 is not free in 1 _"
-        assertFalse (free 0 (Star `App` Var 1)) "0 is not free in _ 1"
+        assertFalse (free 0 (Star `App` Star)) "0 is not free in * *"
+        assertTrue (free 0 (Var 0 `App` Star)) "0 is free in 0 *"
+        assertTrue (free 0 (Star `App` Var 0)) "0 is free in * 0"
+        assertTrue (free 0 (Var 0 `App` Var 0)) "0 is free in 0 0"
 
 
     testSubstitute :: IO ()

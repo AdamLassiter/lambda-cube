@@ -47,14 +47,16 @@ module L3.Core (module L3.Core, module L3.Util) where
 
 
     -- | Is a name 'free' in an expression
+    -- | In this context, free v a & v /= v'  =>  substitute v v' a /= a
+    -- | i.e. would a substitution be performed
     free :: (Eq a) => a -> Expr a -> Bool
-    free v (Var v')               = v == v'
-    free v (Lam v' _ _) | v == v' = True
-    free v (Lam _ ta b)           = free v ta && free v b
-    free v (Pi v' _  _) | v == v' = True
-    free v (Pi _ ta b )           = free v ta && free v b
-    free v (App f a   )           = free v f && free v a
-    free _ _                      = True
+    free v (Var v')                = v == v'
+    free v (Lam v' ta _) | v == v' = free v ta
+    free v (Lam _ ta b)            = free v ta || free v b
+    free v (Pi v' ta  _) | v == v' = free v ta
+    free v (Pi _ ta b )            = free v ta || free v b
+    free v (App f a   )            = free v f  || free v a
+    free _ _                       = False
 
     -- | Substitute all occurrences of a variable v with an expression e.
     -- | substitute v e E  ~  E[v := e]
@@ -70,8 +72,8 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | Given an expression, reduce it one step towards its normal form.
     normalize :: (Eq a) => Expr a -> Expr a
     normalize (Lam v ta b) = case normalize b of
-        App vb (Var v') | v == v' && not (free v vb) -> vb
-        b' -> Lam v (normalize ta) b'
+        App vb (Var v') | v == v' && not (free v vb) -> vb -- ε-reduction
+        b' -> Lam v (normalize ta) (normalize b')
     normalize (Pi v ta tb) = Pi v (normalize ta) (normalize tb)
     normalize (App f a) = case normalize f of
         Lam v _ b -> substitute v (normalize a) b
@@ -114,45 +116,50 @@ module L3.Core (module L3.Core, module L3.Util) where
     betaEq e e' = normalize0 e `alphaEq` normalize0 e'
 
     -- | Evaluate an expression, returning its type and normalized form
-    evalExpr1 :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
-    evalExpr1 tCtx e = mapR (, normalize e) (inferType tCtx e)
+    evalExpr :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
+    evalExpr tCtx e = mapR (, normalize e) (inferType tCtx e)
 
     -- | Type-check an expression and return the expression's type if type-checking
     -- | succeeds or an error message if type-checking fails
-    -- | `inferType` does not necessarily normalize the type since full normalization
+    -- | `inferType'` does not necessarily normalize the type since full normalization
     -- | is not necessary for just type-checking.  If you actually care about the
     -- | returned type then you may want to `normalize` it afterwards.
     -- | Type inference is within a type context (list of global names and their types)
-    inferType :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a)
-    inferType _ Star       = return Box
-    inferType tCtx Box     = throwError $ "in context: " ++ showCtx tCtx ++ "\n absurd box"
-    inferType tCtx (Var v) = case lookup v tCtx of
+    inferType' :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a)
+    inferType' _ Star       = return Box
+    inferType' tCtx Box     = throwError $ "in context: " ++ showCtx tCtx ++ "\n absurd box"
+    inferType' tCtx (Var v) = case lookup v tCtx of
         Nothing -> throwError $ "in context: " ++ showCtx tCtx ++ "\n unbound variable: " ++ show v
         Just e  -> Right e
-    inferType tCtx (Lam v ta b) = do
-        tb <- inferType ((v, ta):tCtx) b
+    inferType' tCtx (Lam v ta b) = do
+        tb <- inferType' ((v, ta):tCtx) b
         let tf = Pi v ta tb
         -- Types may themselves be well-typed, since they are expressions
-        _ <- inferType tCtx tf
+        _ <- inferType' tCtx tf
         return tf
-    inferType tCtx (Pi v ta tb) = do
-        tta <- inferType tCtx ta
-        ttb <- inferType ((v, ta):tCtx) tb
+    inferType' tCtx (Pi v ta tb) = do
+        tta <- inferType' tCtx ta
+        ttb <- inferType' ((v, ta):tCtx) tb
         case (tta, ttb) of
             (Star, Star) -> return Star
             (Box , Star) -> return Star
             (Star, Box ) -> return Box
             (Box , Box ) -> return Box
             (l   , r   ) -> throwError $ "invalid type: " ++ show (Pi v ta tb) ++ "\n had left kind: " ++ show l ++ "\n and right kind: " ++ show r
-    inferType tCtx (App f a) = do
-        (v, ta, tb) <- case inferType tCtx f of
+    inferType' tCtx (App f a) = do
+        (v, ta, tb) <- case inferType' tCtx f of
             Right (Pi v ta tb) -> return (v, ta, tb)
             Right expr         -> throwError $ "cannot apply to non-function: " ++ show f ++ "\n had type: " ++ show expr ++ "\n had application: " ++ show a
             Left  err          -> throwError err
-        ta' <- inferType tCtx a
+        ta' <- inferType' tCtx a
         if ta `betaEq` ta'
             then return $ substitute v a tb
             else throwError $ "type mismatch for function: " ++ show f ++ "\n given arg: " ++ show a ++ "\n expected type: " ++ show ta ++ "\n but was type: " ++ show ta'
+
+    -- | Type-check an expression and return the expression's normalized type if
+    -- | type-checking succeeds or an error message if type-checking fails
+    inferType :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a)
+    inferType tCtx e = mapR normalize $ inferType' tCtx e
 
     -- | `inferType0` is the same as `inferType` with an empty context, meaning that
     -- | the expression must be closed (i.e. no free variables), otherwise type-checking
