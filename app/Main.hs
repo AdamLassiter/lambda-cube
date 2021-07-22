@@ -23,7 +23,7 @@ module Main where
               parse inp = do
                   let prEx = mapR prel $ fmapR parseExpr $ lexSrc inp
                   case fmapR (evalExpr tCtx) prEx of
-                      Left err -> outputStrLn err
+                      Left err -> outputStrLn $ show err
                       Right (t, e) -> do
                           outputStrLn $ showExpr t
                           outputStrLn $ showExpr $ normalize0 e

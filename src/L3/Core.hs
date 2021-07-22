@@ -127,9 +127,9 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | Type inference is within a type context (list of global names and their types)
     inferType' :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a)
     inferType' _ Star       = return Box
-    inferType' tCtx Box     = throwError $ "in context: " ++ showCtx tCtx ++ "\n absurd box"
+    inferType' tCtx Box     = Left $ rethrowError ("in context:": map show tCtx) (throwError ["absurd box"])
     inferType' tCtx (Var v) = case lookup v tCtx of
-        Nothing -> throwError $ "in context: " ++ showCtx tCtx ++ "\n unbound variable: " ++ show v
+        Nothing -> Left $ rethrowError ("in context:": map show tCtx) (throwError ["unbound variable:", show v])
         Just e  -> Right e
     inferType' tCtx (Lam v ta b) = do
         tb <- inferType' ((v, ta):tCtx) b
@@ -145,16 +145,16 @@ module L3.Core (module L3.Core, module L3.Util) where
             (Box , Star) -> return Star
             (Star, Box ) -> return Box
             (Box , Box ) -> return Box
-            (l   , r   ) -> throwError $ "invalid type: " ++ show (Pi v ta tb) ++ "\n had left kind: " ++ show l ++ "\n and right kind: " ++ show r
+            (l   , r   ) -> Left $ rethrowError ("in context:": map show tCtx) (throwError ["invalid type:", show (Pi v ta tb), "had left kind:", show l, "had right kind:", show r])
     inferType' tCtx (App f a) = do
         (v, ta, tb) <- case inferType' tCtx f of
             Right (Pi v ta tb) -> return (v, ta, tb)
-            Right expr         -> throwError $ "cannot apply to non-function: " ++ show f ++ "\n had type: " ++ show expr ++ "\n had application: " ++ show a
-            Left  err          -> throwError err
+            Right expr         -> Left $ rethrowError ("in context:": map show tCtx) (throwError ["cannot apply to non-function:", show f, "had type: ", show expr, "had application:", show a])
+            Left  err          -> Left $ rethrowError ["in expression:", show $ App f a] err
         ta' <- inferType' tCtx a
         if ta `betaEq` ta'
             then return $ substitute v a tb
-            else throwError $ "type mismatch for function: " ++ show f ++ "\n given arg: " ++ show a ++ "\n expected type: " ++ show ta ++ "\n but was type: " ++ show ta'
+            else Left $ rethrowError ("in context:": map show tCtx) (throwError ["type mismatch for function:", show f, "given arg:", show a, "expected type:", show ta, "but given type:", show ta'])
 
     -- | Type-check an expression and return the expression's normalized type if
     -- | type-checking succeeds or an error message if type-checking fails

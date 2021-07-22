@@ -2,20 +2,39 @@
 module L3.Util where
     import System.Log.Logger
     import GHC.IO (unsafePerformIO)
-    type Result a = Either String a
+
+    newtype Error = Error ([String], Maybe Error)
+        deriving (Eq)
+    instance Show Error where
+        show = show' 0
+            where show' :: Int -> Error -> String
+                  show' i (Error (errs, cause)) = unlines (showErrors i errs: showCause i cause)
+                  showErrors i errs = unlines $ map (indent i) errs
+                  indent i x = unwords $ replicate i "\t" ++ [x]
+                  showCause i cause = case cause of
+                      Just c -> [show' (i + 1) c]
+                      Nothing -> []
+
+    type Result a = Either Error a
 
 
-    throwError :: String -> Result a
-    throwError = Left
+    throw :: Error -> Result a
+    throw = Left
+
+    throwError :: [String] -> Error
+    throwError errs = Error (errs, Nothing)
+
+    rethrowError :: [String] -> Error -> Error
+    rethrowError errs cause = Error (errs, Just cause)
 
     unpack :: [Result a] -> Result [a]
-    unpack (Left err:_) = throwError err
+    unpack (Left err:_) = throw err
     unpack (Right r:rs) = case unpack rs of
-        Left err  -> throwError err
+        Left err  -> throw err
         Right rs' -> Right (r:rs')
     unpack []           = Right []
 
-    mapL :: (String -> String) -> Result a -> Result a
+    mapL :: (Error -> Error) -> Result a -> Result a
     mapL f (Left err)  = Left $ f err
     mapL _ (Right res) = Right res
 
@@ -33,7 +52,7 @@ module L3.Util where
     flatten (Right (Right res)) = Right res
 
     throwL :: Result a -> a
-    throwL (Left err)  = error err
+    throwL (Left err)  = error $ show err
     throwL (Right res) = res
 
     converge :: Eq a => (a -> a) -> a -> a

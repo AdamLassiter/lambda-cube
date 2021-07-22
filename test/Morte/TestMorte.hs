@@ -13,7 +13,7 @@ module Morte.TestMorte (tests) where
             , example6
             , example7
             , example8
-            -- , example9
+            , example9
             -- , example10
             -- , example11
             -- , example12
@@ -27,7 +27,7 @@ module Morte.TestMorte (tests) where
 
     parse :: ShowCtx -> String -> (ShowExpr, ShowExpr)
     parse tCtx inp = case fmapR (evalExpr tCtx) prEx of
-            Left err -> error err
+            Left err -> error $ show err
             Right (t, e) -> (t, normalize0 e)
         where prEx = fmapR parseExpr $ lexSrc inp
 
