@@ -32,8 +32,4 @@ module L3.TestParser (tests) where
 
         assertRight (parseT "f x") "Parse application f x expression"
 
-        assertRight (parseT "lambda (a : m b -> c) -> d") "Monadic anonymous (applicative) pi expression"
-
-        putStrLn $ showExpr $ throwL $ parseT "lambda (f : a -> b -> c) -> f"
-
-
+        assertRight (parseT "lambda (a : m b -> c) -> d") "Parse monadic anonymous (applicative) pi expression"

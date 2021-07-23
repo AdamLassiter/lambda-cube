@@ -30,7 +30,6 @@ library:
   - extra >=1.6 && <1.8
   - filepath >=1.4 && <1.5
   - file-embed >=0.0.14 && <0.0.15
-  - hslogger >=1.3 && <1.4
 
 executables:
   lambda-cube-exe:

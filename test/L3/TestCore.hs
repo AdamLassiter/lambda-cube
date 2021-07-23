@@ -14,16 +14,16 @@ module L3.TestCore (tests) where
             , testInferType
             ]
 
-    assertAlphaEq :: (Show a, Eq a) => Expr a -> Expr a -> String -> IO ()
+    assertAlphaEq :: (Show a, Eq a, Enum a) => Expr a -> Expr a -> String -> IO ()
     assertAlphaEq = assert (alphaEq, "=α=")
 
-    assertNotAlphaEq :: (Show a, Eq a) => Expr a -> Expr a -> String -> IO ()
+    assertNotAlphaEq :: (Show a, Eq a, Enum a) => Expr a -> Expr a -> String -> IO ()
     assertNotAlphaEq = assert ((not .) . alphaEq, "=α=")
 
-    assertBetaEq :: (Show a, Eq a) => Expr a -> Expr a -> String -> IO ()
+    assertBetaEq :: (Show a, Eq a, Enum a) => Expr a -> Expr a -> String -> IO ()
     assertBetaEq = assert (betaEq, "=β=")
 
-    assertNotBetaEq :: (Show a, Eq a) => Expr a -> Expr a -> String -> IO ()
+    assertNotBetaEq :: (Show a, Eq a, Enum a) => Expr a -> Expr a -> String -> IO ()
     assertNotBetaEq = assert ((not .) . betaEq, "=β=")
 
 
@@ -87,44 +87,52 @@ module L3.TestCore (tests) where
 
     testIndex :: IO ()
     testIndex = do
-        assertEq (index0 (Var "x")) (Var $ Right "x") "Unbound names cannot be indexed"
+        assertEq (index0 (Var (Name "x"))) (Var $ Right (Name "x")) "Unbound names cannot be indexed"
 
-        assertEq (index0 $ Lam "x" Star (Var "x")) (Lam (Left 0) Star (Var $ Left 0)) "Bound names can be indexed"
-        assertEq (index0 $ Lam "x" (Var "x") (Var "x")) (Lam (Left 0) (Var $ Right "x") (Var $ Left 0)) "Types are unbound relative to their binding"
+        assertEq (index0 $ Lam (Name "x") Star (Var (Name "x"))) (Lam (Left 0) Star (Var $ Left 0)) "Bound names can be indexed"
+        assertEq (index0 $ Lam (Name "x") (Var (Name "x")) (Var (Name "x"))) (Lam (Left 0) (Var $ Right (Name "x")) (Var $ Left 0)) "Types are unbound relative to their binding"
 
-        assertEq (index0 $ Pi "x" Star (Var "x")) (Pi (Left 0) Star (Var $ Left 0)) "Bound names can be indexed"
-        assertEq (index0 $ Pi "x" (Var "x") (Var "x")) (Pi (Left 0) (Var $ Right "x") (Var $ Left 0)) "Types are unbound relative to their binding"
+        assertEq (index0 $ Pi (Name "x") Star (Var (Name "x"))) (Pi (Left 0) Star (Var $ Left 0)) "Bound names can be indexed"
+        assertEq (index0 $ Pi (Name "x") (Var (Name "x")) (Var (Name "x"))) (Pi (Left 0) (Var $ Right (Name "x")) (Var $ Left 0)) "Types are unbound relative to their binding"
 
-        assertEq (index0 $ Var "x" `App` Var "y") (Var (Right "x") `App` Var (Right "y")) "Unbound names cannot be indexed over applications"
-        assertEq (index0 $ Lam "x" Star (Var "x") `App` Lam "y" Star (Var "y")) (Lam (Left 0) Star (Var $ Left 0) `App` Lam (Left 0) Star (Var $ Left 0)) "Bound names can be indexed over applications"
+        assertEq (index0 $ Var (Name "x") `App` Var (Name "y")) (Var (Right (Name "x")) `App` Var (Right (Name "y"))) "Unbound names cannot be indexed over applications"
+        assertEq (index0 $ Lam (Name "x") Star (Var (Name "x")) `App` Lam (Name "y") Star (Var (Name "y"))) (Lam (Left 0) Star (Var $ Left 0) `App` Lam (Left 0) Star (Var $ Left 0)) "Bound names can be indexed over applications"
 
 
     testAlphaEq :: IO ()
     testAlphaEq = do
-        assertAlphaEq (Var "x") (Var "x") "Matching unbound names are alpha-equivalent"
-        assertNotAlphaEq (Var "x") (Var "y") "Non-matching unbound names are not alpha-equivalent"
+        assertAlphaEq (Var (Name "x")) (Var (Name "x")) "Matching unbound names are alpha-equivalent"
+        assertNotAlphaEq (Var (Name "x")) (Var (Name "y")) "Non-matching unbound names are not alpha-equivalent"
 
-        assertAlphaEq (Lam "x" Star (Var "x")) (Lam "y" Star (Var "y")) "Bound names are alpha-equivalent over lambdas"
-        assertAlphaEq (Pi "x" Star (Var "x")) (Pi "y" Star (Var "y")) "Bound names are alpha-equivalent over pis"
+        assertAlphaEq (Lam (Name "x") Star (Var (Name "x"))) (Lam (Name "y") Star (Var (Name "y"))) "Bound names are alpha-equivalent over lambdas"
+        assertAlphaEq (Pi (Name "x") Star (Var (Name "x"))) (Pi (Name "y") Star (Var (Name "y"))) "Bound names are alpha-equivalent over pis"
 
-        assertAlphaEq (Lam "x" Star (Var "x") `App` Var "y") (Lam "y" Star (Var "y") `App` Var "y") "Alpha-equivalence distributes over application"
+        assertAlphaEq (Lam (Name "x") Star (Var (Name "x")) `App` Var (Name "y")) (Lam (Name "y") Star (Var (Name "y")) `App` Var (Name "y")) "Alpha-equivalence distributes over application"
 
 
     testBetaEq :: IO ()
     testBetaEq = do
-        assertBetaEq (Lam "A" Star (Lam "X" (Var "A") (Lam "a" Star (Lam "x" (Var "a") (Var "x")) `App` Var "A" `App` Var "X"))) (Lam "a" Star (Lam "x" (Var "a") (Var "x"))) "Id Id is equivalent to Id"
+        assertBetaEq (Lam (Name "A") Star (Lam (Name "X") (Var (Name "A")) (Lam (Name "a") Star (Lam (Name "x") (Var (Name "a")) (Var (Name "x"))) `App` Var (Name "A") `App` Var (Name "X")))) (Lam (Name "a") Star (Lam (Name "x") (Var (Name "a")) (Var (Name "x")))) "Id Id is equivalent to Id"
 
 
     testInferType :: IO ()
     testInferType = do
-        assertEq (inferType0 (Star :: Expr String)) (Right Box) "* :: #"
+        assertEq (inferType0 (Star :: Expr Name)) (Right Box) "* :: #"
 
-        assertEq (inferType [("x", Star)] (Var "x")) (Right Star) "x :: * ⊢ x :: *"
+        assertEq (inferType [((Name "x"), Star)] (Var (Name "x"))) (Right Star) "x :: * ⊢ x :: *"
 
-        assertEq (inferType0 (Lam "x" Star (Var "x"))) (Right $ Pi "x" Star Star) "lam x : * -> x :: pi x : * -> *"
-        assertEq (inferType0 (Lam "x" Star (Var "x"))) (Right $ Pi "x" Star Star) "lam x : * -> x :: pi x : * -> *"
+        assertEq (inferType0 (Lam (Name "x") Star (Var (Name "x")))) (Right $ Pi (Name "x") Star Star) "lam x : * -> x :: pi x : * -> *"
+        assertEq (inferType0 (Lam (Name "x") Star (Var (Name "x")))) (Right $ Pi (Name "x") Star Star) "lam x : * -> x :: pi x : * -> *"
 
-        assertEq (inferType [("a", Star)] (Pi "x" (Var "a") (Var "a"))) (Right Star) "a :: * ⊢ pi x : a -> a :: *"
-        assertEq (inferType0 (Pi "x" Star (Var "x"))) (Right Star) "pi x : * -> x :: *"
-        assertEq (inferType [("a", Star)] (Pi "x" (Var "a") Star)) (Right Box) "a :: * ⊢ pi x : * -> * :: #"
-        assertEq (inferType0 (Pi "x" Star Star)) (Right Box) "pi x : * -> * :: #"
+        assertEq (inferType [((Name "a"), Star)] (Pi (Name "x") (Var (Name "a")) (Var (Name "a")))) (Right Star) "a :: * ⊢ pi x : a -> a :: *"
+        assertEq (inferType0 (Pi (Name "x") Star (Var (Name "x")))) (Right Star) "pi x : * -> x :: *"
+        assertEq (inferType [((Name "a"), Star)] (Pi (Name "x") (Var (Name "a")) Star)) (Right Box) "a :: * ⊢ pi x : * -> * :: #"
+        assertEq (inferType0 (Pi (Name "x") Star Star)) (Right Box) "pi x : * -> * :: #"
+
+        let ctx = [ (Name "f",Pi (Name "x") (Var $ Name "b") (Var $ Name "c"))
+                  , (Name "c",Star)
+                  , (Name "b",Star)
+                  , (Name "map",Pi (Name "a") Star (Pi (Name "b") Star (Pi (Name "f") (Pi (Name "x") (Var $ Name "a") (Var $ Name "b")) (Pi (Name "l") (App (Var $ Name "List") (Var $ Name "a")) (App (Var $ Name "List") (Var $ Name "b"))))))
+                  , (Name "List",Pi (Name "a") Star Star)
+                  ]
+        assertEq (inferType ctx (Var (Name "map") `App` Var (Name "b") `App` Var (Name "c") `App` Var (Name "f"))) (Right $ Pi (Name "l") (App (Var $ Name "List") (Var $ Name "b")) (App (Var $ Name "List") (Var $ Name "c"))) "map :: pi a -> pi b -> lam (a -> b) -> List a -> List b, f :: b -> c ⊢ map b c f :: List b -> List c"

@@ -22,8 +22,19 @@ module L3.Core (module L3.Core, module L3.Util) where
     type Context a = [(a, Expr a)]
 
     newtype Name = Name String deriving (Eq)
+    instance Enum Name where
+        fromEnum (Name ('ζ':digits)) = read digits
+        fromEnum (Name x) = 0
+        toEnum int = Name $ "ζ" ++ show int
     instance Show Name where
         show (Name s) = s
+
+    instance (Enum a, Enum b) => Enum (Either a b) where
+        fromEnum (Left l)  = 2 * fromEnum l
+        fromEnum (Right r) = 2 * fromEnum r + 1
+        toEnum i | even i  = Left $ toEnum $ i `div` 2
+        toEnum i           = Left $ toEnum $ (i - 1) `div` 2
+
 
     type ShowExpr = Expr Name
     -- | Show an expression
@@ -54,23 +65,33 @@ module L3.Core (module L3.Core, module L3.Util) where
     free v (Lam v' ta _) | v == v' = free v ta
     free v (Lam _ ta b)            = free v ta || free v b
     free v (Pi v' ta  _) | v == v' = free v ta
-    free v (Pi _ ta b )            = free v ta || free v b
+    free v (Pi _ ta tb)            = free v ta || free v tb
     free v (App f a   )            = free v f  || free v a
     free _ _                       = False
 
+    fresh :: (Eq a, Enum a) => a -> Expr a -> a
+    fresh from expr = v
+        where enums e = succ e:enums (succ e)
+              nonfree = filter (not . (`free` expr)) (enums from)
+              v = head nonfree
+
     -- | Substitute all occurrences of a variable v with an expression e.
     -- | substitute v e E  ~  E[v := e]
-    substitute :: (Eq a) => a -> Expr a -> Expr a -> Expr a
-    substitute v e (Var v')       | v == v' = e
-    substitute v e (Lam v' ta b ) | v == v' = Lam v' (substitute v e ta)            b
-    substitute v e (Lam v' ta b )           = Lam v' (substitute v e ta) (substitute v e b )
-    substitute v e (Pi  v' ta tb) | v == v' = Pi  v' (substitute v e ta)            tb
-    substitute v e (Pi  v' ta tb)           = Pi  v' (substitute v e ta) (substitute v e tb)
-    substitute v e (App f a     )           = App    (substitute v e f ) (substitute v e a )
-    substitute _ _ e'                       = e'
+    substitute :: (Eq a, Enum a) => a -> Expr a -> Expr a -> Expr a
+    substitute v e (Var v')       | v == v'   = e
+    substitute v e (Lam v' ta b ) | v == v'   = Lam v' (substitute v e ta)            b
+    substitute v e (Lam v' ta b ) | free v' e = substitute v e (Lam v'' ta (substitute v' (Var v'') b)) 
+        where v'' = fresh v' b
+    substitute v e (Lam v' ta b )             = Lam v' (substitute v e ta) (substitute v e b )
+    substitute v e (Pi  v' ta tb) | v == v'   = Pi  v' (substitute v e ta)            tb
+    substitute v e (Pi  v' ta tb) | free v' e = substitute v e (Pi v'' ta (substitute v' (Var v'') tb))
+        where v'' = fresh v' tb
+    substitute v e (Pi  v' ta tb)             = Pi  v' (substitute v e ta) (substitute v e tb)
+    substitute v e (App f a     )             = App    (substitute v e f ) (substitute v e a )
+    substitute _ _ e'                         = e'
 
     -- | Given an expression, reduce it one step towards its normal form.
-    normalize :: (Eq a) => Expr a -> Expr a
+    normalize :: (Eq a, Enum a) => Expr a -> Expr a
     normalize (Lam v ta b) = case normalize b of
         App vb (Var v') | v == v' && not (free v vb) -> vb -- ε-reduction
         b' -> Lam v (normalize ta) (normalize b')
@@ -82,14 +103,14 @@ module L3.Core (module L3.Core, module L3.Util) where
 
     -- | Given an expression, totally reduce it over all steps towards normal form,
     -- | returning this normal.
-    normalize0 :: (Eq a) => Expr a -> Expr a
+    normalize0 :: (Eq a, Enum a) => Expr a -> Expr a
     normalize0 e = case normalize e of
       e' | e == e' -> e
       e'           -> normalize0 e'
 
     -- | Given an 'free' index, convert an expression in Right names into Left indexes.
     -- | This uses DeBruijn indicies.
-    index :: Eq a => Int -> Expr (Either Int a) -> Expr (Either Int a)
+    index :: (Eq a, Enum a) => Int -> Expr (Either Int a) -> Expr (Either Int a)
     index _ (Var v     ) = Var v
     index i (Lam v ta b) = Lam (Left i) (index i ta) (index (i + 1) $ substitute v (Var $ Left i) b)
     index i (Pi v ta tb) = Pi  (Left i) (index i ta) (index (i + 1) $ substitute v (Var $ Left i) tb)
@@ -100,23 +121,23 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | Provide an initial 'free' index of 0 and index an expression.
     -- | This converts any expression to its DeBruijn indexed form, leaving global
     -- | names untouched.
-    index0 :: Eq a => Expr a -> Expr (Either Int a)
+    index0 :: (Eq a, Enum a) => Expr a -> Expr (Either Int a)
     index0 e = index 0 (fmap Right e)
 
     -- | Deduce whether two expressions are equivalent by converting to indexed form
     -- | and checking for exact equality. This does not apply normalisation, so
     -- | represents only alpha-equivalence of expressions.
-    alphaEq :: (Eq a) => Expr a -> Expr a -> Bool
+    alphaEq :: (Eq a, Enum a) => Expr a -> Expr a -> Bool
     alphaEq e e' = index0 e == index0 e'
 
     -- | Deduce whether two expressions are equivalent by converting to indexed form
     -- | and checking for exact equality. This does apply normalisation, so represents
     -- | beta-equivalence (and implicitly alpha-equivalence) of expressions.
-    betaEq :: (Eq a) => Expr a -> Expr a -> Bool
+    betaEq :: (Eq a, Enum a) => Expr a -> Expr a -> Bool
     betaEq e e' = normalize0 e `alphaEq` normalize0 e'
 
     -- | Evaluate an expression, returning its type and normalized form
-    evalExpr :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
+    evalExpr :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
     evalExpr tCtx e = mapR (, normalize e) (inferType tCtx e)
 
     -- | Type-check an expression and return the expression's type if type-checking
@@ -125,11 +146,11 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | is not necessary for just type-checking.  If you actually care about the
     -- | returned type then you may want to `normalize` it afterwards.
     -- | Type inference is within a type context (list of global names and their types)
-    inferType' :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a)
+    inferType' :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
     inferType' _ Star       = return Box
-    inferType' tCtx Box     = Left $ rethrowError ("in context:": map show tCtx) (throwError ["absurd box"])
+    inferType' tCtx Box     = Left $ rethrowError ("in context:": map showIdent tCtx) (throwError ["absurd box"])
     inferType' tCtx (Var v) = case lookup v tCtx of
-        Nothing -> Left $ rethrowError ("in context:": map show tCtx) (throwError ["unbound variable:", show v])
+        Nothing -> Left $ rethrowError ("in context:": map showIdent tCtx) (throwError ["unbound variable:", showIdent v])
         Just e  -> Right e
     inferType' tCtx (Lam v ta b) = do
         tb <- inferType' ((v, ta):tCtx) b
@@ -145,35 +166,35 @@ module L3.Core (module L3.Core, module L3.Util) where
             (Box , Star) -> return Star
             (Star, Box ) -> return Box
             (Box , Box ) -> return Box
-            (l   , r   ) -> Left $ rethrowError ("in context:": map show tCtx) (throwError ["invalid type:", show (Pi v ta tb), "had left kind:", show l, "had right kind:", show r])
+            (l   , r   ) -> Left $ rethrowError ("in context:": map showIdent tCtx) (throwError ["invalid type:", showIdent (Pi v ta tb), "had left kind:", showIdent l, "had right kind:", showIdent r])
     inferType' tCtx (App f a) = do
         (v, ta, tb) <- case inferType' tCtx f of
             Right (Pi v ta tb) -> return (v, ta, tb)
-            Right expr         -> Left $ rethrowError ("in context:": map show tCtx) (throwError ["cannot apply to non-function:", show f, "had type: ", show expr, "had application:", show a])
-            Left  err          -> Left $ rethrowError ["in expression:", show $ App f a] err
+            Right expr         -> Left $ rethrowError ("in context:": map showIdent tCtx) (throwError ["cannot apply to non-function:", showIdent f, "had type: ", showIdent expr, "had application:", showIdent a])
+            Left  err          -> Left $ rethrowError ["in expression:", showIdent $ App f a] err
         ta' <- inferType' tCtx a
         if ta `betaEq` ta'
             then return $ substitute v a tb
-            else Left $ rethrowError ("in context:": map show tCtx) (throwError ["type mismatch for function:", show f, "given arg:", show a, "expected type:", show ta, "but given type:", show ta'])
+            else Left $ rethrowError ("in context:": map showIdent tCtx) (throwError ["type mismatch for function:", showIdent f, "given arg:", showIdent a, "expected type:", showIdent ta, "but given type:", showIdent ta'])
 
     -- | Type-check an expression and return the expression's normalized type if
     -- | type-checking succeeds or an error message if type-checking fails
-    inferType :: (Eq a, Show a) => Context a -> Expr a -> Result (Expr a)
+    inferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
     inferType tCtx e = mapR normalize $ inferType' tCtx e
 
     -- | `inferType0` is the same as `inferType` with an empty context, meaning that
     -- | the expression must be closed (i.e. no free variables), otherwise type-checking
     -- | will fail.
-    inferType0 :: (Eq a, Show a) => Expr a -> Result (Expr a)
+    inferType0 :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
     inferType0 = inferType []
 
     -- | Deduce if an expression e is well-typed - i.e. its type can be inferred.
-    wellTyped :: (Eq a, Show a) => Context a -> Expr a -> Bool
+    wellTyped :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Bool
     wellTyped tCtx e = case inferType tCtx e of
         Left _ -> False
         Right _ -> True
 
     -- | Deduce if an expression is well-typed context-free - i.e. it is additionally
     -- | closed and therefore well-typed without additional context.
-    wellTyped0 :: (Eq a, Show a) => Expr a -> Bool
+    wellTyped0 :: (Eq a, Enum a, Show a) => Expr a -> Bool
     wellTyped0 = wellTyped []

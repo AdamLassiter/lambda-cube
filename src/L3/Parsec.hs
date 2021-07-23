@@ -16,9 +16,9 @@ module L3.Parsec (module L3.Parsec, module L3.Util) where
     runParser m s =
         case parse m s of
             [(res, rem')] | rem' == empty  -> Right res
-            [(res, rem')] -> Left $ throwError ["parser did consume:", show res, "but failed to consume:", show rem']
-            []            -> Left $ throwError ["parser failed to consume anything from:", show s]
-            rs            -> Left $ throwError ("parser produced multiple results:": map show rs)
+            [(res, rem')] -> Left $ throwError ["parser did consume:", showIdent res, "but failed to consume:", showIdent rem']
+            []            -> Left $ throwError ["parser failed to consume anything from:", showIdent s]
+            rs            -> Left $ throwError ("parser produced multiple results:": map showIdent rs)
 
     bind :: Parser i o -> (o -> Parser i o') -> Parser i o'
     bind p f = Parser $ \s -> concatMap (\(a, s') -> parse (f a) s') $ parse p s
