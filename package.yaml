@@ -30,6 +30,8 @@ library:
   - extra >=1.6 && <1.8
   - filepath >=1.4 && <1.5
   - file-embed >=0.0.14 && <0.0.15
+  - monad-control >=1.0 && <1.1
+  - logging >=3.0 && <3.1
 
 executables:
   lambda-cube-exe:

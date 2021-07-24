@@ -6,8 +6,13 @@ module Main (main) where
     import qualified L3.TestParser
     import qualified Morte.TestMorte
 
+    import L3.Logging
+
+
     main :: IO ()
-    main = sequence_ tests
+    main = withStdoutLogging $ do
+        setLogLevel LevelDebug
+        sequence_ tests
 
     tests :: [IO ()]
     tests = foldl1 (++) [ L3.TestUtil.tests

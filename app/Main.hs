@@ -1,6 +1,7 @@
 -- Parsing for REPL commands
 module Main where
     import L3.Loader
+    import L3.Logging
 
     import Data.Foldable (forM_)
 
@@ -9,7 +10,7 @@ module Main where
 
     -- Run REPL
     main :: IO ()
-    main = do
+    main = withStderrLogging $ do
       -- let (tCtx, prel) = wrapPrelude embeddedPrelude
       let (tCtx, prel) = ([], id)
       runInputT defaultSettings $ repl tCtx prel

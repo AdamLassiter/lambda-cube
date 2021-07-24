@@ -1,12 +1,17 @@
 module TestUtil (module TestUtil) where
+    import L3.Logging
+    import L3.Util
+
 
     assertShowing :: (a -> String) -> (a -> a -> Bool, String) -> a -> a -> String -> IO ()
     assertShowing show' (op, showOp) actual expected msg = do
-        putStrLn msg
         if actual `op` expected
-            then putStrLn $ "Success, true assertion for " ++ show' expected ++ " " ++ showOp ++ " " ++ show' actual
-            else error $ "Error, false assertion for " ++ show' expected ++ " " ++ showOp ++ " " ++ show' actual
-        putStrLn ""
+            then do
+              infoM msg
+              infoM $ "Success, true assertion for " ++ show' expected ++ " " ++ showOp ++ " " ++ show' actual
+            else do
+              warnM msg
+              errorU $ "Error, false assertion for " ++ show' expected ++ " " ++ showOp ++ " " ++ show' actual
         return ()
 
     assert :: (Show a) => (a -> a -> Bool, String) -> a -> a -> String -> IO ()

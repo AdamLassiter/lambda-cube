@@ -2,7 +2,7 @@
 
 -- | Load and parse '.l3' files
 module L3.Loader (module L3.Loader, module L3.Parser) where
-    import Prelude hiding (FilePath)
+    import Prelude hiding (FilePath, error)
 
     import L3.Parser
 

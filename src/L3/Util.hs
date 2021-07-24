@@ -57,5 +57,5 @@ module L3.Util where
     flatten (Right (Right res)) = Right res
 
     throwL :: Result a -> a
-    throwL (Left err)  = error $ show err
+    throwL (Left err)  = Prelude.error $ show err
     throwL (Right res) = res

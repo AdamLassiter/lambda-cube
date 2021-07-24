@@ -1,6 +1,7 @@
 module Morte.TestMorte (tests) where
     import TestUtil
     import L3.Loader
+    import L3.Logging
 
 
     tests :: [IO ()]
@@ -27,7 +28,7 @@ module Morte.TestMorte (tests) where
 
     parse :: ShowCtx -> String -> (ShowExpr, ShowExpr)
     parse tCtx inp = case fmapR (evalExpr tCtx) prEx of
-            Left err -> error $ show err
+            Left err -> errorU $ show err
             Right (t, e) -> (t, normalize0 e)
         where prEx = fmapR parseExpr $ lexSrc inp
 
@@ -36,18 +37,18 @@ module Morte.TestMorte (tests) where
         contents <- readFile file
         let (typ', expr') = parse [] expr
         let (typ0, expr0) = parse [] contents
-        putStrLn $ "\n== " ++ show file ++ " =="
-        putStrLn typ
-        putStrLn expr
-        putStrLn "\n== Expression =="
-        putStrLn $ rstrip contents
-        putStrLn "== Type =="
-        putStrLn $ "Expected: " ++ showExpr typ'
-        putStrLn $ "Actual: " ++ showExpr typ0
+        debugM $ "\n== " ++ show file ++ " =="
+        debugM typ
+        debugM expr
+        debugM "\n== Expression =="
+        debugM $ rstrip contents
+        debugM "== Type =="
+        debugM $ "Expected: " ++ showExpr typ'
+        debugM $ "Actual: " ++ showExpr typ0
         assertShowing showExpr (alphaEq, "=α=") typ' typ0 "Expected type is alpha-equivalent to inferred actual type"
-        putStrLn "== Normalization =="
-        putStrLn $ "Expected: " ++ showExpr expr'
-        putStrLn $ "Actual: " ++ showExpr expr0
+        debugM "== Normalization =="
+        debugM $ "Expected: " ++ showExpr expr'
+        debugM $ "Actual: " ++ showExpr expr0
         assertShowing showExpr (alphaEq, "=α=") expr' expr0 "Expected expression is alpha-equivalent to normalized actual expression"
         return ()
 
