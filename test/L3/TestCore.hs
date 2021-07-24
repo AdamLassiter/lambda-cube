@@ -27,6 +27,11 @@ module L3.TestCore (tests) where
     assertNotBetaEq = assert ((not .) . betaEq, "=β=")
 
 
+    testInstanceEnum :: IO ()
+    testInstanceEnum = do
+        assertEq ((toEnum . fromEnum) (Left 1 :: Either Int Int)) (Left 1 :: Either Int Int) "Instance preserves invariant for left Enum"
+        assertEq ((toEnum . fromEnum) (Right 1 :: Either Int Int)) (Right 1 :: Either Int Int) "Instance preserves invariant for right Enum"
+
     testShowCtx :: IO ()
     testShowCtx = do
         assertEq (showCtx ([] :: Context Int)) "" "Show empty context"
@@ -87,6 +92,9 @@ module L3.TestCore (tests) where
 
     testIndex :: IO ()
     testIndex = do
+        assertEq (index0 (Star :: ShowExpr)) Star "Star indexes to star"
+        assertEq (index0 (Box :: ShowExpr)) Box "Box indexes to box"
+
         assertEq (index0 (Var (Name "x"))) (Var $ Right (Name "x")) "Unbound names cannot be indexed"
 
         assertEq (index0 $ Lam (Name "x") Star (Var (Name "x"))) (Lam (Left 0) Star (Var $ Left 0)) "Bound names can be indexed"
@@ -111,7 +119,7 @@ module L3.TestCore (tests) where
 
 
     testBetaEq :: IO ()
-    testBetaEq = do
+    testBetaEq =
         assertBetaEq (Lam (Name "A") Star (Lam (Name "X") (Var (Name "A")) (Lam (Name "a") Star (Lam (Name "x") (Var (Name "a")) (Var (Name "x"))) `App` Var (Name "A") `App` Var (Name "X")))) (Lam (Name "a") Star (Lam (Name "x") (Var (Name "a")) (Var (Name "x")))) "Id Id is equivalent to Id"
 
 
@@ -119,14 +127,14 @@ module L3.TestCore (tests) where
     testInferType = do
         assertEq (inferType0 (Star :: Expr Name)) (Right Box) "* :: #"
 
-        assertEq (inferType [((Name "x"), Star)] (Var (Name "x"))) (Right Star) "x :: * ⊢ x :: *"
+        assertEq (inferType [(Name "x", Star)] (Var (Name "x"))) (Right Star) "x :: * ⊢ x :: *"
 
         assertEq (inferType0 (Lam (Name "x") Star (Var (Name "x")))) (Right $ Pi (Name "x") Star Star) "lam x : * -> x :: pi x : * -> *"
         assertEq (inferType0 (Lam (Name "x") Star (Var (Name "x")))) (Right $ Pi (Name "x") Star Star) "lam x : * -> x :: pi x : * -> *"
 
-        assertEq (inferType [((Name "a"), Star)] (Pi (Name "x") (Var (Name "a")) (Var (Name "a")))) (Right Star) "a :: * ⊢ pi x : a -> a :: *"
+        assertEq (inferType [(Name "a", Star)] (Pi (Name "x") (Var (Name "a")) (Var (Name "a")))) (Right Star) "a :: * ⊢ pi x : a -> a :: *"
         assertEq (inferType0 (Pi (Name "x") Star (Var (Name "x")))) (Right Star) "pi x : * -> x :: *"
-        assertEq (inferType [((Name "a"), Star)] (Pi (Name "x") (Var (Name "a")) Star)) (Right Box) "a :: * ⊢ pi x : * -> * :: #"
+        assertEq (inferType [(Name "a", Star)] (Pi (Name "x") (Var (Name "a")) Star)) (Right Box) "a :: * ⊢ pi x : * -> * :: #"
         assertEq (inferType0 (Pi (Name "x") Star Star)) (Right Box) "pi x : * -> * :: #"
 
         let ctx = [ (Name "f",Pi (Name "x") (Var $ Name "b") (Var $ Name "c"))

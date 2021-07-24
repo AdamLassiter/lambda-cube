@@ -47,9 +47,6 @@ module L3.Core (module L3.Core, module L3.Util) where
     showExpr (App e expr)         = "(" ++ showExpr e ++ ") (" ++ showExpr expr ++ ")"
 
     type ShowCtx = Context Name
-    -- | Show a context
-    prettyShowCtx :: ShowCtx -> String
-    prettyShowCtx ctx = intercalate ", " (map (\(Name n, typ) -> n ++ " : " ++ showExpr typ) ctx)
 
     -- | Show for a context, printing each binding on a separate line.
     showCtx :: (Show a) => Context a -> String
@@ -80,7 +77,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     substitute :: (Eq a, Enum a) => a -> Expr a -> Expr a -> Expr a
     substitute v e (Var v')       | v == v'   = e
     substitute v e (Lam v' ta b ) | v == v'   = Lam v' (substitute v e ta)            b
-    substitute v e (Lam v' ta b ) | free v' e = substitute v e (Lam v'' ta (substitute v' (Var v'') b)) 
+    substitute v e (Lam v' ta b ) | free v' e = substitute v e (Lam v'' ta (substitute v' (Var v'') b))
         where v'' = fresh v' b
     substitute v e (Lam v' ta b )             = Lam v' (substitute v e ta) (substitute v e b )
     substitute v e (Pi  v' ta tb) | v == v'   = Pi  v' (substitute v e ta)            tb

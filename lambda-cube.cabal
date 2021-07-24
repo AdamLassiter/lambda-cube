@@ -66,6 +66,7 @@ test-suite lambda-cube-test
       L3.TestLexer
       L3.TestLoader
       L3.TestParser
+      L3.TestUtil
       Morte.TestMorte
       TestUtil
       Paths_lambda_cube
