@@ -1,5 +1,0 @@
-let Functor : ../Functor ../List =
-    \(b : *)
-->  \(d : ../Defer ../List b)
-->  d (../List b) (\(a : *) -> ./map a b)
-in  Functor

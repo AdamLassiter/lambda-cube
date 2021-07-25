@@ -1,5 +1,0 @@
-let concatMap (a : *) (b : *) (f : a -> ../List b) (xs : ../List a) : ../List b =
-    ./Monad b (do ../List {
-        x : a <- xs;
-        _ : b <- f x; })
-in  concatMap

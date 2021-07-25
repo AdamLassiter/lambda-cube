@@ -1,1 +1,0 @@
-λ(a : *) → λ(cmd : ../Cmd  ../Maybe  a) → cmd (../Maybe  a) (λ(b : *) → ./(>>=)  b a) (./pure  a)

@@ -1,1 +1,0 @@
-λ(a : *) → λ(f : a → ../Bool ) → λ(xs : ../List  a) → ./and  (./map  a ../Bool  f xs)

@@ -1,7 +1,0 @@
-type IO
-
-data Get_ (../Nat -> IO)
-data Put_ ../Nat IO
-data Pure_ ../Prod0
-
-in \(msg : ../Nat ) -> Put_ msg (Pure_ ../Prod0/Make )

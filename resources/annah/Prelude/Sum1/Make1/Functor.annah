@@ -1,5 +1,0 @@
-let Functor : ../../Functor ../../Sum1 =
-    \(b : *)
-->  \(d : ../../Defer ../../Sum1 b)
-->  d (../../Sum1 b) (\(a : *) -> ./map a b)
-in  Functor

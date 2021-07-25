@@ -1,5 +1,0 @@
-let Eq : ../Eq ../Prod0 =
-        \(_ : ../Prod0 )
-    ->  \(_ : ../Prod0 )
-    ->  ../Bool/True
-in  Eq

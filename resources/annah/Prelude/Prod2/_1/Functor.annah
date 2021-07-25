@@ -1,5 +1,0 @@
-let Functor (t : *) : ../../Functor (\(b : *) -> ../../Prod2 b t) =
-    \(b : *)
-->  \(d : ../../Defer (\(b : *) -> ../../Prod2 b t) b)
-->  d (../../Prod2 b t) (\(a : *) -> ./map t a b)
-in  Functor

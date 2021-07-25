@@ -1,2 +1,0 @@
-let empty (a : *) : ../List a = ../List/Nil a
-in  empty

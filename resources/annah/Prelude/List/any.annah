@@ -1,3 +1,0 @@
-let any (a : *) (f : a -> ../Bool ) (xs : ../List a) : ../Bool =
-    ./or (./map a ../Bool f xs)
-in  any

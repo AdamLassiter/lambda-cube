@@ -1,3 +1,0 @@
-let null (a : *) (xs : ../List a) : ../Bool =
-    xs ../Bool (\(_ : a) -> \(_ : ../Bool ) -> ../Bool/False ) ../Bool/True
-in  null

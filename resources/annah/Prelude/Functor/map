@@ -1,1 +1,0 @@
-λ(f : * → *) → λ(functor : ../Functor  f) → λ(a : *) → λ(b : *) → λ(k : a → b) → λ(x : f a) → functor b (../Defer/Map  f b a k x)

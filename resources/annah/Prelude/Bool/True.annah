@@ -1,4 +1,0 @@
-type Bool
-data True
-data False
-in   True

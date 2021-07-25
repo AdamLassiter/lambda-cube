@@ -1,1 +1,0 @@
-λ(a : *) → λ(b : *) → λ(f : a → b) → λ(as : ../List  a) → λ(List : *) → λ(Cons : ∀(head : b) → ∀(tail : List) → List) → as List (λ(head : a) → Cons (f head))

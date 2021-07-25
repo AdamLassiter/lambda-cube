@@ -1,9 +1,0 @@
-let mapM
-    (m : * -> *)
-    (a : *)
-    (b : *)
-    (f : a -> m b)
-    (as : ../List a)
-    : ../Cmd m (../List b) =
-    ./sequence m b (../List/map a (m b) f as)
-in  mapM

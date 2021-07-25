@@ -1,3 +1,0 @@
-let concat (a : *) : ../Monoid (../List a)
-    =   \(xs : ../List (../List a)) -> xs (../List a) (../List/(++) a) [nil a]
-in  concat

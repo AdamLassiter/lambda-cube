@@ -1,1 +1,0 @@
-λ(a : *) → λ(xs : ../List  a) → λ(Nat : *) → λ(Succ : ∀(pred : Nat) → Nat) → xs Nat (λ(_ : a) → Succ)

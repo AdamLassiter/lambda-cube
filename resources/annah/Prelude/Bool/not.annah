@@ -1,6 +1,0 @@
-let not (b : ../Bool ) : ../Bool =
-    \(Bool : *)
-->  \(True : Bool)
-->  \(False : Bool)
-->  b Bool False True
-in  not

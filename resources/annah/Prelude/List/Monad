@@ -1,1 +1,0 @@
-λ(a : *) → λ(m : ../Cmd  ../List  a) → m (../List  a) (λ(b : *) → ./(>>=)  b a) (./pure  a)

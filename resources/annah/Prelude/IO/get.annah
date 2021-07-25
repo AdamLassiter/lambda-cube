@@ -1,7 +1,0 @@
-    type IO
-
-    data Get_ (../Nat -> IO)
-    data Put_ ../Nat IO
-    data Pure_ ../Nat
-
-    in Get_ Pure_

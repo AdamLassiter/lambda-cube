@@ -1,3 +1,0 @@
-let and : ../Monoid ../Bool =
-    \(xs : ../List ../Bool ) -> xs ../Bool ./(&&) ./True
-in  and

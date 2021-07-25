@@ -1,7 +1,0 @@
-    \(a : *)
-->  type List
-
-    data Cons (head : a) (tail : List)
-    data Nil
-
-    in   List

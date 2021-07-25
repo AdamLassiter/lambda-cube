@@ -1,1 +1,0 @@
-λ(a : *) → λ(n : ../Nat ) → λ(x : a) → ../Nat/foldNat  n (../List  a) (./Cons  a x) (./Nil  a)

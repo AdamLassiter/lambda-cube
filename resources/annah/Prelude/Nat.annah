@@ -1,8 +1,0 @@
-type Nat
-
-data Succ (pred : Nat)
-data Zero
-
-fold foldNat
-
-in Nat

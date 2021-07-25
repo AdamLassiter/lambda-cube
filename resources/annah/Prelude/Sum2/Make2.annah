@@ -1,8 +1,0 @@
-    \(a : *)
-->  \(b : *)
-->  type Sum2
-
-    data Make1 (_Make1 : a)
-    data Make2 (_Make2 : b)
-
-    in Make2

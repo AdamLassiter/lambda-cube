@@ -1,2 +1,0 @@
-let pure (a : *) (x : a) : ../../Prod1 a = ../Make a x
-in  pure

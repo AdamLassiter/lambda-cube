@@ -1,2 +1,0 @@
-let pure (a : *) (x : a) : ../List a = [nil a, x]
-in  pure
