@@ -38,6 +38,13 @@ module L3.TestCore (tests) where
         assertEq (showCtx ([(1, Star)] :: Context Int)) "\n(1,Star)" "Show one-elem context"
 
 
+    testEnumInstance :: IO ()
+    testEnumInstance = do
+        assertEq ((toEnum . fromEnum) (Left 0 :: Either Int Int)) (Left 0 :: Either Int Int) "Left From<->To enum is id invariant"
+        assertEq ((toEnum . fromEnum) (Left 1 :: Either Int Int)) (Left 1 :: Either Int Int) "Left From<->To enum is id invariant"
+        assertEq ((toEnum . fromEnum) (Right 0 :: Either Int Int)) (Right 0 :: Either Int Int) "Right From<->To enum is id invariant"
+        assertEq ((toEnum . fromEnum) (Right 1 :: Either Int Int)) (Right 1 :: Either Int Int) "Right From<->To enum is id invariant"
+
     testFree :: IO ()
     testFree = do
         assertFalse (free 0 Star) "0 is not free in Star"
@@ -144,3 +151,25 @@ module L3.TestCore (tests) where
                   , (Name "List",Pi (Name "a") Star Star)
                   ]
         assertEq (inferType ctx (Var (Name "map") `App` Var (Name "b") `App` Var (Name "c") `App` Var (Name "f"))) (Right $ Pi (Name "l") (App (Var $ Name "List") (Var $ Name "b")) (App (Var $ Name "List") (Var $ Name "c"))) "map :: pi a -> pi b -> lam (a -> b) -> List a -> List b, f :: b -> c ⊢ map b c f :: List b -> List c"
+   
+    testWellTyped :: IO ()
+    testWellTyped = do
+        assertTrue (wellTyped0 (Star :: Expr Name)) "* :: #"
+
+        assertTrue (wellTyped [(Name "x", Star)] (Var (Name "x"))) "x :: * ⊢ x :: *"
+
+        assertTrue (wellTyped0 (Lam (Name "x") Star (Var (Name "x")))) "lam x : * -> x :: pi x : * -> *"
+        assertTrue (wellTyped0 (Lam (Name "x") Star (Var (Name "x")))) "lam x : * -> x :: pi x : * -> *"
+
+        assertTrue (wellTyped [(Name "a", Star)] (Pi (Name "x") (Var (Name "a")) (Var (Name "a")))) "a :: * ⊢ pi x : a -> a :: *"
+        assertTrue (wellTyped0 (Pi (Name "x") Star (Var (Name "x")))) "pi x : * -> x :: *"
+        assertTrue (wellTyped [(Name "a", Star)] (Pi (Name "x") (Var (Name "a")) Star)) "a :: * ⊢ pi x : * -> * :: #"
+        assertTrue (wellTyped0 (Pi (Name "x") Star Star)) "pi x : * -> * :: #"
+
+        let ctx = [ (Name "f",Pi (Name "x") (Var $ Name "b") (Var $ Name "c"))
+                  , (Name "c",Star)
+                  , (Name "b",Star)
+                  , (Name "map",Pi (Name "a") Star (Pi (Name "b") Star (Pi (Name "f") (Pi (Name "x") (Var $ Name "a") (Var $ Name "b")) (Pi (Name "l") (App (Var $ Name "List") (Var $ Name "a")) (App (Var $ Name "List") (Var $ Name "b"))))))
+                  , (Name "List",Pi (Name "a") Star Star)
+                  ]
+        assertTrue (wellTyped ctx (Var (Name "map") `App` Var (Name "b") `App` Var (Name "c") `App` Var (Name "f"))) "map :: pi a -> pi b -> lam (a -> b) -> List a -> List b, f :: b -> c ⊢ map b c f :: List b -> List c"

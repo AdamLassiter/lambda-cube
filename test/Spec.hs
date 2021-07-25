@@ -11,7 +11,7 @@ module Main (main) where
 
     main :: IO ()
     main = withStdoutLogging $ do
-        setLogLevel LevelInfo
+        setLogLevel LevelDebug
         sequence_ tests
 
     tests :: [IO ()]

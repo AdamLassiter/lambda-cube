@@ -59,7 +59,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | In this context, free v a & v /= v'  =>  substitute v v' a /= a
     -- | i.e. would a substitution be performed
     free :: (Eq a, Show a) => a -> Expr a -> Bool
-    free v e = debugU ("free" ++ show v ++ " " ++ show e) (free' v e)
+    free v e = debugU ("free " ++ show v ++ " " ++ show e) (free' v e)
     free' v (Var v')                = v == v'
     free' v (Lam v' ta _) | v == v' = free v ta
     free' v (Lam _ ta b)            = free v ta || free v b
@@ -69,7 +69,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     free' _ _                       = False
 
     fresh :: (Eq a, Enum a, Show a) => a -> Expr a -> a
-    fresh v e = debugU ("fresh" ++ show v ++ " " ++ show e) (fresh' v e)
+    fresh v e = debugU ("fresh " ++ show v ++ " " ++ show e) (fresh' v e)
     fresh' from expr = v
         where enums e = succ e:enums (succ e)
               nonfree = filter (not . (`free` expr)) (enums from)
@@ -196,13 +196,13 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | the expression must be closed (i.e. no free variables), otherwise type-checking
     -- | will fail.
     inferType0 :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
-    inferType0 = debugU "inferType0" inferType0'
+    inferType0 = debugU "inferType0 " inferType0'
     inferType0' :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
     inferType0' = inferType []
 
     -- | Deduce if an expression e is well-typed - i.e. its type can be inferred.
     wellTyped :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Bool
-    wellTyped = debugU "wellTyped" wellTyped'
+    wellTyped = debugU "wellTyped " wellTyped'
     wellTyped' tCtx e = case inferType tCtx e of
         Left _ -> False
         Right _ -> True
@@ -210,6 +210,6 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | Deduce if an expression is well-typed context-free - i.e. it is additionally
     -- | closed and therefore well-typed without additional context.
     wellTyped0 :: (Eq a, Enum a, Show a) => Expr a -> Bool
-    wellTyped0 = debugU "wellTyped0" wellTyped0'
+    wellTyped0 = debugU "wellTyped0 " wellTyped0'
     wellTyped0' :: (Eq a, Enum a, Show a) => Expr a -> Bool
     wellTyped0' = wellTyped []
