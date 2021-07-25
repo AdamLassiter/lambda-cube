@@ -11,16 +11,13 @@ Some thoughts on Calculus of Constructions
 
 ## Compile, Test and Install
 
-*Cabal:*
-```sh
-cabal build
-cabal test
-cabal run lambda-cube-exe
-```
-
-*Stack:*
 ```sh
 stack build
 stack test
 stack run lambda-cube-exe
 ```
+
+## References
+
+* Loosely based on [ChristopherKing42/CalculusOfConstructions.hs](https://gist.github.com/ChristopherKing42/d8c9fde0869ec5c8feae71714e069214)
+* Tested against the [Gabriel439/Haskell-Morte-Library](https://github.com/Gabriel439/Haskell-Morte-Library) [Prelude](https://github.com/Gabriel439/Haskell-Morte-Library/tree/master/Prelude) and [Examples](https://github.com/Gabriel439/Haskell-Morte-Library/tree/master/test/src)
