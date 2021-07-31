@@ -15,10 +15,10 @@ module Main (main) where
         sequence_ tests
 
     tests :: [IO ()]
-    tests = foldl1 (++) [ L3.TestUtil.tests
-                        , L3.TestCore.tests
-                        , L3.TestLexer.tests
-                        , L3.TestLoader.tests
-                        , L3.TestParser.tests
-                        , Morte.TestMorte.tests
+    tests = foldl1 (++) [ map (setDebugSourceRegex ".*Util" >>) L3.TestUtil.tests
+                        , map (setDebugSourceRegex ".*Core" >>) L3.TestCore.tests
+                        , map (setDebugSourceRegex ".*Lexer" >>) L3.TestLexer.tests
+                        , map (setDebugSourceRegex ".*Loader" >>) L3.TestLoader.tests
+                        , map (setDebugSourceRegex ".*Parser" >>) L3.TestParser.tests
+                        , map (setDebugSourceRegex ".*Morte" >>) Morte.TestMorte.tests
                         ]

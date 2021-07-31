@@ -3,6 +3,9 @@ module Morte.TestMorte (tests) where
     import L3.Loader
     import L3.Logging
 
+    debugTestMorte = debugM "TestMorte"
+    errorTestMorte = errorU "TestMorte"
+
 
     tests :: [IO ()]
     tests = [ example0
@@ -15,7 +18,7 @@ module Morte.TestMorte (tests) where
             , example7
             , example8
             , example9
-            -- , example10
+            , example10
             -- , example11
             -- , example12
             -- , example13
@@ -28,7 +31,7 @@ module Morte.TestMorte (tests) where
 
     parse :: ShowCtx -> String -> (ShowExpr, ShowExpr)
     parse tCtx inp = case fmapR (evalExpr tCtx) prEx of
-            Left err -> errorU $ show err
+            Left err -> errorTestMorte $ show err
             Right (t, e) -> (t, normalize0 e)
         where prEx = fmapR parseExpr $ lexSrc inp
 
@@ -37,18 +40,18 @@ module Morte.TestMorte (tests) where
         contents <- readFile file
         let (typ', expr') = parse [] expr
         let (typ0, expr0) = parse [] contents
-        debugM $ "\n== " ++ show file ++ " =="
-        debugM typ
-        debugM expr
-        debugM "\n== Expression =="
-        debugM $ rstrip contents
-        debugM "== Type =="
-        debugM $ "Expected: " ++ showExpr typ'
-        debugM $ "Actual: " ++ showExpr typ0
+        debugTestMorte $ "\n== " ++ show file ++ " =="
+        debugTestMorte typ
+        debugTestMorte expr
+        debugTestMorte "\n== Expression =="
+        debugTestMorte $ rstrip contents
+        debugTestMorte "== Type =="
+        debugTestMorte $ "Expected: " ++ showExpr typ'
+        debugTestMorte $ "Actual: " ++ showExpr typ0
         assertShowing showExpr (alphaEq, "=α=") typ' typ0 "Expected type is alpha-equivalent to inferred actual type"
-        debugM "== Normalization =="
-        debugM $ "Expected: " ++ showExpr expr'
-        debugM $ "Actual: " ++ showExpr expr0
+        debugTestMorte "== Normalization =="
+        debugTestMorte $ "Expected: " ++ showExpr expr'
+        debugTestMorte $ "Actual: " ++ showExpr expr0
         assertShowing showExpr (alphaEq, "=α=") expr' expr0 "Expected expression is alpha-equivalent to normalized actual expression"
         return ()
 

@@ -75,7 +75,7 @@ test-suite lambda-cube-test
       Paths_lambda_cube
   hs-source-dirs:
       test
-  ghc-options: -O2
+  ghc-options: -O0 -fprof-auto -fprof-cafs
   build-depends:
       base >=4.7 && <5
     , filepath ==1.4.*
@@ -89,7 +89,7 @@ benchmark lambda-cube-bench
       Paths_lambda_cube
   hs-source-dirs:
       bench
-  ghc-options: -O2 -fprof-auto -rtsopts "-with-rtsopts=-pj -h"
+  ghc-options: -O2 -fprof-auto -fprof-cafs -rtsopts "-with-rtsopts=-pj -h"
   build-depends:
       base >=4.7 && <5
     , criterion ==1.5.*

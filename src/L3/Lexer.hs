@@ -1,5 +1,6 @@
 -- | Lexer from Strings into Tokens
 module L3.Lexer (module L3.Lexer) where
+    import L3.Logging
     import L3.StringParsec
 
     import Control.Applicative hiding (many)
@@ -21,37 +22,39 @@ module L3.Lexer (module L3.Lexer) where
                | EOL
                deriving (Show, Eq)
 
+    debugLexer = debugU "Lexer"
+
 
     -- | A list of Alternatives that may be used to lex a string into tokens.
     alternatives :: [Parser String Token]
-    alternatives = [ reserved "(" >> pure OpenParen
-                   , reserved ")" >> pure CloseParen
+    alternatives = [ reserved "(" >> debugLexer "open-paren" (pure OpenParen)
+                   , reserved ")" >> debugLexer "close-paren" (pure CloseParen)
 
-                   , reserved "*" >> pure StarT
-                   , reserved "⊤" >> pure StarT
+                   , reserved "*" >> debugLexer "star" (pure StarT)
+                   , reserved "⊤" >> debugLexer "star" (pure StarT)
 
-                   , reserved "#" >> pure BoxT
-                   , reserved "⊥" >> pure BoxT
+                   , reserved "#" >> debugLexer "box" (pure BoxT)
+                   , reserved "⊥" >> debugLexer "box" (pure BoxT)
 
-                   , reserved ":" >> pure HasType
-                   , reserved "∈" >> pure HasType
+                   , reserved ":" >> debugLexer "has-type" (pure HasType)
+                   , reserved "∈" >> debugLexer "has-type" (pure HasType)
 
-                   , reserved "." >> pure Arrow
-                   , reserved "→" >> pure Arrow
-                   , reserved "->" >> pure Arrow
+                   , reserved "."  >> debugLexer "arrow" (pure Arrow)
+                   , reserved "→"  >> debugLexer "arrow" (pure Arrow)
+                   , reserved "->" >> debugLexer "arrow" (pure Arrow)
 
-                   , reserved "lambda" >> pure LambdaT
-                   , reserved "∃" >> pure LambdaT
-                   , reserved "λ" >> pure LambdaT
+                   , reserved "lambda" >> debugLexer "lambda" (pure LambdaT)
+                   , reserved "∃"      >> debugLexer "lambda" (pure LambdaT)
+                   , reserved "λ"      >> debugLexer "lambda" (pure LambdaT)
 
-                   , reserved "forall" >> pure PiT
-                   , reserved "∀" >> pure PiT
-                   , reserved "π" >> pure PiT
+                   , reserved "forall" >> debugLexer "pi" (pure PiT)
+                   , reserved "∀"      >> debugLexer "pi" (pure PiT)
+                   , reserved "π"      >> debugLexer "pi" (pure PiT)
 
-                   , reserved "@" >> pure At
+                   , reserved "@" >> debugLexer "at" (pure At)
 
-                   , reserved "--" >> comment
-                   , reserved "\n" >> pure EOL
+                   , reserved "--" >> debugLexer "comment" comment
+                   , reserved "\n" >> debugLexer "end-of-line" (pure EOL)
 
                    , Number <$> number
                    , Symbol <$> word
@@ -59,9 +62,9 @@ module L3.Lexer (module L3.Lexer) where
 
     -- | Parse a comment, taking characters until an End-Of-Line
     comment :: Parser String Token
-    comment = do
-          cs <- many $ satisfy (/= '\n')
-          pure $ Comment cs
+    comment = debugLexer "comment" $ do
+        cs <- many $ satisfy (/= '\n')
+        pure $ Comment cs
 
     -- | Parse a string into canonical form using tokens
     lexSrc :: String -> Result [Token]

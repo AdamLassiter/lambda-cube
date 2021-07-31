@@ -54,12 +54,14 @@ module L3.Core (module L3.Core, module L3.Util) where
     showCtx (c:cs) = "\n" ++ show c ++ showCtx cs
     showCtx [] = ""
 
+    debugCore = debugU "Core"
+
 
     -- | Is a name 'free' in an expression
     -- | In this context, free v a & v /= v'  =>  substitute v v' a /= a
     -- | i.e. would a substitution be performed
     free :: (Eq a, Show a) => a -> Expr a -> Bool
-    free v e = debugU ("free " ++ show v ++ " " ++ show e) (free' v e)
+    free v e = debugCore ("free " ++ show v ++ " " ++ show e) (free' v e)
     free' v (Var v')                = v == v'
     free' v (Lam v' ta _) | v == v' = free v ta
     free' v (Lam _ ta b)            = free v ta || free v b
@@ -69,7 +71,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     free' _ _                       = False
 
     fresh :: (Eq a, Enum a, Show a) => a -> Expr a -> a
-    fresh v e = debugU ("fresh " ++ show v ++ " " ++ show e) (fresh' v e)
+    fresh v e = debugCore ("fresh " ++ show v ++ " " ++ show e) (fresh' v e)
     fresh' from expr = v
         where enums e = succ e:enums (succ e)
               nonfree = filter (not . (`free` expr)) (enums from)
@@ -78,7 +80,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | Substitute all occurrences of a variable v with an expression e.
     -- | substitute v e E  ~  E[v := e]
     substitute :: (Eq a, Enum a, Show a) => a -> Expr a -> Expr a -> Expr a
-    substitute v e e' = debugU ("substitute " ++ show v ++ " " ++ show e ++ " " ++ show e') (substitute' v e e')
+    substitute v e e' = debugCore ("substitute " ++ show v ++ " " ++ show e ++ " " ++ show e') (substitute' v e e')
     substitute' v e (Var v')       | v == v'   = e
     substitute' v e (Lam v' ta b ) | v == v'   = Lam v' (substitute v e ta)            b
     substitute' v e (Lam v' ta b ) | free v' e = substitute v e (Lam v'' ta (substitute v' (Var v'') b))
@@ -93,7 +95,7 @@ module L3.Core (module L3.Core, module L3.Util) where
 
     -- | Given an expression, reduce it one step towards its normal form.
     normalize :: (Eq a, Enum a, Show a) => Expr a -> Expr a
-    normalize e = debugU ("normalize " ++ show e) (normalize' e)
+    normalize e = debugCore ("normalize " ++ show e) (normalize' e)
     normalize' (Lam v ta b) = case normalize b of
         App vb (Var v') | v == v' && not (free v vb) -> vb -- ε-reduction
         b' -> Lam v (normalize ta) (normalize b')
@@ -106,7 +108,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | Given an expression, totally reduce it over all steps towards normal form,
     -- | returning this normal.
     normalize0 :: (Eq a, Enum a, Show a) => Expr a -> Expr a
-    normalize0 e = debugU ("normalize0 " ++ show e) (normalize0' e)
+    normalize0 e = debugCore ("normalize0 " ++ show e) (normalize0' e)
     normalize0' e = case normalize e of
       e' | e == e' -> e
       e'           -> normalize0 e'
@@ -114,7 +116,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | Given an 'free' index, convert an expression in Right names into Left indexes.
     -- | This uses DeBruijn indicies.
     index :: (Eq a, Enum a, Show a) => Int -> Expr (Either Int a) -> Expr (Either Int a)
-    index i e = debugU ("index " ++ show i ++ " " ++ show e) (index' i e)
+    index i e = debugCore ("index " ++ show i ++ " " ++ show e) (index' i e)
     index' _ (Var v     ) = Var v
     index' i (Lam v ta b) = Lam (Left i) (index i ta) (index (i + 1) $ substitute v (Var $ Left i) b)
     index' i (Pi v ta tb) = Pi  (Left i) (index i ta) (index (i + 1) $ substitute v (Var $ Left i) tb)
@@ -126,26 +128,26 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | This converts any expression to its DeBruijn indexed form, leaving global
     -- | names untouched.
     index0 :: (Eq a, Enum a, Show a) => Expr a -> Expr (Either Int a)
-    index0 e = debugU ("index0 " ++ show e) (index0' e)
+    index0 e = debugCore ("index0 " ++ show e) (index0' e)
     index0' e = index 0 (fmap Right e)
 
     -- | Deduce whether two expressions are equivalent by converting to indexed form
     -- | and checking for exact equality. This does not apply normalisation, so
     -- | represents only alpha-equivalence of expressions.
     alphaEq :: (Eq a, Enum a, Show a) => Expr a -> Expr a -> Bool
-    alphaEq e e' = debugU ("alphaEq " ++ show e ++ " " ++ show e') (alphaEq' e e')
+    alphaEq e e' = debugCore ("alphaEq " ++ show e ++ " " ++ show e') (alphaEq' e e')
     alphaEq' e e' = index0 e == index0 e'
 
     -- | Deduce whether two expressions are equivalent by converting to indexed form
     -- | and checking for exact equality. This does apply normalisation, so represents
     -- | beta-equivalence (and implicitly alpha-equivalence) of expressions.
     betaEq :: (Eq a, Enum a, Show a) => Expr a -> Expr a -> Bool
-    betaEq e e' = debugU ("betaEq " ++ show e ++ " " ++ show e') (betaEq' e e')
+    betaEq e e' = debugCore ("betaEq " ++ show e ++ " " ++ show e') (betaEq' e e')
     betaEq' e e' = normalize0 e `alphaEq` normalize0 e'
 
     -- | Evaluate an expression, returning its type and normalized form
     evalExpr :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
-    evalExpr tCtx e = debugU ("evalExpr " ++ show tCtx ++ " " ++ show e) (evalExpr' tCtx e)
+    evalExpr tCtx e = debugCore ("evalExpr " ++ show tCtx ++ " " ++ show e) (evalExpr' tCtx e)
     evalExpr' tCtx e = mapR (, normalize e) (inferType tCtx e)
 
     -- | Type-check an expression and return the expression's type if type-checking
@@ -155,7 +157,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | returned type then you may want to `normalize` it afterwards.
     -- | Type inference is within a type context (list of global names and their types)
     inferType1 :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
-    inferType1 tCtx e = debugU ("inferType1 " ++ show tCtx ++ " " ++ show e) (inferType1' tCtx e)
+    inferType1 tCtx e = debugCore ("inferType1 " ++ show tCtx ++ " " ++ show e) (inferType1' tCtx e)
     inferType1' _ Star       = return Box
     inferType1' tCtx Box     = Left $ rethrowError ("in context:": map showIdent tCtx) (throwError ["absurd box"])
     inferType1' tCtx (Var v) = case lookup v tCtx of
@@ -189,20 +191,20 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | Type-check an expression and return the expression's normalized type if
     -- | type-checking succeeds or an error message if type-checking fails
     inferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
-    inferType tCtx e = debugU ("inferType " ++ show tCtx ++ " " ++ show e) (inferType' tCtx e)
+    inferType tCtx e = debugCore ("inferType " ++ show tCtx ++ " " ++ show e) (inferType' tCtx e)
     inferType' tCtx e = mapR normalize $ inferType1 tCtx e
 
     -- | `inferType0` is the same as `inferType` with an empty context, meaning that
     -- | the expression must be closed (i.e. no free variables), otherwise type-checking
     -- | will fail.
     inferType0 :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
-    inferType0 = debugU "inferType0 " inferType0'
+    inferType0 = debugCore "inferType0 " inferType0'
     inferType0' :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
     inferType0' = inferType []
 
     -- | Deduce if an expression e is well-typed - i.e. its type can be inferred.
     wellTyped :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Bool
-    wellTyped = debugU "wellTyped " wellTyped'
+    wellTyped = debugCore "wellTyped " wellTyped'
     wellTyped' tCtx e = case inferType tCtx e of
         Left _ -> False
         Right _ -> True
@@ -210,6 +212,6 @@ module L3.Core (module L3.Core, module L3.Util) where
     -- | Deduce if an expression is well-typed context-free - i.e. it is additionally
     -- | closed and therefore well-typed without additional context.
     wellTyped0 :: (Eq a, Enum a, Show a) => Expr a -> Bool
-    wellTyped0 = debugU "wellTyped0 " wellTyped0'
+    wellTyped0 = debugCore "wellTyped0 " wellTyped0'
     wellTyped0' :: (Eq a, Enum a, Show a) => Expr a -> Bool
     wellTyped0' = wellTyped []
