@@ -131,7 +131,7 @@
             )
 
             -- ninetynine
-            (plus (times nine ten) nine)
+            two
         )
 
         -- mThen

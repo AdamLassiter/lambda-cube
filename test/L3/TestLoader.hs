@@ -1,5 +1,5 @@
 module L3.TestLoader (tests) where
-    import TestUtil
+    import Test
     import L3.Loader
 
     import System.FilePath

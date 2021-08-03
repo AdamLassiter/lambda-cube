@@ -1,5 +1,5 @@
 module L3.TestCore (tests) where
-    import TestUtil
+    import Test
     import L3.Core
 
 

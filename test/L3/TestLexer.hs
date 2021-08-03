@@ -1,5 +1,5 @@
 module L3.TestLexer (tests) where
-    import TestUtil
+    import Test
     import L3.Lexer
 
 

@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 
 module L3.TestParser (tests) where
-    import TestUtil
+    import Test
     import L3.Parser
 
 

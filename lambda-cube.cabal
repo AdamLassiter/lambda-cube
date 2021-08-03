@@ -71,11 +71,11 @@ test-suite lambda-cube-test
       L3.TestParser
       L3.TestUtil
       Morte.TestMorte
-      TestUtil
+      Test
       Paths_lambda_cube
   hs-source-dirs:
       test
-  ghc-options: -O0 -fprof-auto -fprof-cafs
+  ghc-options: -O2 -fprof-auto -fprof-cafs -rtsopts "-with-rtsopts=-pj -h"
   build-depends:
       base >=4.7 && <5
     , filepath ==1.4.*

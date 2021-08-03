@@ -1,6 +1,6 @@
 
 module L3.TestUtil (tests) where
-    import TestUtil
+    import Test
     import L3.Util
 
 

@@ -1,5 +1,5 @@
 module Morte.TestMorte (tests) where
-    import TestUtil
+    import Test
     import L3.Loader
     import L3.Logging
 
@@ -19,11 +19,11 @@ module Morte.TestMorte (tests) where
             , example8
             , example9
             , example10
-            -- , example11
-            -- , example12
-            -- , example13
-            -- , example14
-            -- , example15
+            , example11
+            , example12
+            , example13
+            --, example14
+            --, example15
             ]
 
     rstrip :: String -> String

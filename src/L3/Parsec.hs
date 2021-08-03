@@ -10,6 +10,9 @@ module L3.Parsec (module L3.Parsec, module L3.Util) where
 
     newtype Parser i o = Parser { parse :: i -> [(o, i)] }
 
+    unParser :: Parser i o -> (i -> [(o, i)])
+    unParser (Parser fn) = fn
+
 
     runParser :: (Alternative f, Show (f i), Show o, Eq (f i)) => Parser (f i) o -> f i -> Result o
     runParser m s =

@@ -1,21 +1,21 @@
-module TestUtil (module TestUtil) where
+module Test (module Test) where
     import L3.Logging
     import L3.Util
 
-    infoTestUtil = infoM "TestUtil"
-    warnTestUtil = warnM "TestUtil"
-    errorTestUtil = errorU "TestUtil"
+    infoTest = infoM "Test"
+    warnTest = warnM "Test"
+    errorTest = errorU "Test"
 
 
     assertShowing :: (a -> String) -> (a -> a -> Bool, String) -> a -> a -> String -> IO ()
     assertShowing show' (op, showOp) actual expected msg = do
         if actual `op` expected
             then do
-              infoTestUtil msg
-              infoTestUtil $ "Success, true assertion for " ++ show' expected ++ " " ++ showOp ++ " " ++ show' actual
+              infoTest msg
+              infoTest $ "Success, true assertion for " ++ show' expected ++ " " ++ showOp ++ " " ++ show' actual
             else do
-              warnTestUtil msg
-              errorTestUtil $ "Error, false assertion for " ++ show' expected ++ " " ++ showOp ++ " " ++ show' actual
+              warnTest msg
+              errorTest $ "Error, false assertion for " ++ show' expected ++ " " ++ showOp ++ " " ++ show' actual
         return ()
 
     assert :: (Show a) => (a -> a -> Bool, String) -> a -> a -> String -> IO ()
