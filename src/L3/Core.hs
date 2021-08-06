@@ -58,8 +58,8 @@ module L3.Core (module L3.Core, module L3.Util) where
 
 
     -- |Is a name 'free' in an expression
-    -- |In this context, free v a & v /= v'  =>  substitute v v' a /= a
-    -- |i.e. would a substitution be performed
+    -- In this context, free v a & v /= v'  =>  substitute v v' a /= a
+    -- i.e. would a substitution be performed
     free :: (Eq a, Show a) => a -> Expr a -> Bool
     free v e = debugCore ("free " ++ show v ++ " " ++ show e) (free' v e)
     free' v (Var v')                = v == v'
@@ -78,7 +78,7 @@ module L3.Core (module L3.Core, module L3.Util) where
               v = head nonfree
 
     -- |Substitute all occurrences of a variable v with an expression e.
-    -- |substitute v e E  ~  E[v := e]
+    -- substitute v e E  ~  E[v := e]
     substitute :: (Eq a, Enum a, Show a) => a -> Expr a -> Expr a -> Expr a
     substitute v e e' = debugCore ("substitute " ++ show v ++ " " ++ show e ++ " " ++ show e') (substitute' v e e')
     substitute' v e (Var v')       | v == v'   = e
@@ -106,7 +106,7 @@ module L3.Core (module L3.Core, module L3.Util) where
     normalize' c = c
 
     -- |Given an expression, totally reduce it over all steps towards normal form,
-    -- |returning this normal.
+    -- returning this normal.
     normalize0 :: (Eq a, Enum a, Show a) => Expr a -> Expr a
     normalize0 e = debugCore ("normalize0 " ++ show e) (normalize0' e)
     normalize0' e = case normalize e of
@@ -114,7 +114,7 @@ module L3.Core (module L3.Core, module L3.Util) where
       e'           -> normalize0 e'
 
     -- |Given an 'free' index, convert an expression in Right names into Left indexes.
-    -- |This uses DeBruijn indicies.
+    -- This uses DeBruijn indicies.
     index :: (Eq a, Enum a, Show a) => Int -> Expr (Either Int a) -> Expr (Either Int a)
     index i e = debugCore ("index " ++ show i ++ " " ++ show e) (index' i e)
     index' _ (Var v     ) = Var v
@@ -125,22 +125,22 @@ module L3.Core (module L3.Core, module L3.Util) where
     index' _ Box  = Box
 
     -- |Provide an initial 'free' index of 0 and index an expression.
-    -- |This converts any expression to its DeBruijn indexed form, leaving global
-    -- |names untouched.
+    -- This converts any expression to its DeBruijn indexed form, leaving global
+    -- names untouched.
     index0 :: (Eq a, Enum a, Show a) => Expr a -> Expr (Either Int a)
     index0 e = debugCore ("index0 " ++ show e) (index0' e)
     index0' e = index 0 (fmap Right e)
 
     -- |Deduce whether two expressions are equivalent by converting to indexed form
-    -- |and checking for exact equality. This does not apply normalisation, so
-    -- |represents only alpha-equivalence of expressions.
+    -- and checking for exact equality. This does not apply normalisation, so
+    -- represents only alpha-equivalence of expressions.
     alphaEq :: (Eq a, Enum a, Show a) => Expr a -> Expr a -> Bool
     alphaEq e e' = debugCore ("alphaEq " ++ show e ++ " " ++ show e') (alphaEq' e e')
     alphaEq' e e' = index0 e == index0 e'
 
     -- |Deduce whether two expressions are equivalent by converting to indexed form
-    -- |and checking for exact equality. This does apply normalisation, so represents
-    -- |beta-equivalence (and implicitly alpha-equivalence) of expressions.
+    -- and checking for exact equality. This does apply normalisation, so represents
+    -- beta-equivalence (and implicitly alpha-equivalence) of expressions.
     betaEq :: (Eq a, Enum a, Show a) => Expr a -> Expr a -> Bool
     betaEq e e' = debugCore ("betaEq " ++ show e ++ " " ++ show e') (betaEq' e e')
     betaEq' e e' = normalize0 e `alphaEq` normalize0 e'
@@ -151,11 +151,11 @@ module L3.Core (module L3.Core, module L3.Util) where
     evalExpr' tCtx e = mapR (, normalize e) (inferType tCtx e)
 
     -- |Type-check an expression and return the expression's type if type-checking
-    -- |succeeds or an error message if type-checking fails
-    -- |`inferType'` does not necessarily normalize the type since full normalization
-    -- |is not necessary for just type-checking.  If you actually care about the
-    -- |returned type then you may want to `normalize` it afterwards.
-    -- |Type inference is within a type context (list of global names and their types)
+    -- succeeds or an error message if type-checking fails
+    -- `inferType'` does not necessarily normalize the type since full normalization
+    -- is not necessary for just type-checking.  If you actually care about the
+    -- returned type then you may want to `normalize` it afterwards.
+    -- Type inference is within a type context (list of global names and their types)
     inferType1 :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
     inferType1 tCtx e = debugCore ("inferType1 " ++ show tCtx ++ " " ++ show e) (inferType1' tCtx e)
     inferType1' _ Star       = return Box
@@ -189,14 +189,14 @@ module L3.Core (module L3.Core, module L3.Util) where
             else Left $ rethrowError ("in context:": map showIdent tCtx) (throwError ["type mismatch for function:", showIdent f, "given arg:", showIdent a, "expected type:", showIdent ta, "but given type:", showIdent ta'])
 
     -- |Type-check an expression and return the expression's normalized type if
-    -- |type-checking succeeds or an error message if type-checking fails
+    -- type-checking succeeds or an error message if type-checking fails
     inferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
     inferType tCtx e = debugCore ("inferType " ++ show tCtx ++ " " ++ show e) (inferType' tCtx e)
     inferType' tCtx e = mapR normalize $ inferType1 tCtx e
 
     -- |`inferType0` is the same as `inferType` with an empty context, meaning that
-    -- |the expression must be closed (i.e. no free variables), otherwise type-checking
-    -- |will fail.
+    -- the expression must be closed (i.e. no free variables), otherwise type-checking
+    -- will fail.
     inferType0 :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
     inferType0 = debugCore "inferType0 " inferType0'
     inferType0' :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
@@ -210,7 +210,7 @@ module L3.Core (module L3.Core, module L3.Util) where
         Right _ -> True
 
     -- |Deduce if an expression is well-typed context-free - i.e. it is additionally
-    -- |closed and therefore well-typed without additional context.
+    -- closed and therefore well-typed without additional context.
     wellTyped0 :: (Eq a, Enum a, Show a) => Expr a -> Bool
     wellTyped0 = debugCore "wellTyped0 " wellTyped0'
     wellTyped0' :: (Eq a, Enum a, Show a) => Expr a -> Bool

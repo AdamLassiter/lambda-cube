@@ -2,40 +2,73 @@
 </span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE TupleSections #-}</span><span>
 </span><span id="line-3"></span><span class="hs-pragma">{-# OPTIONS_GHC -Wno-unused-do-bind #-}</span><span>
 </span><span id="line-4"></span><span>
-</span><span id="line-5"></span><span class="hs-comment">-- Parser from tokens into Expressions</span><span>
+</span><span id="line-5"></span><span class="hs-comment">-- |Parser from Tokens into Expressions</span><span>
 </span><span id="line-6"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">L3.Parser</span><span> </span><span class="hs-special">(</span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="L3.Parser.html"><span class="hs-identifier">L3.Parser</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="L3.Lexer.html"><span class="hs-identifier">L3.Lexer</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="L3.Core.html"><span class="hs-identifier">L3.Core</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
 </span><span id="line-7"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Prelude</span></span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">pi</span></span><span class="hs-special">)</span><span>
 </span><span id="line-8"></span><span>
 </span><span id="line-9"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="L3.Core.html"><span class="hs-identifier">L3.Core</span></a></span><span>
 </span><span id="line-10"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="L3.Lexer.html"><span class="hs-identifier">L3.Lexer</span></a></span><span>
 </span><span id="line-11"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="L3.TokenParsec.html"><span class="hs-identifier">L3.TokenParsec</span></a></span><span>
-</span><span id="line-12"></span><span>
-</span><span id="line-13"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Applicative</span></span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">some</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">many</span></span><span class="hs-special">)</span><span>
-</span><span id="line-14"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Debug.Trace</span></span><span>
-</span><span id="line-15"></span><span>
-</span><span id="line-16"></span><span>
-</span><span id="line-17"></span><span>    </span><span class="hs-comment">-- parse a string to a named expression (using string labels)</span><span>
-</span><span id="line-18"></span><span>    </span><span class="annot"><a href="L3.Parser.html#parseExpr"><span class="hs-identifier hs-type">parseExpr</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-19"></span><span>    </span><span id="parseExpr"><span class="annot"><span class="annottext">parseExpr :: [Token] -&gt; Result ShowExpr
-</span><a href="L3.Parser.html#parseExpr"><span class="hs-identifier hs-var hs-var">parseExpr</span></a></span></span><span> </span><span id="local-6989586621679088758"><span class="annot"><span class="annottext">[Token]
-</span><a href="#local-6989586621679088758"><span class="hs-identifier hs-var">tks</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([ShowExpr] -&gt; ShowExpr) -&gt; Result [ShowExpr] -&gt; Result ShowExpr
-forall a b. (a -&gt; b) -&gt; Result a -&gt; Result b
-</span><a href="L3.Util.html#mapR"><span class="hs-identifier hs-var">mapR</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(ShowExpr -&gt; ShowExpr -&gt; ShowExpr) -&gt; [ShowExpr] -&gt; ShowExpr
-forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; a -&gt; a) -&gt; t a -&gt; a
-</span><span class="hs-identifier hs-var">foldl1</span></span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; ShowExpr -&gt; ShowExpr
-forall a. Expr a -&gt; Expr a -&gt; Expr a
-</span><a href="L3.Core.html#App"><span class="hs-identifier hs-var">App</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Result [ShowExpr]
-</span><a href="#local-6989586621679088754"><span class="hs-identifier hs-var">es</span></a></span><span>
-</span><span id="line-20"></span><span>        </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679088754"><span class="annot"><span class="annottext">es :: Result [ShowExpr]
-</span><a href="#local-6989586621679088754"><span class="hs-identifier hs-var hs-var">es</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser [Token] [ShowExpr] -&gt; [Token] -&gt; Result [ShowExpr]
+</span><span id="line-12"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="L3.Logging.html"><span class="hs-identifier">L3.Logging</span></a></span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Applicative</span></span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">some</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">many</span></span><span class="hs-special">)</span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Debug.Trace</span></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span>    </span><span id="debugParser"><span class="annot"><span class="annottext">debugParser :: String -&gt; a -&gt; a
+</span><a href="L3.Parser.html#debugParser"><span class="hs-identifier hs-var hs-var">debugParser</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; a -&gt; a
+forall a. String -&gt; String -&gt; a -&gt; a
+</span><a href="L3.Logging.html#debugU"><span class="hs-identifier hs-var">debugU</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;Parser&quot;</span></span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span>    </span><span id="local-6989586621679106027"><span id="local-6989586621679106028"><span class="annot"><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-type">debugParserM</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679106028"><span class="hs-identifier hs-type">i</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679106028"><span class="hs-identifier hs-type">i</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679106027"><span class="hs-identifier hs-type">o</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679106028"><span class="hs-identifier hs-type">i</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679106027"><span class="hs-identifier hs-type">o</span></a></span></span></span><span>
+</span><span id="line-21"></span><span>    </span><span id="debugParserM"><span class="annot"><span class="annottext">debugParserM :: (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var hs-var">debugParserM</span></a></span></span><span> </span><span id="local-6989586621679105995"><span class="annot"><span class="annottext">i -&gt; String
+</span><a href="#local-6989586621679105995"><span class="hs-identifier hs-var">msgFn</span></a></span></span><span> </span><span id="local-6989586621679105994"><span class="annot"><span class="annottext">Parser i o
+</span><a href="#local-6989586621679105994"><span class="hs-identifier hs-var">parser</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(i -&gt; [(o, i)]) -&gt; Parser i o
+forall i o. (i -&gt; [(o, i)]) -&gt; Parser i o
+</span><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-var">Parser</span></a></span><span> </span><span class="annot"><span class="annottext">((i -&gt; [(o, i)]) -&gt; Parser i o) -&gt; (i -&gt; [(o, i)]) -&gt; Parser i o
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679105992"><span class="annot"><span class="annottext">i
+</span><a href="#local-6989586621679105992"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; [(o, i)] -&gt; [(o, i)]
+forall a. String -&gt; a -&gt; a
+</span><a href="L3.Parser.html#debugParser"><span class="hs-identifier hs-var">debugParser</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">i -&gt; String
+</span><a href="#local-6989586621679105995"><span class="hs-identifier hs-var">msgFn</span></a></span><span> </span><span class="annot"><span class="annottext">i
+</span><a href="#local-6989586621679105992"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Parser i o -&gt; i -&gt; [(o, i)]
+forall i o. Parser i o -&gt; i -&gt; [(o, i)]
+</span><a href="L3.Parsec.html#unParser"><span class="hs-identifier hs-var">unParser</span></a></span><span> </span><span class="annot"><span class="annottext">Parser i o
+</span><a href="#local-6989586621679105994"><span class="hs-identifier hs-var">parser</span></a></span><span> </span><span class="annot"><span class="annottext">i
+</span><a href="#local-6989586621679105992"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-comment">-- |Parse a string to a named expression (using string labels)</span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-comment">-- Strip comments here, as they apply inside any context and are difficult to deal with otherwise</span><span>
+</span><span id="line-26"></span><span>    </span><span class="annot"><a href="L3.Parser.html#parseExpr"><span class="hs-identifier hs-type">parseExpr</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-27"></span><span>    </span><span id="parseExpr"><span class="annot"><span class="annottext">parseExpr :: [Token] -&gt; Result ShowExpr
+</span><a href="L3.Parser.html#parseExpr"><span class="hs-identifier hs-var hs-var">parseExpr</span></a></span></span><span> </span><span id="local-6989586621679105989"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105989"><span class="hs-identifier hs-var">tks</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Result ShowExpr -&gt; Result ShowExpr
+forall a. String -&gt; a -&gt; a
+</span><a href="L3.Parser.html#debugParser"><span class="hs-identifier hs-var">debugParser</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;parseExpr &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105989"><span class="hs-identifier hs-var">tks</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[Token] -&gt; Result ShowExpr
+</span><a href="L3.Parser.html#parseExpr%27"><span class="hs-identifier hs-var">parseExpr'</span></a></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105989"><span class="hs-identifier hs-var">tks</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span>    </span><span id="parseExpr%27"><span class="annot"><span class="annottext">parseExpr' :: [Token] -&gt; Result ShowExpr
+</span><a href="L3.Parser.html#parseExpr%27"><span class="hs-identifier hs-var hs-var">parseExpr'</span></a></span></span><span> </span><span id="local-6989586621679105986"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105986"><span class="hs-identifier hs-var">tks</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Result ShowExpr
+</span><a href="#local-6989586621679105985"><span class="hs-identifier hs-var">es</span></a></span><span>
+</span><span id="line-29"></span><span>        </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679105985"><span class="annot"><span class="annottext">es :: Result ShowExpr
+</span><a href="#local-6989586621679105985"><span class="hs-identifier hs-var hs-var">es</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr -&gt; [Token] -&gt; Result ShowExpr
 forall (f :: * -&gt; *) i o.
 (Alternative f, Show (f i), Show o, Eq (f i)) =&gt;
 Parser (f i) o -&gt; f i -&gt; Result o
-</span><a href="L3.Parsec.html#runParser"><span class="hs-identifier hs-var">runParser</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Parser [Token] ShowExpr -&gt; Parser [Token] [ShowExpr]
-forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f [a]
-</span><a href="L3.Parsec.html#some"><span class="hs-identifier hs-var">some</span></a></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#funE"><span class="hs-identifier hs-var">funE</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; Result [ShowExpr])
--&gt; ([Token] -&gt; [Token]) -&gt; [Token] -&gt; Result [ShowExpr]
+</span><a href="L3.Parsec.html#runParser"><span class="hs-identifier hs-var">runParser</span></a></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#sugarE"><span class="hs-identifier hs-var">sugarE</span></a></span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; Result ShowExpr)
+-&gt; ([Token] -&gt; [Token]) -&gt; [Token] -&gt; Result ShowExpr
 forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(Token -&gt; Bool) -&gt; [Token] -&gt; [Token]
 forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
@@ -43,92 +76,156 @@ forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
 </span><span class="hs-identifier hs-var">not</span></span><span> </span><span class="annot"><span class="annottext">(Bool -&gt; Bool) -&gt; (Token -&gt; Bool) -&gt; Token -&gt; Bool
 forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Token -&gt; Bool
-</span><a href="#local-6989586621679088748"><span class="hs-identifier hs-var">ann</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; Result [ShowExpr]) -&gt; [Token] -&gt; Result [ShowExpr]
+</span><a href="#local-6989586621679105980"><span class="hs-identifier hs-var">ann</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; Result ShowExpr) -&gt; [Token] -&gt; Result ShowExpr
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">[Token]
-</span><a href="#local-6989586621679088758"><span class="hs-identifier hs-var">tks</span></a></span><span>
-</span><span id="line-21"></span><span>              </span><span id="local-6989586621679088748"><span class="annot"><span class="annottext">ann :: Token -&gt; Bool
-</span><a href="#local-6989586621679088748"><span class="hs-identifier hs-var hs-var">ann</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Lexer.html#Comment"><span class="hs-identifier hs-type">Comment</span></a></span><span> </span><span id="local-6989586621679088746"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088746"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><a href="#local-6989586621679105986"><span class="hs-identifier hs-var">tks</span></a></span><span>
+</span><span id="line-30"></span><span>              </span><span id="local-6989586621679105980"><span class="annot"><span class="annottext">ann :: Token -&gt; Bool
+</span><a href="#local-6989586621679105980"><span class="hs-identifier hs-var hs-var">ann</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Lexer.html#Comment"><span class="hs-identifier hs-type">Comment</span></a></span><span> </span><span id="local-6989586621679105978"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105978"><span class="hs-identifier hs-var">c</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">True</span></span><span>
-</span><span id="line-22"></span><span>              </span><span class="annot"><a href="#local-6989586621679088748"><span class="hs-identifier hs-var">ann</span></a></span><span> </span><span class="annot"><span class="annottext">Token
+</span><span id="line-31"></span><span>              </span><span class="annot"><a href="#local-6989586621679105980"><span class="hs-identifier hs-var">ann</span></a></span><span> </span><span class="annot"><span class="annottext">Token
 </span><a href="L3.Lexer.html#EOL"><span class="hs-identifier hs-var">EOL</span></a></span><span>         </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">True</span></span><span>
-</span><span id="line-23"></span><span>              </span><span class="annot"><a href="#local-6989586621679088748"><span class="hs-identifier hs-var">ann</span></a></span><span> </span><span class="annot"><span class="annottext">Token
+</span><span id="line-32"></span><span>              </span><span class="annot"><a href="#local-6989586621679105980"><span class="hs-identifier hs-var">ann</span></a></span><span> </span><span class="annot"><span class="annottext">Token
 </span><span class="hs-identifier">_</span></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool
 </span><span class="hs-identifier hs-var">False</span></span><span>
-</span><span id="line-24"></span><span>
-</span><span id="line-25"></span><span>    </span><span class="hs-comment">-- sugared expression</span><span>
-</span><span id="line-26"></span><span>    </span><span class="annot"><a href="L3.Parser.html#sugarE"><span class="hs-identifier hs-type">sugarE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-27"></span><span>    </span><span id="sugarE"><span class="annot"><span class="annottext">sugarE :: Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#sugarE"><span class="hs-identifier hs-var hs-var">sugarE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#anonPiE"><span class="hs-identifier hs-var">anonPiE</span></a></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-comment">-- |Sugared expression, injection point for additional syntax niceties</span><span>
+</span><span id="line-35"></span><span>    </span><span class="hs-comment">-- S :: [&#960;(_:]A[)].S  | A</span><span>
+</span><span id="line-36"></span><span>    </span><span class="annot"><a href="L3.Parser.html#sugarE"><span class="hs-identifier hs-type">sugarE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span id="sugarE"><span class="annot"><span class="annottext">sugarE :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#sugarE"><span class="hs-identifier hs-var hs-var">sugarE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
 -&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
-forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
-</span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105976"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105976"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;sugarE &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105976"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#sugarE%27"><span class="hs-identifier hs-var">sugarE'</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span id="sugarE%27"><span class="annot"><span class="annottext">sugarE' :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#sugarE%27"><span class="hs-identifier hs-var hs-var">sugarE'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-39"></span><span>        </span><span id="local-6989586621679105974"><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105974"><span class="hs-identifier hs-var">ex</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#appE"><span class="hs-identifier hs-var">appE</span></a></span><span>
-</span><span id="line-28"></span><span>
-</span><span id="line-29"></span><span>    </span><span class="hs-comment">-- applicative expression, infinite length</span><span>
-</span><span id="line-30"></span><span>    </span><span class="hs-comment">-- A :: A app A</span><span>
-</span><span id="line-31"></span><span>    </span><span class="annot"><a href="L3.Parser.html#appE"><span class="hs-identifier hs-type">appE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-32"></span><span>    </span><span id="appE"><span class="annot"><span class="annottext">appE :: Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#appE"><span class="hs-identifier hs-var hs-var">appE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-33"></span><span>        </span><span id="local-6989586621679088740"><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088740"><span class="hs-identifier hs-var">expr</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#funE"><span class="hs-identifier hs-var">funE</span></a></span><span>
-</span><span id="line-34"></span><span>        </span><span id="local-6989586621679088739"><span class="annot"><span class="annottext">[ShowExpr]
-</span><a href="#local-6989586621679088739"><span class="hs-identifier hs-var">exprs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr -&gt; Parser [Token] [ShowExpr]
+</span><span id="line-40"></span><span>        </span><span id="local-6989586621679105972"><span class="annot"><span class="annottext">Maybe ShowExpr
+</span><a href="#local-6989586621679105972"><span class="hs-identifier hs-var">anonPi</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr -&gt; Parser [Token] (Maybe ShowExpr)
+forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f (Maybe a)
+</span><span class="hs-identifier hs-var">optional</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ShowExpr -&gt; Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#anonPiE"><span class="hs-identifier hs-var">anonPiE</span></a></span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105974"><span class="hs-identifier hs-var">ex</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-41"></span><span>        </span><span class="annot"><span class="annottext">ShowExpr -&gt; Parser [Token] ShowExpr
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; Parser [Token] ShowExpr)
+-&gt; ShowExpr -&gt; Parser [Token] ShowExpr
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; Maybe ShowExpr -&gt; ShowExpr
+forall a. a -&gt; Maybe a -&gt; a
+</span><span class="hs-identifier hs-var">fromMaybe</span></span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105974"><span class="hs-identifier hs-var">ex</span></a></span><span> </span><span class="annot"><span class="annottext">Maybe ShowExpr
+</span><a href="#local-6989586621679105972"><span class="hs-identifier hs-var">anonPi</span></a></span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-comment">-- |Applicative expression, unknown and unbounded length</span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-comment">-- A :: F [app F ..]</span><span>
+</span><span id="line-45"></span><span>    </span><span class="annot"><a href="L3.Parser.html#appE"><span class="hs-identifier hs-type">appE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-46"></span><span>    </span><span id="appE"><span class="annot"><span class="annottext">appE :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#appE"><span class="hs-identifier hs-var hs-var">appE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105968"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105968"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;appE &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105968"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#appE%27"><span class="hs-identifier hs-var">appE'</span></a></span><span>
+</span><span id="line-47"></span><span>    </span><span id="appE%27"><span class="annot"><span class="annottext">appE' :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#appE%27"><span class="hs-identifier hs-var hs-var">appE'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-48"></span><span>        </span><span id="local-6989586621679105966"><span class="annot"><span class="annottext">[ShowExpr]
+</span><a href="#local-6989586621679105966"><span class="hs-identifier hs-var">exprs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr -&gt; Parser [Token] [ShowExpr]
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f [a]
-</span><a href="L3.Parsec.html#many"><span class="hs-identifier hs-var">many</span></a></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><a href="L3.Parsec.html#some"><span class="hs-identifier hs-var">some</span></a></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#funE"><span class="hs-identifier hs-var">funE</span></a></span><span>
-</span><span id="line-35"></span><span>        </span><span class="annot"><span class="annottext">ShowExpr -&gt; Parser [Token] ShowExpr
+</span><span id="line-49"></span><span>        </span><span class="annot"><span class="annottext">ShowExpr -&gt; Parser [Token] ShowExpr
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; Parser [Token] ShowExpr)
 -&gt; ShowExpr -&gt; Parser [Token] ShowExpr
 forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; ShowExpr -&gt; ShowExpr)
--&gt; ShowExpr -&gt; [ShowExpr] -&gt; ShowExpr
-forall (t :: * -&gt; *) b a.
-Foldable t =&gt;
-(b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b
-</span><span class="hs-identifier hs-var">foldl</span></span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; ShowExpr -&gt; ShowExpr
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; ShowExpr -&gt; ShowExpr) -&gt; [ShowExpr] -&gt; ShowExpr
+forall (t :: * -&gt; *) a. Foldable t =&gt; (a -&gt; a -&gt; a) -&gt; t a -&gt; a
+</span><span class="hs-identifier hs-var">foldl1</span></span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; ShowExpr -&gt; ShowExpr
 forall a. Expr a -&gt; Expr a -&gt; Expr a
-</span><a href="L3.Core.html#App"><span class="hs-identifier hs-var">App</span></a></span><span> </span><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088740"><span class="hs-identifier hs-var">expr</span></a></span><span> </span><span class="annot"><span class="annottext">[ShowExpr]
-</span><a href="#local-6989586621679088739"><span class="hs-identifier hs-var">exprs</span></a></span><span>
-</span><span id="line-36"></span><span>
-</span><span id="line-37"></span><span>    </span><span class="annot"><a href="L3.Parser.html#funE"><span class="hs-identifier hs-type">funE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-38"></span><span>    </span><span id="funE"><span class="annot"><span class="annottext">funE :: Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#funE"><span class="hs-identifier hs-var hs-var">funE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><a href="L3.Core.html#App"><span class="hs-identifier hs-var">App</span></a></span><span> </span><span class="annot"><span class="annottext">[ShowExpr]
+</span><a href="#local-6989586621679105966"><span class="hs-identifier hs-var">exprs</span></a></span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-comment">-- |Function expression</span><span>
+</span><span id="line-52"></span><span>    </span><span class="hs-comment">-- F :: &#955;(s:&#964;).E | &#960;(s:&#964;).E | T | (S)</span><span>
+</span><span id="line-53"></span><span>    </span><span class="annot"><a href="L3.Parser.html#funE"><span class="hs-identifier hs-type">funE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-54"></span><span>    </span><span id="funE"><span class="annot"><span class="annottext">funE :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#funE"><span class="hs-identifier hs-var hs-var">funE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105961"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105961"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;funE &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105961"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#funE%27"><span class="hs-identifier hs-var">funE'</span></a></span><span>
+</span><span id="line-55"></span><span>    </span><span id="funE%27"><span class="annot"><span class="annottext">funE' :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#funE%27"><span class="hs-identifier hs-var hs-var">funE'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#lamE"><span class="hs-identifier hs-var">lamE</span></a></span><span>
-</span><span id="line-39"></span><span>       </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><span id="line-56"></span><span>       </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 -&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
 </span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#piE"><span class="hs-identifier hs-var">piE</span></a></span><span>
-</span><span id="line-40"></span><span>       </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><span id="line-57"></span><span>       </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 -&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
 </span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#termE"><span class="hs-identifier hs-var">termE</span></a></span><span>
-</span><span id="line-41"></span><span>       </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><span id="line-58"></span><span>       </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 -&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
 </span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
 forall a. Parser [Token] a -&gt; Parser [Token] a
 </span><a href="L3.TokenParsec.html#parens"><span class="hs-identifier hs-var">parens</span></a></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#sugarE"><span class="hs-identifier hs-var">sugarE</span></a></span><span>
-</span><span id="line-42"></span><span>
-</span><span id="line-43"></span><span>    </span><span class="annot"><a href="L3.Parser.html#termE"><span class="hs-identifier hs-type">termE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-44"></span><span>    </span><span id="termE"><span class="annot"><span class="annottext">termE :: Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#termE"><span class="hs-identifier hs-var hs-var">termE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><span id="line-59"></span><span>
+</span><span id="line-60"></span><span>    </span><span class="hs-comment">-- |Terminal expression, bounded in length and with no children</span><span>
+</span><span id="line-61"></span><span>    </span><span class="hs-comment">-- T :: * | # | n@v | v</span><span>
+</span><span id="line-62"></span><span>    </span><span class="annot"><a href="L3.Parser.html#termE"><span class="hs-identifier hs-type">termE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-63"></span><span>    </span><span id="termE"><span class="annot"><span class="annottext">termE :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#termE"><span class="hs-identifier hs-var hs-var">termE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105954"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105954"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;termE &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105954"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#termE%27"><span class="hs-identifier hs-var">termE'</span></a></span><span>
+</span><span id="line-64"></span><span>    </span><span id="termE%27"><span class="annot"><span class="annottext">termE' :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#termE%27"><span class="hs-identifier hs-var hs-var">termE'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#star"><span class="hs-identifier hs-var">star</span></a></span><span>
-</span><span id="line-45"></span><span>        </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><span id="line-65"></span><span>        </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 -&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
 </span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#box"><span class="hs-identifier hs-var">box</span></a></span><span>
-</span><span id="line-46"></span><span>        </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><span id="line-66"></span><span>        </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 -&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
 </span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
@@ -137,86 +234,165 @@ forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
 </span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#var"><span class="hs-identifier hs-var">var</span></a></span><span>
-</span><span id="line-47"></span><span>
-</span><span id="line-48"></span><span>    </span><span class="annot"><a href="L3.Parser.html#arrE"><span class="hs-identifier hs-type">arrE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.html#Name"><span class="hs-identifier hs-type">Name</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-49"></span><span>    </span><span id="arrE"><span class="annot"><span class="annottext">arrE :: Parser [Token] (Name, ShowExpr)
-</span><a href="L3.Parser.html#arrE"><span class="hs-identifier hs-var hs-var">arrE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-50"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679088727"><span class="annot"><span class="annottext">Name
-</span><a href="#local-6989586621679088727"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679088726"><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088726"><span class="hs-identifier hs-var">&#964;</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] (Name, ShowExpr) -&gt; Parser [Token] (Name, ShowExpr)
+</span><span id="line-67"></span><span>
+</span><span id="line-68"></span><span>    </span><span class="hs-comment">-- |Arrow expression, a component of functions</span><span>
+</span><span id="line-69"></span><span>    </span><span class="hs-comment">-- (-&gt;) :: (s:&#964;).</span><span>
+</span><span id="line-70"></span><span>    </span><span class="annot"><a href="L3.Parser.html#arrE"><span class="hs-identifier hs-type">arrE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.html#Name"><span class="hs-identifier hs-type">Name</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-71"></span><span>    </span><span id="arrE"><span class="annot"><span class="annottext">arrE :: Parser [Token] (Name, ShowExpr)
+</span><a href="L3.Parser.html#arrE"><span class="hs-identifier hs-var hs-var">arrE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] (Name, ShowExpr)
+-&gt; Parser [Token] (Name, ShowExpr)
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105947"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105947"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;arrE &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105947"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] (Name, ShowExpr)
+</span><a href="L3.Parser.html#arrE%27"><span class="hs-identifier hs-var">arrE'</span></a></span><span>
+</span><span id="line-72"></span><span>    </span><span id="arrE%27"><span class="annot"><span class="annottext">arrE' :: Parser [Token] (Name, ShowExpr)
+</span><a href="L3.Parser.html#arrE%27"><span class="hs-identifier hs-var hs-var">arrE'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-73"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679105945"><span class="annot"><span class="annottext">Name
+</span><a href="#local-6989586621679105945"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679105944"><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105944"><span class="hs-identifier hs-var">&#964;</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] (Name, ShowExpr) -&gt; Parser [Token] (Name, ShowExpr)
 forall a. Parser [Token] a -&gt; Parser [Token] a
 </span><a href="L3.TokenParsec.html#parens"><span class="hs-identifier hs-var">parens</span></a></span><span> </span><span class="annot"><span class="annottext">Parser [Token] (Name, ShowExpr)
 </span><a href="L3.Parser.html#typE"><span class="hs-identifier hs-var">typE</span></a></span><span>
-</span><span id="line-51"></span><span>        </span><span class="annot"><span class="annottext">Token
+</span><span id="line-74"></span><span>        </span><span class="annot"><span class="annottext">Token
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Token -&gt; Parser [Token] Token
 </span><a href="L3.TokenParsec.html#one"><span class="hs-identifier hs-var">one</span></a></span><span> </span><span class="annot"><span class="annottext">Token
 </span><a href="L3.Lexer.html#Arrow"><span class="hs-identifier hs-var">Arrow</span></a></span><span>
-</span><span id="line-52"></span><span>        </span><span class="annot"><span class="annottext">(Name, ShowExpr) -&gt; Parser [Token] (Name, ShowExpr)
+</span><span id="line-75"></span><span>        </span><span class="annot"><span class="annottext">(Name, ShowExpr) -&gt; Parser [Token] (Name, ShowExpr)
 forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
 </span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Name
-</span><a href="#local-6989586621679088727"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088726"><span class="hs-identifier hs-var">&#964;</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-53"></span><span>
-</span><span id="line-54"></span><span>    </span><span class="hs-comment">-- type expression</span><span>
-</span><span id="line-55"></span><span>    </span><span class="hs-comment">-- T :: n : A</span><span>
-</span><span id="line-56"></span><span>    </span><span class="annot"><a href="L3.Parser.html#typE"><span class="hs-identifier hs-type">typE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.html#Name"><span class="hs-identifier hs-type">Name</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-57"></span><span>    </span><span id="typE"><span class="annot"><span class="annottext">typE :: Parser [Token] (Name, ShowExpr)
-</span><a href="L3.Parser.html#typE"><span class="hs-identifier hs-var hs-var">typE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-58"></span><span>        </span><span id="local-6989586621679088722"><span class="annot"><span class="annottext">Token
-</span><a href="#local-6989586621679088722"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] Token
+</span><a href="#local-6989586621679105945"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105944"><span class="hs-identifier hs-var">&#964;</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-76"></span><span>
+</span><span id="line-77"></span><span>    </span><span class="hs-comment">-- |Type expression, a symbol has type expr</span><span>
+</span><span id="line-78"></span><span>    </span><span class="hs-comment">-- &#964; :: s:S</span><span>
+</span><span id="line-79"></span><span>    </span><span class="annot"><a href="L3.Parser.html#typE"><span class="hs-identifier hs-type">typE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.html#Name"><span class="hs-identifier hs-type">Name</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-80"></span><span>    </span><span id="typE"><span class="annot"><span class="annottext">typE :: Parser [Token] (Name, ShowExpr)
+</span><a href="L3.Parser.html#typE"><span class="hs-identifier hs-var hs-var">typE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] (Name, ShowExpr)
+-&gt; Parser [Token] (Name, ShowExpr)
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105940"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105940"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;typE &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105940"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] (Name, ShowExpr)
+</span><a href="L3.Parser.html#typE%27"><span class="hs-identifier hs-var">typE'</span></a></span><span>
+</span><span id="line-81"></span><span>    </span><span id="typE%27"><span class="annot"><span class="annottext">typE' :: Parser [Token] (Name, ShowExpr)
+</span><a href="L3.Parser.html#typE%27"><span class="hs-identifier hs-var hs-var">typE'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-82"></span><span>        </span><span id="local-6989586621679105938"><span class="annot"><span class="annottext">Token
+</span><a href="#local-6989586621679105938"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] Token
 </span><a href="L3.TokenParsec.html#symbol"><span class="hs-identifier hs-var">symbol</span></a></span><span>
-</span><span id="line-59"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Token
-</span><a href="#local-6989586621679088722"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
-</span><span id="line-60"></span><span>          </span><span class="hs-special">(</span><span class="annot"><a href="L3.Lexer.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span> </span><span id="local-6989586621679088719"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088719"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-61"></span><span>            </span><span class="annot"><span class="annottext">Token -&gt; Parser [Token] Token
+</span><span id="line-83"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Token
+</span><a href="#local-6989586621679105938"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-84"></span><span>          </span><span class="hs-special">(</span><span class="annot"><a href="L3.Lexer.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span> </span><span id="local-6989586621679105935"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105935"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-85"></span><span>            </span><span class="annot"><span class="annottext">Token -&gt; Parser [Token] Token
 </span><a href="L3.TokenParsec.html#one"><span class="hs-identifier hs-var">one</span></a></span><span> </span><span class="annot"><span class="annottext">Token
 </span><a href="L3.Lexer.html#HasType"><span class="hs-identifier hs-var">HasType</span></a></span><span>
-</span><span id="line-62"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Name
+</span><span id="line-86"></span><span>            </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Name
 </span><a href="L3.Core.html#Name"><span class="hs-identifier hs-var">Name</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088719"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; (Name, ShowExpr))
+</span><a href="#local-6989586621679105935"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">,</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; (Name, ShowExpr))
 -&gt; Parser [Token] ShowExpr -&gt; Parser [Token] (Name, ShowExpr)
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#sugarE"><span class="hs-identifier hs-var">sugarE</span></a></span><span>
-</span><span id="line-63"></span><span>          </span><span class="annot"><span class="annottext">Token
+</span><span id="line-87"></span><span>          </span><span class="annot"><span class="annottext">Token
 </span><span class="hs-identifier">_</span></span><span>          </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser [Token] (Name, ShowExpr)
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a
 </span><span class="hs-identifier hs-var">empty</span></span><span>
-</span><span id="line-64"></span><span>
-</span><span id="line-65"></span><span>    </span><span class="annot"><a href="L3.Parser.html#star"><span class="hs-identifier hs-type">star</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-66"></span><span>    </span><span id="star"><span class="annot"><span class="annottext">star :: Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#star"><span class="hs-identifier hs-var hs-var">star</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-67"></span><span>        </span><span class="annot"><span class="annottext">Token -&gt; Parser [Token] Token
+</span><span id="line-88"></span><span>
+</span><span id="line-89"></span><span>
+</span><span id="line-90"></span><span>    </span><span class="hs-comment">-- |Star axiom</span><span>
+</span><span id="line-91"></span><span>    </span><span class="hs-comment">-- * :: Star</span><span>
+</span><span id="line-92"></span><span>    </span><span class="annot"><a href="L3.Parser.html#star"><span class="hs-identifier hs-type">star</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-93"></span><span>    </span><span id="star"><span class="annot"><span class="annottext">star :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#star"><span class="hs-identifier hs-var hs-var">star</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105930"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105930"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;star &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105930"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+forall a. Parser [Token] (Expr a)
+</span><a href="L3.Parser.html#star%27"><span class="hs-identifier hs-var">star'</span></a></span><span>
+</span><span id="line-94"></span><span>    </span><span id="star%27"><span class="annot"><span class="annottext">star' :: Parser [Token] (Expr a)
+</span><a href="L3.Parser.html#star%27"><span class="hs-identifier hs-var hs-var">star'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-95"></span><span>        </span><span class="annot"><span class="annottext">Token -&gt; Parser [Token] Token
 </span><a href="L3.TokenParsec.html#one"><span class="hs-identifier hs-var">one</span></a></span><span> </span><span class="annot"><span class="annottext">Token
 </span><a href="L3.Lexer.html#StarT"><span class="hs-identifier hs-var">StarT</span></a></span><span>
-</span><span id="line-68"></span><span>        </span><span class="annot"><span class="annottext">ShowExpr -&gt; Parser [Token] ShowExpr
+</span><span id="line-96"></span><span>        </span><span class="annot"><span class="annottext">Expr a -&gt; Parser [Token] (Expr a)
 forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
-</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">Expr a
 forall a. Expr a
 </span><a href="L3.Core.html#Star"><span class="hs-identifier hs-var">Star</span></a></span><span>
-</span><span id="line-69"></span><span>    </span><span class="annot"><a href="L3.Parser.html#box"><span class="hs-identifier hs-type">box</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-70"></span><span>    </span><span id="box"><span class="annot"><span class="annottext">box :: Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#box"><span class="hs-identifier hs-var hs-var">box</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-71"></span><span>        </span><span class="annot"><span class="annottext">Token -&gt; Parser [Token] Token
+</span><span id="line-97"></span><span>
+</span><span id="line-98"></span><span>    </span><span class="hs-comment">-- |Box axiom</span><span>
+</span><span id="line-99"></span><span>    </span><span class="hs-comment">-- # :: Box</span><span>
+</span><span id="line-100"></span><span>    </span><span class="annot"><a href="L3.Parser.html#box"><span class="hs-identifier hs-type">box</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-101"></span><span>    </span><span id="box"><span class="annot"><span class="annottext">box :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#box"><span class="hs-identifier hs-var hs-var">box</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105926"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105926"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;box &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105926"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+forall a. Parser [Token] (Expr a)
+</span><a href="L3.Parser.html#box%27"><span class="hs-identifier hs-var">box'</span></a></span><span>
+</span><span id="line-102"></span><span>    </span><span id="box%27"><span class="annot"><span class="annottext">box' :: Parser [Token] (Expr a)
+</span><a href="L3.Parser.html#box%27"><span class="hs-identifier hs-var hs-var">box'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-103"></span><span>        </span><span class="annot"><span class="annottext">Token -&gt; Parser [Token] Token
 </span><a href="L3.TokenParsec.html#one"><span class="hs-identifier hs-var">one</span></a></span><span> </span><span class="annot"><span class="annottext">Token
 </span><a href="L3.Lexer.html#BoxT"><span class="hs-identifier hs-var">BoxT</span></a></span><span>
-</span><span id="line-72"></span><span>        </span><span class="annot"><span class="annottext">ShowExpr -&gt; Parser [Token] ShowExpr
+</span><span id="line-104"></span><span>        </span><span class="annot"><span class="annottext">Expr a -&gt; Parser [Token] (Expr a)
 forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
-</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">Expr a
 forall a. Expr a
 </span><a href="L3.Core.html#Box"><span class="hs-identifier hs-var">Box</span></a></span><span>
-</span><span id="line-73"></span><span>
-</span><span id="line-74"></span><span>    </span><span class="annot"><a href="L3.Parser.html#var"><span class="hs-identifier hs-type">var</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-75"></span><span>    </span><span id="var"><span class="annot"><span class="annottext">var :: Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#var"><span class="hs-identifier hs-var hs-var">var</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-76"></span><span>        </span><span id="local-6989586621679088710"><span class="annot"><span class="annottext">Token
-</span><a href="#local-6989586621679088710"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] Token
+</span><span id="line-105"></span><span>
+</span><span id="line-106"></span><span>    </span><span class="hs-comment">-- |Variable axiom</span><span>
+</span><span id="line-107"></span><span>    </span><span class="hs-comment">-- s :: Var s</span><span>
+</span><span id="line-108"></span><span>    </span><span class="annot"><a href="L3.Parser.html#var"><span class="hs-identifier hs-type">var</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-109"></span><span>    </span><span id="var"><span class="annot"><span class="annottext">var :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#var"><span class="hs-identifier hs-var hs-var">var</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105922"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105922"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;var &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105922"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#var%27"><span class="hs-identifier hs-var">var'</span></a></span><span>
+</span><span id="line-110"></span><span>    </span><span id="var%27"><span class="annot"><span class="annottext">var' :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#var%27"><span class="hs-identifier hs-var hs-var">var'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-111"></span><span>        </span><span id="local-6989586621679105920"><span class="annot"><span class="annottext">Token
+</span><a href="#local-6989586621679105920"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] Token
 </span><a href="L3.TokenParsec.html#symbol"><span class="hs-identifier hs-var">symbol</span></a></span><span>
-</span><span id="line-77"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Token
-</span><a href="#local-6989586621679088710"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
-</span><span id="line-78"></span><span>          </span><span class="hs-special">(</span><span class="annot"><a href="L3.Lexer.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span> </span><span id="local-6989586621679088709"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088709"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; Parser [Token] ShowExpr
+</span><span id="line-112"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">Token
+</span><a href="#local-6989586621679105920"><span class="hs-identifier hs-var">t</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-113"></span><span>          </span><span class="hs-special">(</span><span class="annot"><a href="L3.Lexer.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span> </span><span id="local-6989586621679105919"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105919"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
 </span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; Parser [Token] ShowExpr)
 -&gt; ShowExpr -&gt; Parser [Token] ShowExpr
@@ -227,18 +403,33 @@ forall a. a -&gt; Expr a
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Name
 </span><a href="L3.Core.html#Name"><span class="hs-identifier hs-var">Name</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088709"><span class="hs-identifier hs-var">s</span></a></span><span>
-</span><span id="line-79"></span><span>          </span><span class="annot"><span class="annottext">Token
+</span><a href="#local-6989586621679105919"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-114"></span><span>          </span><span class="annot"><span class="annottext">Token
 </span><span class="hs-identifier">_</span></span><span>          </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a
 </span><span class="hs-identifier hs-var">empty</span></span><span>
-</span><span id="line-80"></span><span>    </span><span class="annot"><a href="L3.Parser.html#nsVar"><span class="hs-identifier hs-type">nsVar</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-81"></span><span>    </span><span id="nsVar"><span class="annot"><span class="annottext">nsVar :: Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#nsVar"><span class="hs-identifier hs-var hs-var">nsVar</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-82"></span><span>        </span><span id="local-6989586621679088707"><span class="annot"><span class="annottext">Token
-</span><a href="#local-6989586621679088707"><span class="hs-identifier hs-var">ns</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] Token
+</span><span id="line-115"></span><span>    </span><span class="hs-comment">-- |Namespaced-variable axiom</span><span>
+</span><span id="line-116"></span><span>    </span><span class="hs-comment">-- n@s :: Var n@s</span><span>
+</span><span id="line-117"></span><span>    </span><span class="annot"><a href="L3.Parser.html#nsVar"><span class="hs-identifier hs-type">nsVar</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-118"></span><span>    </span><span id="nsVar"><span class="annot"><span class="annottext">nsVar :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#nsVar"><span class="hs-identifier hs-var hs-var">nsVar</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105917"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105917"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;nsVar &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105917"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#nsVar%27"><span class="hs-identifier hs-var">nsVar'</span></a></span><span>
+</span><span id="line-119"></span><span>    </span><span id="nsVar%27"><span class="annot"><span class="annottext">nsVar' :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#nsVar%27"><span class="hs-identifier hs-var hs-var">nsVar'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-120"></span><span>        </span><span id="local-6989586621679105915"><span class="annot"><span class="annottext">Token
+</span><a href="#local-6989586621679105915"><span class="hs-identifier hs-var">ns</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] Token
 </span><a href="L3.TokenParsec.html#symbol"><span class="hs-identifier hs-var">symbol</span></a></span><span>
-</span><span id="line-83"></span><span>        </span><span class="annot"><span class="annottext">Either Token Any
+</span><span id="line-121"></span><span>        </span><span class="annot"><span class="annottext">Either Token Any
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Token -&gt; Either Token Any
 forall a b. a -&gt; Either a b
 </span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">(Token -&gt; Either Token Any)
@@ -247,19 +438,19 @@ forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Token -&gt; Parser [Token] Token
 </span><a href="L3.TokenParsec.html#one"><span class="hs-identifier hs-var">one</span></a></span><span> </span><span class="annot"><span class="annottext">Token
 </span><a href="L3.Lexer.html#At"><span class="hs-identifier hs-var">At</span></a></span><span>
-</span><span id="line-84"></span><span>        </span><span id="local-6989586621679088705"><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088705"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><span id="line-122"></span><span>        </span><span id="local-6989586621679105913"><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105913"><span class="hs-identifier hs-var">t</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#var"><span class="hs-identifier hs-var">var</span></a></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 -&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
 </span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#nsVar"><span class="hs-identifier hs-var">nsVar</span></a></span><span>
-</span><span id="line-85"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Token
-</span><a href="#local-6989586621679088707"><span class="hs-identifier hs-var">ns</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088705"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">of</span><span>
-</span><span id="line-86"></span><span>          </span><span class="hs-special">(</span><span class="annot"><a href="L3.Lexer.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span> </span><span id="local-6989586621679088704"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088704"><span class="hs-identifier hs-var">n</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="L3.Core.html#Var"><span class="hs-identifier hs-type">Var</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.html#Name"><span class="hs-identifier hs-type">Name</span></a></span><span> </span><span id="local-6989586621679088703"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088703"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; Parser [Token] ShowExpr
+</span><span id="line-123"></span><span>        </span><span class="hs-keyword">case</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Token
+</span><a href="#local-6989586621679105915"><span class="hs-identifier hs-var">ns</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105913"><span class="hs-identifier hs-var">t</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-124"></span><span>          </span><span class="hs-special">(</span><span class="annot"><a href="L3.Lexer.html#Symbol"><span class="hs-identifier hs-type">Symbol</span></a></span><span> </span><span id="local-6989586621679105912"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105912"><span class="hs-identifier hs-var">n</span></a></span></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="L3.Core.html#Var"><span class="hs-identifier hs-type">Var</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.html#Name"><span class="hs-identifier hs-type">Name</span></a></span><span> </span><span id="local-6989586621679105911"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105911"><span class="hs-identifier hs-var">s</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
 </span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; Parser [Token] ShowExpr)
 -&gt; ShowExpr -&gt; Parser [Token] ShowExpr
@@ -272,78 +463,127 @@ forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><a href="L3.Core.html#Name"><span class="hs-identifier hs-var">Name</span></a></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Name) -&gt; String -&gt; Name
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088704"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679105912"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;@&quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088703"><span class="hs-identifier hs-var">s</span></a></span><span>
-</span><span id="line-87"></span><span>          </span><span class="annot"><span class="annottext">(Token, ShowExpr)
+</span><a href="#local-6989586621679105911"><span class="hs-identifier hs-var">s</span></a></span><span>
+</span><span id="line-125"></span><span>          </span><span class="annot"><span class="annottext">(Token, ShowExpr)
 </span><span class="hs-identifier">_</span></span><span>                        </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a
 </span><span class="hs-identifier hs-var">empty</span></span><span>
-</span><span id="line-88"></span><span>
-</span><span id="line-89"></span><span>    </span><span class="annot"><a href="L3.Parser.html#lamE"><span class="hs-identifier hs-type">lamE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-90"></span><span>    </span><span id="lamE"><span class="annot"><span class="annottext">lamE :: Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#lamE"><span class="hs-identifier hs-var hs-var">lamE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-91"></span><span>        </span><span class="annot"><span class="annottext">Token
+</span><span id="line-126"></span><span>
+</span><span id="line-127"></span><span>    </span><span class="hs-comment">-- |Lambda function</span><span>
+</span><span id="line-128"></span><span>    </span><span class="hs-comment">-- &#955;(s:S).S :: Lam s S S</span><span>
+</span><span id="line-129"></span><span>    </span><span class="annot"><a href="L3.Parser.html#lamE"><span class="hs-identifier hs-type">lamE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-130"></span><span>    </span><span id="lamE"><span class="annot"><span class="annottext">lamE :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#lamE"><span class="hs-identifier hs-var hs-var">lamE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105910"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105910"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;lamE &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105910"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#lamE%27"><span class="hs-identifier hs-var">lamE'</span></a></span><span>
+</span><span id="line-131"></span><span>    </span><span id="lamE%27"><span class="annot"><span class="annottext">lamE' :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#lamE%27"><span class="hs-identifier hs-var hs-var">lamE'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-132"></span><span>        </span><span class="annot"><span class="annottext">Token
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Token -&gt; Parser [Token] Token
 </span><a href="L3.TokenParsec.html#one"><span class="hs-identifier hs-var">one</span></a></span><span> </span><span class="annot"><span class="annottext">Token
 </span><a href="L3.Lexer.html#LambdaT"><span class="hs-identifier hs-var">LambdaT</span></a></span><span>
-</span><span id="line-92"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679088701"><span class="annot"><span class="annottext">Name
-</span><a href="#local-6989586621679088701"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679088700"><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088700"><span class="hs-identifier hs-var">&#964;</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] (Name, ShowExpr)
+</span><span id="line-133"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679105907"><span class="annot"><span class="annottext">Name
+</span><a href="#local-6989586621679105907"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679105906"><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105906"><span class="hs-identifier hs-var">&#964;</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] (Name, ShowExpr)
 </span><a href="L3.Parser.html#arrE"><span class="hs-identifier hs-var">arrE</span></a></span><span>
-</span><span id="line-93"></span><span>        </span><span class="annot"><span class="annottext">Name -&gt; ShowExpr -&gt; ShowExpr -&gt; ShowExpr
+</span><span id="line-134"></span><span>        </span><span class="annot"><span class="annottext">Name -&gt; ShowExpr -&gt; ShowExpr -&gt; ShowExpr
 forall a. a -&gt; Expr a -&gt; Expr a -&gt; Expr a
 </span><a href="L3.Core.html#Lam"><span class="hs-identifier hs-var">Lam</span></a></span><span> </span><span class="annot"><span class="annottext">Name
-</span><a href="#local-6989586621679088701"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088700"><span class="hs-identifier hs-var">&#964;</span></a></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; ShowExpr)
+</span><a href="#local-6989586621679105907"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105906"><span class="hs-identifier hs-var">&#964;</span></a></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; ShowExpr)
 -&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#sugarE"><span class="hs-identifier hs-var">sugarE</span></a></span><span>
-</span><span id="line-94"></span><span>
-</span><span id="line-95"></span><span>    </span><span class="annot"><a href="L3.Parser.html#piE"><span class="hs-identifier hs-type">piE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-96"></span><span>    </span><span id="piE"><span class="annot"><span class="annottext">piE :: Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#piE"><span class="hs-identifier hs-var hs-var">piE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-97"></span><span>        </span><span class="annot"><span class="annottext">Token
+</span><span id="line-135"></span><span>
+</span><span id="line-136"></span><span>    </span><span class="hs-comment">-- |Pi function</span><span>
+</span><span id="line-137"></span><span>    </span><span class="hs-comment">-- &#960;(s:S).S :: Lam s S S</span><span>
+</span><span id="line-138"></span><span>    </span><span class="annot"><a href="L3.Parser.html#piE"><span class="hs-identifier hs-type">piE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-139"></span><span>    </span><span id="piE"><span class="annot"><span class="annottext">piE :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#piE"><span class="hs-identifier hs-var hs-var">piE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105904"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105904"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;piE &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105904"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#piE%27"><span class="hs-identifier hs-var">piE'</span></a></span><span>
+</span><span id="line-140"></span><span>    </span><span id="piE%27"><span class="annot"><span class="annottext">piE' :: Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#piE%27"><span class="hs-identifier hs-var hs-var">piE'</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-141"></span><span>        </span><span class="annot"><span class="annottext">Token
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Token -&gt; Parser [Token] Token
 </span><a href="L3.TokenParsec.html#one"><span class="hs-identifier hs-var">one</span></a></span><span> </span><span class="annot"><span class="annottext">Token
 </span><a href="L3.Lexer.html#PiT"><span class="hs-identifier hs-var">PiT</span></a></span><span>
-</span><span id="line-98"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679088697"><span class="annot"><span class="annottext">Name
-</span><a href="#local-6989586621679088697"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679088696"><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088696"><span class="hs-identifier hs-var">&#964;</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] (Name, ShowExpr)
+</span><span id="line-142"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679105901"><span class="annot"><span class="annottext">Name
+</span><a href="#local-6989586621679105901"><span class="hs-identifier hs-var">i</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679105900"><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105900"><span class="hs-identifier hs-var">&#964;</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] (Name, ShowExpr)
 </span><a href="L3.Parser.html#arrE"><span class="hs-identifier hs-var">arrE</span></a></span><span>
-</span><span id="line-99"></span><span>        </span><span class="annot"><span class="annottext">Name -&gt; ShowExpr -&gt; ShowExpr -&gt; ShowExpr
+</span><span id="line-143"></span><span>        </span><span class="annot"><span class="annottext">Name -&gt; ShowExpr -&gt; ShowExpr -&gt; ShowExpr
 forall a. a -&gt; Expr a -&gt; Expr a -&gt; Expr a
 </span><a href="L3.Core.html#Pi"><span class="hs-identifier hs-var">Pi</span></a></span><span> </span><span class="annot"><span class="annottext">Name
-</span><a href="#local-6989586621679088697"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088696"><span class="hs-identifier hs-var">&#964;</span></a></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; ShowExpr)
+</span><a href="#local-6989586621679105901"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105900"><span class="hs-identifier hs-var">&#964;</span></a></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; ShowExpr)
 -&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#sugarE"><span class="hs-identifier hs-var">sugarE</span></a></span><span>
-</span><span id="line-100"></span><span>
-</span><span id="line-101"></span><span>    </span><span class="annot"><a href="L3.Parser.html#anonPiE"><span class="hs-identifier hs-type">anonPiE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
-</span><span id="line-102"></span><span>    </span><span id="anonPiE"><span class="annot"><span class="annottext">anonPiE :: Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#anonPiE"><span class="hs-identifier hs-var hs-var">anonPiE</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-103"></span><span>        </span><span id="local-6989586621679088694"><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088694"><span class="hs-identifier hs-var">&#964;</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
-</span><a href="L3.Parser.html#appE"><span class="hs-identifier hs-var">appE</span></a></span><span>
-</span><span id="line-104"></span><span>        </span><span class="annot"><span class="annottext">Token
+</span><span id="line-144"></span><span>
+</span><span id="line-145"></span><span>    </span><span class="hs-comment">-- |Anonymous-pi function, where the name is unused and therefore not written</span><span>
+</span><span id="line-146"></span><span>    </span><span class="hs-comment">-- Note the implicit expression argument, as otherwise sugar = (app &gt;&gt; arrow &gt;&gt; sugar) &lt;|&gt; app</span><span>
+</span><span id="line-147"></span><span>    </span><span class="hs-comment">-- If this were not the case, all expressions are parsed as anonymous pis and will fail at the final arrow</span><span>
+</span><span id="line-148"></span><span>    </span><span class="hs-comment">-- This is an exponential slowdown</span><span>
+</span><span id="line-149"></span><span>    </span><span class="hs-comment">-- S. :: &#960;(_:S).S</span><span>
+</span><span id="line-150"></span><span>    </span><span class="annot"><a href="L3.Parser.html#anonPiE"><span class="hs-identifier hs-type">anonPiE</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Lexer.html#Token"><span class="hs-identifier hs-type">Token</span></a></span><span class="hs-special">]</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span>
+</span><span id="line-151"></span><span>    </span><span id="anonPiE"><span class="annot"><span class="annottext">anonPiE :: ShowExpr -&gt; Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#anonPiE"><span class="hs-identifier hs-var hs-var">anonPiE</span></a></span></span><span> </span><span id="local-6989586621679105898"><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105898"><span class="hs-identifier hs-var">&#964;</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; String)
+-&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
+forall i o. (i -&gt; String) -&gt; Parser i o -&gt; Parser i o
+</span><a href="L3.Parser.html#debugParserM"><span class="hs-identifier hs-var">debugParserM</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span id="local-6989586621679105897"><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105897"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;anonPiE &quot;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; String
+forall a. Show a =&gt; a -&gt; String
+</span><span class="hs-identifier hs-var">show</span></span><span> </span><span class="annot"><span class="annottext">[Token]
+</span><a href="#local-6989586621679105897"><span class="hs-identifier hs-var">i</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ShowExpr -&gt; Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#anonPiE%27"><span class="hs-identifier hs-var">anonPiE'</span></a></span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105898"><span class="hs-identifier hs-var">&#964;</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-152"></span><span>    </span><span id="anonPiE%27"><span class="annot"><span class="annottext">anonPiE' :: ShowExpr -&gt; Parser [Token] ShowExpr
+</span><a href="L3.Parser.html#anonPiE%27"><span class="hs-identifier hs-var hs-var">anonPiE'</span></a></span></span><span> </span><span id="local-6989586621679105895"><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679105895"><span class="hs-identifier hs-var">&#964;</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-153"></span><span>        </span><span class="hs-comment">-- &#964; &lt;- appE</span><span>
+</span><span id="line-154"></span><span>        </span><span class="annot"><span class="annottext">Token
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Token -&gt; Parser [Token] Token
 </span><a href="L3.TokenParsec.html#one"><span class="hs-identifier hs-var">one</span></a></span><span> </span><span class="annot"><span class="annottext">Token
 </span><a href="L3.Lexer.html#Arrow"><span class="hs-identifier hs-var">Arrow</span></a></span><span>
-</span><span id="line-105"></span><span>        </span><span class="annot"><span class="annottext">Name -&gt; ShowExpr -&gt; ShowExpr -&gt; ShowExpr
+</span><span id="line-155"></span><span>        </span><span class="annot"><span class="annottext">Name -&gt; ShowExpr -&gt; ShowExpr -&gt; ShowExpr
 forall a. a -&gt; Expr a -&gt; Expr a -&gt; Expr a
 </span><a href="L3.Core.html#Pi"><span class="hs-identifier hs-var">Pi</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Name
 </span><a href="L3.Core.html#Name"><span class="hs-identifier hs-var">Name</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;_&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">ShowExpr
-</span><a href="#local-6989586621679088694"><span class="hs-identifier hs-var">&#964;</span></a></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; ShowExpr)
+</span><a href="#local-6989586621679105895"><span class="hs-identifier hs-var">&#964;</span></a></span><span> </span><span class="annot"><span class="annottext">(ShowExpr -&gt; ShowExpr)
 -&gt; Parser [Token] ShowExpr -&gt; Parser [Token] ShowExpr
 forall (f :: * -&gt; *) a b. Functor f =&gt; (a -&gt; b) -&gt; f a -&gt; f b
 </span><span class="hs-operator hs-var">&lt;$&gt;</span></span><span> </span><span class="annot"><span class="annottext">Parser [Token] ShowExpr
 </span><a href="L3.Parser.html#sugarE"><span class="hs-identifier hs-var">sugarE</span></a></span><span>
-</span><span id="line-106"></span></pre></body></html>
+</span><span id="line-156"></span></pre></body></html>

@@ -22,7 +22,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
 
 
     -- |Parse a string to a named expression (using string labels)
-    -- |Strip comments here, as they apply inside any context and are difficult to deal with otherwise
+    -- Strip comments here, as they apply inside any context and are difficult to deal with otherwise
     parseExpr :: [Token] -> Result ShowExpr
     parseExpr tks = debugParser ("parseExpr " ++ show tks) (parseExpr' tks)
     parseExpr' tks = es
@@ -32,7 +32,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
               ann _           = False
 
     -- |Sugared expression, injection point for additional syntax niceties
-    -- |S :: [π(_:]A[)].S  | A
+    -- S :: [π(_:]A[)].S  | A
     sugarE :: Parser [Token] ShowExpr
     sugarE = debugParserM (\i -> "sugarE " ++ show i) sugarE'
     sugarE' = do
@@ -41,7 +41,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         pure $ fromMaybe ex anonPi
 
     -- |Applicative expression, unknown and unbounded length
-    -- |A :: F [app F ..]
+    -- A :: F [app F ..]
     appE :: Parser [Token] ShowExpr
     appE = debugParserM (\i -> "appE " ++ show i) appE'
     appE' = do
@@ -49,7 +49,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         return $ foldl1 App exprs
 
     -- |Function expression
-    -- |F :: λ(s:τ).E | π(s:τ).E | T | (S)
+    -- F :: λ(s:τ).E | π(s:τ).E | T | (S)
     funE :: Parser [Token] ShowExpr
     funE = debugParserM (\i -> "funE " ++ show i) funE'
     funE' = lamE
@@ -58,7 +58,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
        <|> parens sugarE
 
     -- |Terminal expression, bounded in length and with no children
-    -- |T :: * | # | n@v | v
+    -- T :: * | # | n@v | v
     termE :: Parser [Token] ShowExpr
     termE = debugParserM (\i -> "termE " ++ show i) termE'
     termE' = star
@@ -66,7 +66,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         <|> nsVar <|> var
 
     -- |Arrow expression, a component of functions
-    -- |(->) :: (s:τ).
+    -- (->) :: (s:τ).
     arrE :: Parser [Token] (Name, ShowExpr)
     arrE = debugParserM (\i -> "arrE " ++ show i) arrE'
     arrE' = do
@@ -75,7 +75,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         pure (i, τ)
 
     -- |Type expression, a symbol has type expr
-    -- |τ :: s:S
+    -- τ :: s:S
     typE :: Parser [Token] (Name, ShowExpr)
     typE = debugParserM (\i -> "typE " ++ show i) typE'
     typE' = do
@@ -88,7 +88,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
 
 
     -- |Star axiom
-    -- |* :: Star
+    -- * :: Star
     star :: Parser [Token] ShowExpr
     star = debugParserM (\i -> "star " ++ show i) star'
     star' = do
@@ -96,7 +96,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         pure Star
 
     -- |Box axiom
-    -- |# :: Box
+    -- # :: Box
     box :: Parser [Token] ShowExpr
     box = debugParserM (\i -> "box " ++ show i) box'
     box' = do
@@ -104,7 +104,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         pure Box
 
     -- |Variable axiom
-    -- |s :: Var s
+    -- s :: Var s
     var :: Parser [Token] ShowExpr
     var = debugParserM (\i -> "var " ++ show i) var'
     var' = do
@@ -113,7 +113,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
           (Symbol s) -> pure $ Var $ Name s
           _          -> empty
     -- |Namespaced-variable axiom
-    -- |n@s :: Var n@s
+    -- n@s :: Var n@s
     nsVar :: Parser [Token] ShowExpr
     nsVar = debugParserM (\i -> "nsVar " ++ show i) nsVar'
     nsVar' = do
@@ -125,7 +125,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
           _                        -> empty
 
     -- |Lambda function
-    -- |λ(s:S).S :: Lam s S S
+    -- λ(s:S).S :: Lam s S S
     lamE :: Parser [Token] ShowExpr
     lamE = debugParserM (\i -> "lamE " ++ show i) lamE'
     lamE' = do
@@ -134,7 +134,7 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         Lam i τ <$> sugarE
 
     -- |Pi function
-    -- |π(s:S).S :: Lam s S S
+    -- π(s:S).S :: Lam s S S
     piE :: Parser [Token] ShowExpr
     piE = debugParserM (\i -> "piE " ++ show i) piE'
     piE' = do
@@ -143,10 +143,10 @@ module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
         Pi i τ <$> sugarE
 
     -- |Anonymous-pi function, where the name is unused and therefore not written
-    -- |Note the implicit expression argument, as otherwise sugar = (app >> arrow >> sugar) <|> app
-    -- |If this were not the case, all expressions are parsed as anonymous pis and will fail at the final arrow
-    -- |This is an exponential slowdown
-    -- |S. :: π(_:S).S
+    -- Note the implicit expression argument, as otherwise sugar = (app >> arrow >> sugar) <|> app
+    -- If this were not the case, all expressions are parsed as anonymous pis and will fail at the final arrow
+    -- This is an exponential slowdown
+    -- S. :: π(_:S).S
     anonPiE :: ShowExpr -> Parser [Token] ShowExpr
     anonPiE τ = debugParserM (\i -> "anonPiE " ++ show i) (anonPiE' τ)
     anonPiE' τ = do

@@ -50,7 +50,7 @@ module L3.Loader (module L3.Loader, module L3.Parser) where
               eCtx = map (first (Name . takeNamespacedFileName)) preludeExprs
 
     -- |Fold the prelude context through lambda application into a type-context and expression-context-mapper.
-    -- |That is, `let a = x in b` <=> `(λ a -> b) x`
+    -- That is, `let a = x in b` <=> `(λ a -> b) x`
     wrapPrelude :: [(FilePath, ByteString)] -> (ShowCtx, ShowExpr -> ShowExpr)
     wrapPrelude embedded = debugLoader ("wrapPrelude " ++ show embedded) (wrapPrelude' embedded)
     wrapPrelude' embedded = (tCtx, foldl (\ f (n, e) x -> Lam n (throwL $ inferType0 e) (f x) `App` e) id eCtx)

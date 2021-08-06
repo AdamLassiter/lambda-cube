@@ -1,68 +1,69 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE LambdaCase #-}</span><span>
 </span><span id="line-2"></span><span>
-</span><span id="line-3"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">L3.StringParsec</span><span> </span><span class="hs-special">(</span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="L3.StringParsec.html"><span class="hs-identifier">L3.StringParsec</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="L3.Parsec.html"><span class="hs-identifier">L3.Parsec</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
-</span><span id="line-4"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="L3.Parsec.html"><span class="hs-identifier">L3.Parsec</span></a></span><span>
-</span><span id="line-5"></span><span>
-</span><span id="line-6"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Applicative</span></span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">many</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">some</span></span><span class="hs-special">)</span><span>
-</span><span id="line-7"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Char</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">isDigit</span></span><span class="hs-special">)</span><span>
-</span><span id="line-8"></span><span>
-</span><span id="line-9"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#item"><span class="hs-identifier hs-type">item</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
-</span><span id="line-10"></span><span>    </span><span id="item"><span class="annot"><span class="annottext">item :: Parser String Char
+</span><span id="line-3"></span><span class="hs-comment">-- |Parsec utils for parsing Strings into Strings</span><span>
+</span><span id="line-4"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">L3.StringParsec</span><span> </span><span class="hs-special">(</span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="L3.StringParsec.html"><span class="hs-identifier">L3.StringParsec</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="L3.Parsec.html"><span class="hs-identifier">L3.Parsec</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="L3.Parsec.html"><span class="hs-identifier">L3.Parsec</span></a></span><span>
+</span><span id="line-6"></span><span>
+</span><span id="line-7"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Applicative</span></span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">many</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">some</span></span><span class="hs-special">)</span><span>
+</span><span id="line-8"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Char</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">isDigit</span></span><span class="hs-special">)</span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#item"><span class="hs-identifier hs-type">item</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
+</span><span id="line-11"></span><span>    </span><span id="item"><span class="annot"><span class="annottext">item :: Parser String Char
 </span><a href="L3.StringParsec.html#item"><span class="hs-identifier hs-var hs-var">item</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(String -&gt; [(Char, String)]) -&gt; Parser String Char
 forall i o. (i -&gt; [(o, i)]) -&gt; Parser i o
 </span><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-var">Parser</span></a></span><span> </span><span class="annot"><span class="annottext">((String -&gt; [(Char, String)]) -&gt; Parser String Char)
 -&gt; (String -&gt; [(Char, String)]) -&gt; Parser String Char
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="hs-glyph">\</span><span class="hs-glyph">case</span><span>
-</span><span id="line-11"></span><span>          </span><span class="hs-special">[</span><span class="hs-special">]</span><span>     </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
-</span><span id="line-12"></span><span>          </span><span class="hs-special">(</span><span id="local-6989586621679088086"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679088086"><span class="hs-identifier hs-var">c</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679088085"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088085"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679088086"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088085"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
-</span><span id="line-13"></span><span>
-</span><span id="line-14"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#satisfy"><span class="hs-identifier hs-type">satisfy</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
-</span><span id="line-15"></span><span>    </span><span id="satisfy"><span class="annot"><span class="annottext">satisfy :: (Char -&gt; Bool) -&gt; Parser String Char
-</span><a href="L3.StringParsec.html#satisfy"><span class="hs-identifier hs-var hs-var">satisfy</span></a></span></span><span> </span><span id="local-6989586621679088083"><span class="annot"><span class="annottext">Char -&gt; Bool
-</span><a href="#local-6989586621679088083"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser String Char
+</span><span id="line-12"></span><span>          </span><span class="hs-special">[</span><span class="hs-special">]</span><span>     </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-13"></span><span>          </span><span class="hs-special">(</span><span id="local-6989586621679105134"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679105134"><span class="hs-identifier hs-var">c</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679105133"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105133"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679105134"><span class="hs-identifier hs-var">c</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105133"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#satisfy"><span class="hs-identifier hs-type">satisfy</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
+</span><span id="line-16"></span><span>    </span><span id="satisfy"><span class="annot"><span class="annottext">satisfy :: (Char -&gt; Bool) -&gt; Parser String Char
+</span><a href="L3.StringParsec.html#satisfy"><span class="hs-identifier hs-var hs-var">satisfy</span></a></span></span><span> </span><span id="local-6989586621679105131"><span class="annot"><span class="annottext">Char -&gt; Bool
+</span><a href="#local-6989586621679105131"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser String Char
 </span><a href="L3.StringParsec.html#item"><span class="hs-identifier hs-var">item</span></a></span><span> </span><span class="annot"><span class="annottext">Parser String Char
 -&gt; (Char -&gt; Parser String Char) -&gt; Parser String Char
 forall i o o'. Parser i o -&gt; (o -&gt; Parser i o') -&gt; Parser i o'
-</span><a href="L3.Parsec.html#bind"><span class="hs-operator hs-var">`bind`</span></a></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679088081"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679088081"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
-</span><span id="line-16"></span><span>        </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Bool
-</span><a href="#local-6989586621679088083"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679088081"><span class="hs-identifier hs-var">c</span></a></span><span>
-</span><span id="line-17"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Parser String Char
+</span><a href="L3.Parsec.html#bind"><span class="hs-operator hs-var">`bind`</span></a></span><span> </span><span class="hs-glyph">\</span><span id="local-6989586621679105129"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679105129"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-17"></span><span>        </span><span class="hs-keyword">if</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Bool
+</span><a href="#local-6989586621679105131"><span class="hs-identifier hs-var">p</span></a></span><span> </span><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679105129"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-18"></span><span>        </span><span class="hs-keyword">then</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Parser String Char
 forall o i. o -&gt; Parser i o
 </span><a href="L3.Parsec.html#unit"><span class="hs-keyword hs-var">unit</span></a></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679088081"><span class="hs-identifier hs-var">c</span></a></span><span>
-</span><span id="line-18"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">(String -&gt; [(Char, String)]) -&gt; Parser String Char
+</span><a href="#local-6989586621679105129"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-19"></span><span>        </span><span class="hs-keyword">else</span><span> </span><span class="annot"><span class="annottext">(String -&gt; [(Char, String)]) -&gt; Parser String Char
 forall i o. (i -&gt; [(o, i)]) -&gt; Parser i o
 </span><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-var">Parser</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">[(Char, String)] -&gt; String -&gt; [(Char, String)]
 forall a b. a -&gt; b -&gt; a
 </span><span class="hs-identifier hs-var">const</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span class="hs-special">)</span><span>
-</span><span id="line-19"></span><span>
-</span><span id="line-20"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#oneOf"><span class="hs-identifier hs-type">oneOf</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
-</span><span id="line-21"></span><span>    </span><span id="oneOf"><span class="annot"><span class="annottext">oneOf :: String -&gt; Parser String Char
-</span><a href="L3.StringParsec.html#oneOf"><span class="hs-identifier hs-var hs-var">oneOf</span></a></span></span><span> </span><span id="local-6989586621679088077"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088077"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; Parser String Char
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#oneOf"><span class="hs-identifier hs-type">oneOf</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
+</span><span id="line-22"></span><span>    </span><span id="oneOf"><span class="annot"><span class="annottext">oneOf :: String -&gt; Parser String Char
+</span><a href="L3.StringParsec.html#oneOf"><span class="hs-identifier hs-var hs-var">oneOf</span></a></span></span><span> </span><span id="local-6989586621679105125"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105125"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; Parser String Char
 </span><a href="L3.StringParsec.html#satisfy"><span class="hs-identifier hs-var">satisfy</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; String -&gt; Bool
 forall (t :: * -&gt; *) a. (Foldable t, Eq a) =&gt; a -&gt; t a -&gt; Bool
 </span><span class="hs-operator hs-var">`elem`</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088077"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-22"></span><span>
-</span><span id="line-23"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#char"><span class="hs-identifier hs-type">char</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
-</span><span id="line-24"></span><span>    </span><span id="char"><span class="annot"><span class="annottext">char :: Char -&gt; Parser String Char
-</span><a href="L3.StringParsec.html#char"><span class="hs-identifier hs-var hs-var">char</span></a></span></span><span> </span><span id="local-6989586621679088074"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679088074"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; Parser String Char
+</span><a href="#local-6989586621679105125"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span>
+</span><span id="line-24"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#char"><span class="hs-identifier hs-type">char</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
+</span><span id="line-25"></span><span>    </span><span id="char"><span class="annot"><span class="annottext">char :: Char -&gt; Parser String Char
+</span><a href="L3.StringParsec.html#char"><span class="hs-identifier hs-var hs-var">char</span></a></span></span><span> </span><span id="local-6989586621679105122"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679105122"><span class="hs-identifier hs-var">c</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; Parser String Char
 </span><a href="L3.StringParsec.html#satisfy"><span class="hs-identifier hs-var">satisfy</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679088074"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
+</span><a href="#local-6989586621679105122"><span class="hs-identifier hs-var">c</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Char -&gt; Bool
 forall a. Eq a =&gt; a -&gt; a -&gt; Bool
 </span><span class="hs-operator hs-var">==</span></span><span class="hs-special">)</span><span>
-</span><span id="line-25"></span><span>
-</span><span id="line-26"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#letter"><span class="hs-identifier hs-type">letter</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
-</span><span id="line-27"></span><span>    </span><span id="letter"><span class="annot"><span class="annottext">letter :: Parser String Char
+</span><span id="line-26"></span><span>
+</span><span id="line-27"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#letter"><span class="hs-identifier hs-type">letter</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
+</span><span id="line-28"></span><span>    </span><span id="letter"><span class="annot"><span class="annottext">letter :: Parser String Char
 </span><a href="L3.StringParsec.html#letter"><span class="hs-identifier hs-var hs-var">letter</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; Parser String Char
 </span><a href="L3.StringParsec.html#satisfy"><span class="hs-identifier hs-var">satisfy</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char -&gt; String -&gt; Bool
 forall (t :: * -&gt; *) a. (Foldable t, Eq a) =&gt; a -&gt; t a -&gt; Bool
@@ -84,9 +85,9 @@ forall a. [a] -&gt; [a] -&gt; [a]
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;_&quot;</span></span><span class="hs-special">)</span><span>
-</span><span id="line-28"></span><span>
-</span><span id="line-29"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#natural"><span class="hs-identifier hs-type">natural</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Integer</span></span><span>
-</span><span id="line-30"></span><span>    </span><span id="natural"><span class="annot"><span class="annottext">natural :: Parser String Integer
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#natural"><span class="hs-identifier hs-type">natural</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Integer</span></span><span>
+</span><span id="line-31"></span><span>    </span><span id="natural"><span class="annot"><span class="annottext">natural :: Parser String Integer
 </span><a href="L3.StringParsec.html#natural"><span class="hs-identifier hs-var hs-var">natural</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Integer
 forall a. Read a =&gt; String -&gt; a
 </span><span class="hs-identifier hs-var">read</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Integer)
@@ -97,79 +98,79 @@ forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f [a]
 </span><a href="L3.Parsec.html#some"><span class="hs-identifier hs-var">some</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; Parser String Char
 </span><a href="L3.StringParsec.html#satisfy"><span class="hs-identifier hs-var">satisfy</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Bool
 </span><span class="hs-identifier hs-var">isDigit</span></span><span class="hs-special">)</span><span>
-</span><span id="line-31"></span><span>
-</span><span id="line-32"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#string"><span class="hs-identifier hs-type">string</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
-</span><span id="line-33"></span><span>    </span><span id="string"><span class="annot"><span class="annottext">string :: String -&gt; Parser String String
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#string"><span class="hs-identifier hs-type">string</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-34"></span><span>    </span><span id="string"><span class="annot"><span class="annottext">string :: String -&gt; Parser String String
 </span><a href="L3.StringParsec.html#string"><span class="hs-identifier hs-var hs-var">string</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Parser String String
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
-</span><span id="line-34"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#string"><span class="hs-identifier hs-var">string</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679088067"><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679088067"><span class="hs-identifier hs-var">c</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679088066"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088066"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-35"></span><span>        </span><span class="annot"><span class="annottext">Char
+</span><span id="line-35"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#string"><span class="hs-identifier hs-var">string</span></a></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679105115"><span class="annot"><span class="annottext">Char
+</span><a href="#local-6989586621679105115"><span class="hs-identifier hs-var">c</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679105114"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105114"><span class="hs-identifier hs-var">cs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-36"></span><span>        </span><span class="annot"><span class="annottext">Char
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Char -&gt; Parser String Char
 </span><a href="L3.StringParsec.html#char"><span class="hs-identifier hs-var">char</span></a></span><span> </span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679088067"><span class="hs-identifier hs-var">c</span></a></span><span>
-</span><span id="line-36"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105115"><span class="hs-identifier hs-var">c</span></a></span><span>
+</span><span id="line-37"></span><span>        </span><span class="annot"><span class="annottext">String
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Parser String String
 </span><a href="L3.StringParsec.html#string"><span class="hs-identifier hs-var">string</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088066"><span class="hs-identifier hs-var">cs</span></a></span><span>
-</span><span id="line-37"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Parser String String
+</span><a href="#local-6989586621679105114"><span class="hs-identifier hs-var">cs</span></a></span><span>
+</span><span id="line-38"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Parser String String
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Char
-</span><a href="#local-6989586621679088067"><span class="hs-identifier hs-var">c</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
+</span><a href="#local-6989586621679105115"><span class="hs-identifier hs-var">c</span></a></span><span class="annot"><span class="annottext">Char -&gt; String -&gt; String
 forall a. a -&gt; [a] -&gt; [a]
 </span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088066"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-38"></span><span>
-</span><span id="line-39"></span><span>    </span><span id="local-6989586621679088095"><span class="annot"><a href="L3.StringParsec.html#token"><span class="hs-identifier hs-type">token</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="#local-6989586621679088095"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="#local-6989586621679088095"><span class="hs-identifier hs-type">a</span></a></span></span><span>
-</span><span id="line-40"></span><span>    </span><span id="token"><span class="annot"><span class="annottext">token :: Parser String a -&gt; Parser String a
-</span><a href="L3.StringParsec.html#token"><span class="hs-identifier hs-var hs-var">token</span></a></span></span><span> </span><span id="local-6989586621679088064"><span class="annot"><span class="annottext">Parser String a
-</span><a href="#local-6989586621679088064"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-41"></span><span>        </span><span id="local-6989586621679088063"><span class="annot"><span class="annottext">a
-</span><a href="#local-6989586621679088063"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser String a
-</span><a href="#local-6989586621679088064"><span class="hs-identifier hs-var">p</span></a></span><span>
-</span><span id="line-42"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105114"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span>    </span><span id="local-6989586621679105143"><span class="annot"><a href="L3.StringParsec.html#token"><span class="hs-identifier hs-type">token</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="#local-6989586621679105143"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="#local-6989586621679105143"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-41"></span><span>    </span><span id="token"><span class="annot"><span class="annottext">token :: Parser String a -&gt; Parser String a
+</span><a href="L3.StringParsec.html#token"><span class="hs-identifier hs-var hs-var">token</span></a></span></span><span> </span><span id="local-6989586621679105112"><span class="annot"><span class="annottext">Parser String a
+</span><a href="#local-6989586621679105112"><span class="hs-identifier hs-var">p</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-42"></span><span>        </span><span id="local-6989586621679105111"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679105111"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser String a
+</span><a href="#local-6989586621679105112"><span class="hs-identifier hs-var">p</span></a></span><span>
+</span><span id="line-43"></span><span>        </span><span class="annot"><span class="annottext">String
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser String String
 </span><a href="L3.StringParsec.html#spaces"><span class="hs-identifier hs-var">spaces</span></a></span><span>
-</span><span id="line-43"></span><span>        </span><span class="annot"><span class="annottext">a -&gt; Parser String a
+</span><span id="line-44"></span><span>        </span><span class="annot"><span class="annottext">a -&gt; Parser String a
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">a
-</span><a href="#local-6989586621679088063"><span class="hs-identifier hs-var">a</span></a></span><span>
-</span><span id="line-44"></span><span>
-</span><span id="line-45"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#reserved"><span class="hs-identifier hs-type">reserved</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
-</span><span id="line-46"></span><span>    </span><span id="reserved"><span class="annot"><span class="annottext">reserved :: String -&gt; Parser String String
-</span><a href="L3.StringParsec.html#reserved"><span class="hs-identifier hs-var hs-var">reserved</span></a></span></span><span> </span><span id="local-6989586621679088060"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088060"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser String String -&gt; Parser String String
+</span><a href="#local-6989586621679105111"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#reserved"><span class="hs-identifier hs-type">reserved</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-47"></span><span>    </span><span id="reserved"><span class="annot"><span class="annottext">reserved :: String -&gt; Parser String String
+</span><a href="L3.StringParsec.html#reserved"><span class="hs-identifier hs-var hs-var">reserved</span></a></span></span><span> </span><span id="local-6989586621679105108"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105108"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser String String -&gt; Parser String String
 forall a. Parser String a -&gt; Parser String a
 </span><a href="L3.StringParsec.html#token"><span class="hs-identifier hs-var">token</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Parser String String
 </span><a href="L3.StringParsec.html#string"><span class="hs-identifier hs-var">string</span></a></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088060"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-47"></span><span>
-</span><span id="line-48"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#space"><span class="hs-identifier hs-type">space</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
-</span><span id="line-49"></span><span>    </span><span id="space"><span class="annot"><span class="annottext">space :: Parser String Char
+</span><a href="#local-6989586621679105108"><span class="hs-identifier hs-var">s</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#space"><span class="hs-identifier hs-type">space</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
+</span><span id="line-50"></span><span>    </span><span id="space"><span class="annot"><span class="annottext">space :: Parser String Char
 </span><a href="L3.StringParsec.html#space"><span class="hs-identifier hs-var hs-var">space</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Parser String Char
 </span><a href="L3.StringParsec.html#oneOf"><span class="hs-identifier hs-var">oneOf</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot; \n\r&quot;</span></span><span>
-</span><span id="line-50"></span><span>
-</span><span id="line-51"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#spaces"><span class="hs-identifier hs-type">spaces</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
-</span><span id="line-52"></span><span>    </span><span id="spaces"><span class="annot"><span class="annottext">spaces :: Parser String String
+</span><span id="line-51"></span><span>
+</span><span id="line-52"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#spaces"><span class="hs-identifier hs-type">spaces</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-53"></span><span>    </span><span id="spaces"><span class="annot"><span class="annottext">spaces :: Parser String String
 </span><a href="L3.StringParsec.html#spaces"><span class="hs-identifier hs-var hs-var">spaces</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Parser String Char -&gt; Parser String String
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f [a]
 </span><a href="L3.Parsec.html#many"><span class="hs-identifier hs-var">many</span></a></span><span> </span><span class="annot"><span class="annottext">Parser String Char
 </span><a href="L3.StringParsec.html#space"><span class="hs-identifier hs-var">space</span></a></span><span>
-</span><span id="line-53"></span><span>
-</span><span id="line-54"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#digit"><span class="hs-identifier hs-type">digit</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
-</span><span id="line-55"></span><span>    </span><span id="digit"><span class="annot"><span class="annottext">digit :: Parser String Char
+</span><span id="line-54"></span><span>
+</span><span id="line-55"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#digit"><span class="hs-identifier hs-type">digit</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Char</span></span><span>
+</span><span id="line-56"></span><span>    </span><span id="digit"><span class="annot"><span class="annottext">digit :: Parser String Char
 </span><a href="L3.StringParsec.html#digit"><span class="hs-identifier hs-var hs-var">digit</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(Char -&gt; Bool) -&gt; Parser String Char
 </span><a href="L3.StringParsec.html#satisfy"><span class="hs-identifier hs-var">satisfy</span></a></span><span> </span><span class="annot"><span class="annottext">Char -&gt; Bool
 </span><span class="hs-identifier hs-var">isDigit</span></span><span>
-</span><span id="line-56"></span><span>
-</span><span id="line-57"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#number"><span class="hs-identifier hs-type">number</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
-</span><span id="line-58"></span><span>    </span><span id="number"><span class="annot"><span class="annottext">number :: Parser String Int
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#number"><span class="hs-identifier hs-type">number</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">Int</span></span><span>
+</span><span id="line-59"></span><span>    </span><span id="number"><span class="annot"><span class="annottext">number :: Parser String Int
 </span><a href="L3.StringParsec.html#number"><span class="hs-identifier hs-var hs-var">number</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-59"></span><span>        </span><span id="local-6989586621679088055"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088055"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Parser String String
+</span><span id="line-60"></span><span>        </span><span id="local-6989586621679105103"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105103"><span class="hs-identifier hs-var">s</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Parser String String
 </span><a href="L3.StringParsec.html#string"><span class="hs-identifier hs-var">string</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;-&quot;</span></span><span> </span><span class="annot"><span class="annottext">Parser String String
 -&gt; Parser String String -&gt; Parser String String
@@ -177,59 +178,59 @@ forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f a -&gt; f a
 </span><span class="hs-operator hs-var">&lt;|&gt;</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Parser String String
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
-</span><span id="line-60"></span><span>        </span><span id="local-6989586621679088053"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088053"><span class="hs-identifier hs-var">cs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser String Char -&gt; Parser String String
+</span><span id="line-61"></span><span>        </span><span id="local-6989586621679105101"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105101"><span class="hs-identifier hs-var">cs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser String Char -&gt; Parser String String
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f [a]
 </span><a href="L3.Parsec.html#some"><span class="hs-identifier hs-var">some</span></a></span><span> </span><span class="annot"><span class="annottext">Parser String Char
 </span><a href="L3.StringParsec.html#digit"><span class="hs-identifier hs-var">digit</span></a></span><span>
-</span><span id="line-61"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><span id="line-62"></span><span>        </span><span class="annot"><span class="annottext">String
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser String String
 </span><a href="L3.StringParsec.html#spaces"><span class="hs-identifier hs-var">spaces</span></a></span><span>
-</span><span id="line-62"></span><span>        </span><span class="annot"><span class="annottext">Int -&gt; Parser String Int
+</span><span id="line-63"></span><span>        </span><span class="annot"><span class="annottext">Int -&gt; Parser String Int
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">(Int -&gt; Parser String Int) -&gt; Int -&gt; Parser String Int
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; Int
 forall a. Read a =&gt; String -&gt; a
 </span><span class="hs-identifier hs-var">read</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088055"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+</span><a href="#local-6989586621679105103"><span class="hs-identifier hs-var">s</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
 forall a. [a] -&gt; [a] -&gt; [a]
 </span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088053"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-63"></span><span>
-</span><span id="line-64"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#word"><span class="hs-identifier hs-type">word</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
-</span><span id="line-65"></span><span>    </span><span id="word"><span class="annot"><span class="annottext">word :: Parser String String
+</span><a href="#local-6989586621679105101"><span class="hs-identifier hs-var">cs</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-64"></span><span>
+</span><span id="line-65"></span><span>    </span><span class="annot"><a href="L3.StringParsec.html#word"><span class="hs-identifier hs-type">word</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-66"></span><span>    </span><span id="word"><span class="annot"><span class="annottext">word :: Parser String String
 </span><a href="L3.StringParsec.html#word"><span class="hs-identifier hs-var hs-var">word</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-66"></span><span>        </span><span id="local-6989586621679088051"><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088051"><span class="hs-identifier hs-var">cs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser String Char -&gt; Parser String String
+</span><span id="line-67"></span><span>        </span><span id="local-6989586621679105099"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105099"><span class="hs-identifier hs-var">cs</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser String Char -&gt; Parser String String
 forall (f :: * -&gt; *) a. Alternative f =&gt; f a -&gt; f [a]
 </span><a href="L3.Parsec.html#some"><span class="hs-identifier hs-var">some</span></a></span><span> </span><span class="annot"><span class="annottext">Parser String Char
 </span><a href="L3.StringParsec.html#letter"><span class="hs-identifier hs-var">letter</span></a></span><span>
-</span><span id="line-67"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><span id="line-68"></span><span>        </span><span class="annot"><span class="annottext">String
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser String String
 </span><a href="L3.StringParsec.html#spaces"><span class="hs-identifier hs-var">spaces</span></a></span><span>
-</span><span id="line-68"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Parser String String
+</span><span id="line-69"></span><span>        </span><span class="annot"><span class="annottext">String -&gt; Parser String String
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">String
-</span><a href="#local-6989586621679088051"><span class="hs-identifier hs-var">cs</span></a></span><span>
-</span><span id="line-69"></span><span>
-</span><span id="line-70"></span><span>    </span><span id="local-6989586621679088050"><span class="annot"><a href="L3.StringParsec.html#parens"><span class="hs-identifier hs-type">parens</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="#local-6989586621679088050"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="#local-6989586621679088050"><span class="hs-identifier hs-type">a</span></a></span></span><span>
-</span><span id="line-71"></span><span>    </span><span id="parens"><span class="annot"><span class="annottext">parens :: Parser String a -&gt; Parser String a
-</span><a href="L3.StringParsec.html#parens"><span class="hs-identifier hs-var hs-var">parens</span></a></span></span><span> </span><span id="local-6989586621679088048"><span class="annot"><span class="annottext">Parser String a
-</span><a href="#local-6989586621679088048"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
-</span><span id="line-72"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679105099"><span class="hs-identifier hs-var">cs</span></a></span><span>
+</span><span id="line-70"></span><span>
+</span><span id="line-71"></span><span>    </span><span id="local-6989586621679105098"><span class="annot"><a href="L3.StringParsec.html#parens"><span class="hs-identifier hs-type">parens</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="#local-6989586621679105098"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Parsec.html#Parser"><span class="hs-identifier hs-type">Parser</span></a></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="#local-6989586621679105098"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-72"></span><span>    </span><span id="parens"><span class="annot"><span class="annottext">parens :: Parser String a -&gt; Parser String a
+</span><a href="L3.StringParsec.html#parens"><span class="hs-identifier hs-var hs-var">parens</span></a></span></span><span> </span><span id="local-6989586621679105096"><span class="annot"><span class="annottext">Parser String a
+</span><a href="#local-6989586621679105096"><span class="hs-identifier hs-var">m</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-73"></span><span>        </span><span class="annot"><span class="annottext">String
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Parser String String
 </span><a href="L3.StringParsec.html#reserved"><span class="hs-identifier hs-var">reserved</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;(&quot;</span></span><span>
-</span><span id="line-73"></span><span>        </span><span id="local-6989586621679088047"><span class="annot"><span class="annottext">a
-</span><a href="#local-6989586621679088047"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser String a
-</span><a href="#local-6989586621679088048"><span class="hs-identifier hs-var">m</span></a></span><span>
-</span><span id="line-74"></span><span>        </span><span class="annot"><span class="annottext">String
+</span><span id="line-74"></span><span>        </span><span id="local-6989586621679105095"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679105095"><span class="hs-identifier hs-var">n</span></a></span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">Parser String a
+</span><a href="#local-6989586621679105096"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><span id="line-75"></span><span>        </span><span class="annot"><span class="annottext">String
 </span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; Parser String String
 </span><a href="L3.StringParsec.html#reserved"><span class="hs-identifier hs-var">reserved</span></a></span><span> </span><span class="annot"><span class="annottext">String
 </span><span class="hs-string">&quot;)&quot;</span></span><span>
-</span><span id="line-75"></span><span>        </span><span class="annot"><span class="annottext">a -&gt; Parser String a
+</span><span id="line-76"></span><span>        </span><span class="annot"><span class="annottext">a -&gt; Parser String a
 forall (m :: * -&gt; *) a. Monad m =&gt; a -&gt; m a
 </span><span class="hs-identifier hs-var">return</span></span><span> </span><span class="annot"><span class="annottext">a
-</span><a href="#local-6989586621679088047"><span class="hs-identifier hs-var">n</span></a></span><span>
-</span><span id="line-76"></span></pre></body></html>
+</span><a href="#local-6989586621679105095"><span class="hs-identifier hs-var">n</span></a></span><span>
+</span><span id="line-77"></span></pre></body></html>
