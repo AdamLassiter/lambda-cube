@@ -1,6 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 
--- | Parsec utils for parsing Tokens into Tokens
+-- |Parsec utils for parsing Tokens into Tokens
 module L3.TokenParsec (module L3.TokenParsec, module L3.Parsec) where
     import L3.Lexer
     import L3.Parsec

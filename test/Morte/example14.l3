@@ -2,9 +2,8 @@
 
 -- The Haskell code we will translate to Morte:
 --
---     import Prelude hiding (
---         (+), (*), IO, putStrLn, getLine, (>>=), (>>), return )
--- 
+--     import Prelude hiding ( (+), (*), IO, putStrLn, getLine, (>>=), (>>), return )
+--
 --     -- Simple prelude
 --
 --     data Nat = Succ Nat | Zero
@@ -51,35 +50,8 @@
 --     two :: Nat
 --     two = one + one
 --
---     three :: Nat
---     three = one + one + one
---
---     four :: Nat
---     four = one + one + one + one
---
---     five :: Nat
---     five = one + one + one + one + one
---
---     six :: Nat
---     six = one + one + one + one + one + one
---
---     seven :: Nat
---     seven = one + one + one + one + one + one + one
---
---     eight :: Nat
---     eight = one + one + one + one + one + one + one + one
---
---     nine :: Nat
---     nine = one + one + one + one + one + one + one + one + one
---
---     ten :: Nat
---     ten = one + one + one + one + one + one + one + one + one + one
---
 --     replicateM_ :: Nat -> IO U -> IO U
 --     replicateM_ n io = foldNat n (io >>) (return Unit)
---
---     ninetynine :: Nat
---     ninetynine = nine * ten + nine
 --
 --     main_ :: IO U
 --     main_ = getLine >>= putStrLn
@@ -111,17 +83,9 @@
         -- Derived functions
     ->  (   lambda (mThen : IO U -> IO U -> IO U)
         ->  lambda (two   : Nat)
-        ->  lambda (three : Nat)
-        ->  lambda (four  : Nat)
-        ->  lambda (five  : Nat)
-        ->  lambda (six   : Nat)
-        ->  lambda (seven : Nat)
-        ->  lambda (eight : Nat)
-        ->  lambda (nine  : Nat)
-        ->  lambda (ten   : Nat)
         ->  (   lambda (replicateM_ : Nat -> IO U -> IO U)
-            ->  lambda (ninetynine : Nat)
-            ->  replicateM_ ninetynine (mApp String U getLine putStrLn)
+            ->  lambda (two : Nat)
+            ->  replicateM_ two (mApp String U getLine putStrLn)
             )
 
             -- replicateM_
@@ -130,7 +94,7 @@
             ->  foldNat n (IO U) (mThen io) (return U Unit)
             )
 
-            -- ninetynine
+            -- two
             two
         )
 
@@ -142,29 +106,6 @@
 
         -- two
         (plus one one)
-
-        -- three
-        (plus one (plus one one))
-
-        -- four
-        (plus one (plus one (plus one one)))
-
-        -- five
-        (plus one (plus one (plus one (plus one one))))
-
-        -- six
-        (plus one (plus one (plus one (plus one (plus one one)))))
-
-        -- seven
-        (plus one (plus one (plus one (plus one (plus one (plus one one))))))
-
-        -- eight
-        (plus one (plus one (plus one (plus one (plus one (plus one (plus one one)))))))
-        -- nine
-        (plus one (plus one (plus one (plus one (plus one (plus one (plus one (plus one one))))))))
-
-        -- ten
-        (plus one (plus one (plus one (plus one (plus one (plus one (plus one (plus one (plus one one)))))))))
     )
 
     -- Nat

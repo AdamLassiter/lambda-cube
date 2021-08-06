@@ -1,4 +1,4 @@
--- Parsing for REPL commands
+-- |Parsing for REPL commands
 module Main where
     import L3.Loader
     import L3.Logging
@@ -8,7 +8,7 @@ module Main where
     import System.Console.Haskeline
 
 
-    -- Run REPL
+    -- |Run REPL
     main :: IO ()
     main = withStderrLogging $ do
       -- let (tCtx, prel) = wrapPrelude embeddedPrelude

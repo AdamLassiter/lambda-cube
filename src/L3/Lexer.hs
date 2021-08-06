@@ -1,4 +1,4 @@
--- | Lexer from Strings into Tokens
+-- |Lexer from Strings into Tokens
 module L3.Lexer (module L3.Lexer) where
     import L3.Logging
     import L3.StringParsec
@@ -6,7 +6,7 @@ module L3.Lexer (module L3.Lexer) where
     import Control.Applicative hiding (many)
 
 
-    -- | Lex strings into tokens, canonical form for the syntax definitition
+    -- |Lex strings into tokens, canonical form for the syntax definitition
     data Token = OpenParen
                | CloseParen
                | HasType
@@ -25,7 +25,7 @@ module L3.Lexer (module L3.Lexer) where
     debugLexer = debugU "Lexer"
 
 
-    -- | A list of Alternatives that may be used to lex a string into tokens.
+    -- |A list of Alternatives that may be used to lex a string into tokens.
     alternatives :: [Parser String Token]
     alternatives = [ reserved "(" >> debugLexer "open-paren" (pure OpenParen)
                    , reserved ")" >> debugLexer "close-paren" (pure CloseParen)
@@ -60,16 +60,16 @@ module L3.Lexer (module L3.Lexer) where
                    , Symbol <$> word
                    ]
 
-    -- | Parse a comment, taking characters until an End-Of-Line
+    -- |Parse a comment, taking characters until an End-Of-Line
     comment :: Parser String Token
     comment = debugLexer "comment" $ do
         cs <- many $ satisfy (/= '\n')
         pure $ Comment cs
 
-    -- | Parse a string into canonical form using tokens
+    -- |Parse a string into canonical form using tokens
     lexSrc :: String -> Result [Token]
     lexSrc = runParser grammar
 
-    -- | The grammar for this parser is the collection of Alternatives
+    -- |The grammar for this parser is the collection of Alternatives
     grammar :: Parser String [Token]
     grammar = many $ foldl1 (<|>) alternatives

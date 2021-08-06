@@ -10,6 +10,8 @@ module Main where
         let id' = prel expr
         pure id'
 
+    -- |Run benchmark
+    main :: IO ()
     main = withStderrLogging $
            defaultMain [ bench "λ(x:*).x" $ whnfIO $ wrapPreludeIO $ Lam (Name "x") Star (Var $ Name "x")
                        , bench "x" $ whnfIO $ wrapPreludeIO $ Var $ Name "x"

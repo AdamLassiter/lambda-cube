@@ -1,4 +1,4 @@
--- | Utilites for result types and error throwing
+-- |Utilites for result types and error throwing
 module L3.Util where
     import Data.Char (isSpace)
 

@@ -1,4 +1,4 @@
--- | Small parsec-like module
+-- |Small parsec-like module
 module L3.Parsec (module L3.Parsec, module L3.Util) where
     import L3.Logging
     import L3.Util

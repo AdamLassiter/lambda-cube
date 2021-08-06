@@ -5,8 +5,10 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           lambda-cube
-version:        0.1.1.0
+version:        0.2.0.0
+synopsis:       Some thoughts on Calculus of Constructions
 description:    Please see the README on GitHub at <https://github.com/AdamLassiter/lambda-cube#readme>
+category:       Compiler
 homepage:       https://github.com/AdamLassiter/lambda-cube#readme
 bug-reports:    https://github.com/AdamLassiter/lambda-cube/issues
 author:         Adam Lassiter
@@ -37,6 +39,7 @@ library
       Paths_lambda_cube
   hs-source-dirs:
       src
+  cpp-options: -DTRACING=false
   build-depends:
       base >=4.7 && <5
     , bytestring ==0.10.*
@@ -54,7 +57,7 @@ executable lambda-cube-exe
       Paths_lambda_cube
   hs-source-dirs:
       app
-  ghc-options: -O2
+  cpp-options: -DTRACING=false
   build-depends:
       base >=4.7 && <5
     , haskeline ==0.8.*
@@ -76,6 +79,7 @@ test-suite lambda-cube-test
   hs-source-dirs:
       test
   ghc-options: -O0 -fprof-auto -fprof-cafs -rtsopts "-with-rtsopts=-P -h -xc"
+  cpp-options: -DTRACING=false
   build-depends:
       base >=4.7 && <5
     , filepath ==1.4.*
@@ -90,6 +94,7 @@ benchmark lambda-cube-bench
   hs-source-dirs:
       bench
   ghc-options: -O2 -fprof-auto -fprof-cafs -rtsopts "-with-rtsopts=-pj -h"
+  cpp-options: -DTRACING=false
   build-depends:
       base >=4.7 && <5
     , criterion ==1.5.*
