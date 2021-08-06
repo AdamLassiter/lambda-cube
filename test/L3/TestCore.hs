@@ -5,6 +5,7 @@ module L3.TestCore (tests) where
 
     tests :: [IO ()]
     tests = [ testShowCtx
+            , testEnumInstance
             , testFree
             , testSubstitute
             , testNormalize
@@ -12,6 +13,7 @@ module L3.TestCore (tests) where
             , testAlphaEq
             , testBetaEq
             , testInferType
+            , testWellTyped
             ]
 
     assertAlphaEq :: (Show a, Eq a, Enum a) => Expr a -> Expr a -> String -> IO ()
@@ -44,6 +46,7 @@ module L3.TestCore (tests) where
         assertEq ((toEnum . fromEnum) (Left 1 :: Either Int Int)) (Left 1 :: Either Int Int) "Left From<->To enum is id invariant"
         assertEq ((toEnum . fromEnum) (Right 0 :: Either Int Int)) (Right 0 :: Either Int Int) "Right From<->To enum is id invariant"
         assertEq ((toEnum . fromEnum) (Right 1 :: Either Int Int)) (Right 1 :: Either Int Int) "Right From<->To enum is id invariant"
+
 
     testFree :: IO ()
     testFree = do
@@ -151,7 +154,7 @@ module L3.TestCore (tests) where
                   , (Name "List",Pi (Name "a") Star Star)
                   ]
         assertEq (inferType ctx (Var (Name "map") `App` Var (Name "b") `App` Var (Name "c") `App` Var (Name "f"))) (Right $ Pi (Name "l") (App (Var $ Name "List") (Var $ Name "b")) (App (Var $ Name "List") (Var $ Name "c"))) "map :: pi a -> pi b -> lam (a -> b) -> List a -> List b, f :: b -> c ⊢ map b c f :: List b -> List c"
-   
+
     testWellTyped :: IO ()
     testWellTyped = do
         assertTrue (wellTyped0 (Star :: Expr Name)) "* :: #"

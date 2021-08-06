@@ -39,19 +39,9 @@ module L3.Parsec (module L3.Parsec, module L3.Util) where
         return = unit
         (>>=)  = bind
 
-    instance MonadPlus (Parser i) where
-        mzero = failure
-        mplus = combine
-
     instance Alternative (Parser i) where
         empty = mzero
         (<|>) = option
-
-    combine :: Parser i o -> Parser i o -> Parser i o
-    combine p q = Parser (\s -> parse p s ++ parse q s)
-
-    failure :: Parser i o
-    failure = Parser (const [])
 
     option :: Parser i o -> Parser i o -> Parser i o
     option  p q = Parser $ \s ->
@@ -70,14 +60,3 @@ module L3.Parsec (module L3.Parsec, module L3.Util) where
         where
             many_v = some_v <|> pure []
             some_v = (:) <$> v <*> many_v
-
-    chainl :: Parser i o -> Parser i (o -> o -> o) -> o -> Parser i o
-    chainl p op a = (p `chainl1` op) <|> return a
-
-    chainl1 :: Parser i o -> Parser i (o -> o -> o) -> Parser i o
-    p `chainl1` op = do {a <- p; rest a}
-        where rest a = (do
-                    f <- op
-                    b <- p
-                    rest (f a b))
-                <|> return a
