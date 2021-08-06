@@ -34,7 +34,7 @@ module L3.Core (module L3.Core, module L3.Util) where
         fromEnum (Left l)  = 2 * fromEnum l
         fromEnum (Right r) = 2 * fromEnum r + 1
         toEnum i | even i  = Left $ toEnum $ i `div` 2
-        toEnum i           = Left $ toEnum $ (i - 1) `div` 2
+        toEnum i           = Right $ toEnum $ (i - 1) `div` 2
 
 
     type ShowExpr = Expr Name
