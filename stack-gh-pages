@@ -9,9 +9,8 @@ stack haddock --no-haddock-deps
 doc_root=`stack path --local-doc-root`/$pname*
 du -h $doc_root
 
-git branch -D gh-pages || echo "gh-pages branch didn't exist"
-git checkout --orphan gh-pages
-rm -rf *
-cp -r $doc_root/* .
-git add .
+rm -rf doc
+mkdir doc
+cp -r $doc_root/* doc
+git add doc
 git commit -m "Automatic Haddock commit"
