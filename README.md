@@ -7,7 +7,8 @@ Some thoughts on Calculus of Constructions
 [![license](https://img.shields.io/github/license/AdamLassiter/lambda-cube?label=License)](/LICENSE)
 
 
-![lambda-cube](resources/Lambda_Cube_img.svg)
+![lambda-cube](resources/lambda-cube-img.svg)
+
 
 ## Compile, Test and Install
 
@@ -16,6 +17,16 @@ stack build
 stack test
 stack run lambda-cube-exe
 ```
+
+
+## Performance
+
+`stack test && prof-flamegraph`
+![flamegraph](resources/lambda-cube-test.prof.svg)
+
+`stack test && hp-to-pretty`
+![heapgraph](resources/lambda-cube-test.hp.svg)
+
 
 ## References
 

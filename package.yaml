@@ -49,11 +49,11 @@ tests:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
-    - -O2
+    - -O0
     - -fprof-auto
     - -fprof-cafs
     - -rtsopts
-    - '"-with-rtsopts=-pj -h"'
+    - '"-with-rtsopts=-P -h -xc"'
     dependencies:
     - lambda-cube
     - base >=4.7 && <5

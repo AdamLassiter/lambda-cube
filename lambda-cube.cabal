@@ -75,7 +75,7 @@ test-suite lambda-cube-test
       Paths_lambda_cube
   hs-source-dirs:
       test
-  ghc-options: -O2 -fprof-auto -fprof-cafs -rtsopts "-with-rtsopts=-pj -h"
+  ghc-options: -O0 -fprof-auto -fprof-cafs -rtsopts "-with-rtsopts=-P -h -xc"
   build-depends:
       base >=4.7 && <5
     , filepath ==1.4.*
