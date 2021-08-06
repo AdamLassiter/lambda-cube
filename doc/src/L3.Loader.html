@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE TemplateHaskell #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- Load and parse '.l3' files</span><span>
+</span><span id="line-4"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">L3.Loader</span><span> </span><span class="hs-special">(</span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="L3.Loader.html"><span class="hs-identifier">L3.Loader</span></a></span><span class="hs-special">,</span><span> </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="L3.Parser.html"><span class="hs-identifier">L3.Parser</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Prelude</span></span><span> </span><span class="hs-keyword">hiding</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">FilePath</span></span><span class="hs-special">)</span><span>
+</span><span id="line-6"></span><span>
+</span><span id="line-7"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="L3.Parser.html"><span class="hs-identifier">L3.Parser</span></a></span><span>
+</span><span id="line-8"></span><span>
+</span><span id="line-9"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.FileEmbed</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">embedDir</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">embedDirListing</span></span><span class="hs-special">)</span><span>
+</span><span id="line-10"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Bifunctor</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">first</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">second</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">bimap</span></span><span class="hs-special">)</span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.ByteString</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">ByteString</span></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.List</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">partition</span></span><span class="hs-special">)</span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">unpack</span></span><span class="hs-special">)</span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text.Encoding</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">decodeUtf8</span></span><span class="hs-special">)</span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">System.FilePath</span></span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span>    </span><span class="annot"><a href="L3.Loader.html#takeDirectoryName"><span class="hs-identifier hs-type">takeDirectoryName</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">FilePath</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-19"></span><span>    </span><span id="takeDirectoryName"><span class="annot"><span class="annottext">takeDirectoryName :: FilePath -&gt; FilePath
+</span><a href="L3.Loader.html#takeDirectoryName"><span class="hs-identifier hs-var hs-var">takeDirectoryName</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[FilePath] -&gt; FilePath
+forall a. [a] -&gt; a
+</span><span class="hs-identifier hs-var">last</span></span><span> </span><span class="annot"><span class="annottext">([FilePath] -&gt; FilePath)
+-&gt; (FilePath -&gt; [FilePath]) -&gt; FilePath -&gt; FilePath
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; [FilePath]
+</span><span class="hs-identifier hs-var">splitPath</span></span><span> </span><span class="annot"><span class="annottext">(FilePath -&gt; [FilePath])
+-&gt; (FilePath -&gt; FilePath) -&gt; FilePath -&gt; [FilePath]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; FilePath
+</span><span class="hs-identifier hs-var">takeDirectory</span></span><span>
+</span><span id="line-20"></span><span>
+</span><span id="line-21"></span><span>    </span><span class="annot"><a href="L3.Loader.html#takeNamespacedFileName"><span class="hs-identifier hs-type">takeNamespacedFileName</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">FilePath</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-22"></span><span>    </span><span id="takeNamespacedFileName"><span class="annot"><span class="annottext">takeNamespacedFileName :: FilePath -&gt; FilePath
+</span><a href="L3.Loader.html#takeNamespacedFileName"><span class="hs-identifier hs-var hs-var">takeNamespacedFileName</span></a></span></span><span> </span><span id="local-6989586621679088901"><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679088901"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; (FilePath, FilePath)
+</span><span class="hs-identifier hs-var">splitFileName</span></span><span> </span><span class="annot"><span class="annottext">(FilePath -&gt; (FilePath, FilePath))
+-&gt; (FilePath -&gt; FilePath) -&gt; FilePath -&gt; (FilePath, FilePath)
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; FilePath
+</span><span class="hs-identifier hs-var">dropExtension</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679088901"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-23"></span><span>        </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;./&quot;</span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679088898"><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679088898"><span class="hs-identifier hs-var">file</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679088898"><span class="hs-identifier hs-var">file</span></a></span><span>
+</span><span id="line-24"></span><span>        </span><span class="hs-special">(</span><span id="local-6989586621679088897"><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679088897"><span class="hs-identifier hs-var">ns</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679088896"><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679088896"><span class="hs-identifier hs-var">file</span></a></span></span><span class="hs-special">)</span><span>   </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; FilePath
+forall a. [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">init</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679088897"><span class="hs-identifier hs-var">ns</span></a></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; FilePath -&gt; FilePath
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;@&quot;</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; FilePath -&gt; FilePath
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><a href="#local-6989586621679088896"><span class="hs-identifier hs-var">file</span></a></span><span>
+</span><span id="line-25"></span><span>
+</span><span id="line-26"></span><span>    </span><span class="annot"><a href="L3.Loader.html#embeddedPrelude"><span class="hs-identifier hs-type">embeddedPrelude</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">FilePath</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">ByteString</span></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-27"></span><span>    </span><span id="embeddedPrelude"><span class="annot"><span class="annottext">embeddedPrelude :: [(FilePath, ByteString)]
+</span><a href="L3.Loader.html#embeddedPrelude"><span class="hs-identifier hs-var hs-var">embeddedPrelude</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((FilePath, ByteString) -&gt; Bool)
+-&gt; [(FilePath, ByteString)] -&gt; [(FilePath, ByteString)]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; FilePath -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;.l3&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(FilePath -&gt; Bool)
+-&gt; ((FilePath, ByteString) -&gt; FilePath)
+-&gt; (FilePath, ByteString)
+-&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; FilePath
+</span><span class="hs-identifier hs-var">takeExtension</span></span><span> </span><span class="annot"><span class="annottext">(FilePath -&gt; FilePath)
+-&gt; ((FilePath, ByteString) -&gt; FilePath)
+-&gt; (FilePath, ByteString)
+-&gt; FilePath
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(FilePath, ByteString) -&gt; FilePath
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">$(</span><span class="hs-identifier">embedDir</span><span> </span><span class="hs-string">&quot;prelude&quot;</span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span>
+</span><span id="line-29"></span><span>    </span><span class="annot"><a href="L3.Loader.html#loadPrelude"><span class="hs-identifier hs-type">loadPrelude</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.html#ShowCtx"><span class="hs-identifier hs-type">ShowCtx</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="L3.Core.html#ShowCtx"><span class="hs-identifier hs-type">ShowCtx</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-30"></span><span>    </span><span id="loadPrelude"><span class="annot"><span class="annottext">loadPrelude :: (ShowCtx, ShowCtx)
+</span><a href="L3.Loader.html#loadPrelude"><span class="hs-identifier hs-var hs-var">loadPrelude</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ShowCtx
+</span><a href="#local-6989586621679088889"><span class="hs-identifier hs-var">tCtx</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">ShowCtx
+</span><a href="#local-6989586621679088888"><span class="hs-identifier hs-var">eCtx</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-31"></span><span>        </span><span class="hs-keyword">where</span><span> </span><span id="local-6989586621679088887"><span class="annot"><span class="annottext">preludeExprs :: [(FilePath, ShowExpr)]
+</span><a href="#local-6989586621679088887"><span class="hs-identifier hs-var hs-var">preludeExprs</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((FilePath, ByteString) -&gt; (FilePath, ShowExpr))
+-&gt; [(FilePath, ByteString)] -&gt; [(FilePath, ShowExpr)]
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(ByteString -&gt; ShowExpr)
+-&gt; (FilePath, ByteString) -&gt; (FilePath, ShowExpr)
+forall (p :: * -&gt; * -&gt; *) b c a.
+Bifunctor p =&gt;
+(b -&gt; c) -&gt; p a b -&gt; p a c
+</span><span class="hs-identifier hs-var">second</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Result ShowExpr -&gt; ShowExpr
+forall a. Result a -&gt; a
+</span><a href="L3.Util.html#throwL"><span class="hs-identifier hs-var">throwL</span></a></span><span> </span><span class="annot"><span class="annottext">(Result ShowExpr -&gt; ShowExpr)
+-&gt; (ByteString -&gt; Result ShowExpr) -&gt; ByteString -&gt; ShowExpr
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">[Token] -&gt; Result ShowExpr
+</span><a href="L3.Parser.html#parseExpr"><span class="hs-identifier hs-var">parseExpr</span></a></span><span> </span><span class="annot"><span class="annottext">([Token] -&gt; Result ShowExpr)
+-&gt; (ByteString -&gt; [Token]) -&gt; ByteString -&gt; Result ShowExpr
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Result [Token] -&gt; [Token]
+forall a. Result a -&gt; a
+</span><a href="L3.Util.html#throwL"><span class="hs-identifier hs-var">throwL</span></a></span><span> </span><span class="annot"><span class="annottext">(Result [Token] -&gt; [Token])
+-&gt; (ByteString -&gt; Result [Token]) -&gt; ByteString -&gt; [Token]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; Result [Token]
+</span><a href="L3.Lexer.html#lexSrc"><span class="hs-identifier hs-var">lexSrc</span></a></span><span> </span><span class="annot"><span class="annottext">(FilePath -&gt; Result [Token])
+-&gt; (ByteString -&gt; FilePath) -&gt; ByteString -&gt; Result [Token]
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">Text -&gt; FilePath
+</span><span class="hs-identifier hs-var">Data.Text.unpack</span></span><span> </span><span class="annot"><span class="annottext">(Text -&gt; FilePath)
+-&gt; (ByteString -&gt; Text) -&gt; ByteString -&gt; FilePath
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ByteString -&gt; Text
+</span><span class="hs-identifier hs-var">decodeUtf8</span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(FilePath, ByteString)]
+</span><a href="L3.Loader.html#embeddedPrelude"><span class="hs-identifier hs-var">embeddedPrelude</span></a></span><span>
+</span><span id="line-32"></span><span>              </span><span id="local-6989586621679088883"><span class="annot"><span class="annottext">types :: [(FilePath, ShowExpr)]
+</span><a href="#local-6989586621679088883"><span class="hs-identifier hs-var hs-var">types</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((FilePath, ShowExpr) -&gt; Bool)
+-&gt; [(FilePath, ShowExpr)] -&gt; [(FilePath, ShowExpr)]
+forall a. (a -&gt; Bool) -&gt; [a] -&gt; [a]
+</span><span class="hs-identifier hs-var">filter</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; FilePath -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">==</span></span><span> </span><span class="annot"><span class="annottext">FilePath
+</span><span class="hs-string">&quot;@&quot;</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">(FilePath -&gt; Bool)
+-&gt; ((FilePath, ShowExpr) -&gt; FilePath)
+-&gt; (FilePath, ShowExpr)
+-&gt; Bool
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; FilePath
+</span><span class="hs-identifier hs-var">takeBaseName</span></span><span> </span><span class="annot"><span class="annottext">(FilePath -&gt; FilePath)
+-&gt; ((FilePath, ShowExpr) -&gt; FilePath)
+-&gt; (FilePath, ShowExpr)
+-&gt; FilePath
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(FilePath, ShowExpr) -&gt; FilePath
+forall a b. (a, b) -&gt; a
+</span><span class="hs-identifier hs-var">fst</span></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(FilePath, ShowExpr)]
+</span><a href="#local-6989586621679088887"><span class="hs-identifier hs-var">preludeExprs</span></a></span><span>
+</span><span id="line-33"></span><span>              </span><span id="local-6989586621679088889"><span class="annot"><span class="annottext">tCtx :: ShowCtx
+</span><a href="#local-6989586621679088889"><span class="hs-identifier hs-var hs-var">tCtx</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((FilePath, ShowExpr) -&gt; (Name, ShowExpr))
+-&gt; [(FilePath, ShowExpr)] -&gt; ShowCtx
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(FilePath -&gt; Name)
+-&gt; (ShowExpr -&gt; ShowExpr)
+-&gt; (FilePath, ShowExpr)
+-&gt; (Name, ShowExpr)
+forall (p :: * -&gt; * -&gt; *) a b c d.
+Bifunctor p =&gt;
+(a -&gt; b) -&gt; (c -&gt; d) -&gt; p a c -&gt; p b d
+</span><span class="hs-identifier hs-var">bimap</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; Name
+</span><a href="L3.Core.html#Name"><span class="hs-identifier hs-var">Name</span></a></span><span> </span><span class="annot"><span class="annottext">(FilePath -&gt; Name) -&gt; (FilePath -&gt; FilePath) -&gt; FilePath -&gt; Name
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; FilePath
+</span><a href="L3.Loader.html#takeDirectoryName"><span class="hs-identifier hs-var">takeDirectoryName</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Result ShowExpr -&gt; ShowExpr
+forall a. Result a -&gt; a
+</span><a href="L3.Util.html#throwL"><span class="hs-identifier hs-var">throwL</span></a></span><span> </span><span class="annot"><span class="annottext">(Result ShowExpr -&gt; ShowExpr)
+-&gt; (ShowExpr -&gt; Result ShowExpr) -&gt; ShowExpr -&gt; ShowExpr
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; Result ShowExpr
+forall a. (Eq a, Show a) =&gt; Expr a -&gt; Result (Expr a)
+</span><a href="L3.Core.html#inferType0"><span class="hs-identifier hs-var">inferType0</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(FilePath, ShowExpr)]
+</span><a href="#local-6989586621679088883"><span class="hs-identifier hs-var">types</span></a></span><span>
+</span><span id="line-34"></span><span>              </span><span id="local-6989586621679088888"><span class="annot"><span class="annottext">eCtx :: ShowCtx
+</span><a href="#local-6989586621679088888"><span class="hs-identifier hs-var hs-var">eCtx</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">((FilePath, ShowExpr) -&gt; (Name, ShowExpr))
+-&gt; [(FilePath, ShowExpr)] -&gt; ShowCtx
+forall a b. (a -&gt; b) -&gt; [a] -&gt; [b]
+</span><span class="hs-identifier hs-var">map</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(FilePath -&gt; Name) -&gt; (FilePath, ShowExpr) -&gt; (Name, ShowExpr)
+forall (p :: * -&gt; * -&gt; *) a b c.
+Bifunctor p =&gt;
+(a -&gt; b) -&gt; p a c -&gt; p b c
+</span><span class="hs-identifier hs-var">first</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">FilePath -&gt; Name
+</span><a href="L3.Core.html#Name"><span class="hs-identifier hs-var">Name</span></a></span><span> </span><span class="annot"><span class="annottext">(FilePath -&gt; Name) -&gt; (FilePath -&gt; FilePath) -&gt; FilePath -&gt; Name
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">FilePath -&gt; FilePath
+</span><a href="L3.Loader.html#takeNamespacedFileName"><span class="hs-identifier hs-var">takeNamespacedFileName</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">[(FilePath, ShowExpr)]
+</span><a href="#local-6989586621679088887"><span class="hs-identifier hs-var">preludeExprs</span></a></span><span>
+</span><span id="line-35"></span><span>
+</span><span id="line-36"></span><span>    </span><span class="annot"><a href="L3.Loader.html#wrapPrelude"><span class="hs-identifier hs-type">wrapPrelude</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.html#ShowCtx"><span class="hs-identifier hs-type">ShowCtx</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Core.html#ShowExpr"><span class="hs-identifier hs-type">ShowExpr</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-37"></span><span>    </span><span id="wrapPrelude"><span class="annot"><span class="annottext">wrapPrelude :: (ShowCtx, ShowExpr -&gt; ShowExpr)
+</span><a href="L3.Loader.html#wrapPrelude"><span class="hs-identifier hs-var hs-var">wrapPrelude</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ShowCtx
+</span><a href="#local-6989586621679088878"><span class="hs-identifier hs-var">tCtx</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="annottext">((ShowExpr -&gt; ShowExpr)
+ -&gt; (Name, ShowExpr) -&gt; ShowExpr -&gt; ShowExpr)
+-&gt; (ShowExpr -&gt; ShowExpr) -&gt; ShowCtx -&gt; ShowExpr -&gt; ShowExpr
+forall (t :: * -&gt; *) b a.
+Foldable t =&gt;
+(b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b
+</span><span class="hs-identifier hs-var">foldl</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">\</span><span> </span><span id="local-6989586621679088876"><span class="annot"><span class="annottext">ShowExpr -&gt; ShowExpr
+</span><a href="#local-6989586621679088876"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679088875"><span class="annot"><span class="annottext">Name
+</span><a href="#local-6989586621679088875"><span class="hs-identifier hs-var">n</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679088874"><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679088874"><span class="hs-identifier hs-var">e</span></a></span></span><span class="hs-special">)</span><span> </span><span id="local-6989586621679088873"><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679088873"><span class="hs-identifier hs-var">x</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Name -&gt; ShowExpr -&gt; ShowExpr -&gt; ShowExpr
+forall a. a -&gt; Expr a -&gt; Expr a -&gt; Expr a
+</span><a href="L3.Core.html#Lam"><span class="hs-identifier hs-var">Lam</span></a></span><span> </span><span class="annot"><span class="annottext">Name
+</span><a href="#local-6989586621679088875"><span class="hs-identifier hs-var">n</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Result ShowExpr -&gt; ShowExpr
+forall a. Result a -&gt; a
+</span><a href="L3.Util.html#throwL"><span class="hs-identifier hs-var">throwL</span></a></span><span> </span><span class="annot"><span class="annottext">(Result ShowExpr -&gt; ShowExpr) -&gt; Result ShowExpr -&gt; ShowExpr
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; Result ShowExpr
+forall a. (Eq a, Show a) =&gt; Expr a -&gt; Result (Expr a)
+</span><a href="L3.Core.html#inferType0"><span class="hs-identifier hs-var">inferType0</span></a></span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679088874"><span class="hs-identifier hs-var">e</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">ShowExpr -&gt; ShowExpr
+</span><a href="#local-6989586621679088876"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679088873"><span class="hs-identifier hs-var">x</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; ShowExpr -&gt; ShowExpr
+forall a. Expr a -&gt; Expr a -&gt; Expr a
+</span><a href="L3.Core.html#App"><span class="hs-operator hs-var">`App`</span></a></span><span> </span><span class="annot"><span class="annottext">ShowExpr
+</span><a href="#local-6989586621679088874"><span class="hs-identifier hs-var">e</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">ShowExpr -&gt; ShowExpr
+forall a. a -&gt; a
+</span><span class="hs-identifier hs-var">id</span></span><span> </span><span class="annot"><span class="annottext">ShowCtx
+</span><a href="#local-6989586621679088869"><span class="hs-identifier hs-var">eCtx</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-38"></span><span>        </span><span class="hs-keyword">where</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679088878"><span class="annot"><span class="annottext">ShowCtx
+</span><a href="#local-6989586621679088878"><span class="hs-identifier hs-var">tCtx</span></a></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679088869"><span class="annot"><span class="annottext">ShowCtx
+</span><a href="#local-6989586621679088869"><span class="hs-identifier hs-var">eCtx</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(ShowCtx, ShowCtx)
+</span><a href="L3.Loader.html#loadPrelude"><span class="hs-identifier hs-var">loadPrelude</span></a></span><span>
+</span><span id="line-39"></span></pre></body></html>

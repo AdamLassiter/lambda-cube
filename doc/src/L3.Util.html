@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- Utilites for result types and error throwing</span><span>
+</span><span id="line-2"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">L3.Util</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">System.Log.Logger</span></span><span>
+</span><span id="line-4"></span><span>    </span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">GHC.IO</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">unsafePerformIO</span></span><span class="hs-special">)</span><span>
+</span><span id="line-5"></span><span>    </span><span class="hs-keyword">type</span><span> </span><span id="Result"><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-var">Result</span></a></span></span><span> </span><span id="local-6989586621679087722"><span class="annot"><a href="#local-6989586621679087722"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Either</span></span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="annot"><a href="#local-6989586621679087722"><span class="hs-identifier hs-type">a</span></a></span><span>
+</span><span id="line-6"></span><span>
+</span><span id="line-7"></span><span>
+</span><span id="line-8"></span><span>    </span><span id="local-6989586621679087750"><span class="annot"><a href="L3.Util.html#throwError"><span class="hs-identifier hs-type">throwError</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087750"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-9"></span><span>    </span><span id="throwError"><span class="annot"><span class="annottext">throwError :: String -&gt; Result a
+</span><a href="L3.Util.html#throwError"><span class="hs-identifier hs-var hs-var">throwError</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Result a
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span>
+</span><span id="line-10"></span><span>
+</span><span id="line-11"></span><span>    </span><span id="local-6989586621679087749"><span class="annot"><a href="L3.Util.html#unpack"><span class="hs-identifier hs-type">unpack</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">[</span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087749"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="hs-special">[</span><span class="annot"><a href="#local-6989586621679087749"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">]</span></span><span>
+</span><span id="line-12"></span><span>    </span><span id="unpack"><span class="annot"><span class="annottext">unpack :: [Result a] -&gt; Result [a]
+</span><a href="L3.Util.html#unpack"><span class="hs-identifier hs-var hs-var">unpack</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087719"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087719"><span class="hs-identifier hs-var">err</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span class="annot"><span class="annottext">[Result a]
+</span><span class="hs-identifier">_</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Result [a]
+forall a. String -&gt; Result a
+</span><a href="L3.Util.html#throwError"><span class="hs-identifier hs-var">throwError</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087719"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-13"></span><span>    </span><span class="annot"><a href="L3.Util.html#unpack"><span class="hs-identifier hs-var">unpack</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087718"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087718"><span class="hs-identifier hs-var">r</span></a></span></span><span class="annot"><span class="hs-glyph hs-type">:</span></span><span id="local-6989586621679087717"><span class="annot"><span class="annottext">[Result a]
+</span><a href="#local-6989586621679087717"><span class="hs-identifier hs-var">rs</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">[Result a] -&gt; Result [a]
+forall a. [Result a] -&gt; Result [a]
+</span><a href="L3.Util.html#unpack"><span class="hs-identifier hs-var">unpack</span></a></span><span> </span><span class="annot"><span class="annottext">[Result a]
+</span><a href="#local-6989586621679087717"><span class="hs-identifier hs-var">rs</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-14"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087716"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087716"><span class="hs-identifier hs-var">err</span></a></span></span><span>  </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">String -&gt; Result [a]
+forall a. String -&gt; Result a
+</span><a href="L3.Util.html#throwError"><span class="hs-identifier hs-var">throwError</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087716"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-15"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087715"><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679087715"><span class="hs-identifier hs-var">rs'</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">[a] -&gt; Result [a]
+forall a b. b -&gt; Either a b
+</span><span class="hs-identifier hs-var">Right</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087718"><span class="hs-identifier hs-var">r</span></a></span><span class="annot"><span class="annottext">a -&gt; [a] -&gt; [a]
+forall a. a -&gt; [a] -&gt; [a]
+</span><span class="hs-glyph hs-var">:</span></span><span class="annot"><span class="annottext">[a]
+</span><a href="#local-6989586621679087715"><span class="hs-identifier hs-var">rs'</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-16"></span><span>    </span><span class="annot"><a href="L3.Util.html#unpack"><span class="hs-identifier hs-var">unpack</span></a></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">[a] -&gt; Result [a]
+forall a b. b -&gt; Either a b
+</span><span class="hs-identifier hs-var">Right</span></span><span> </span><span class="hs-special">[</span><span class="hs-special">]</span><span>
+</span><span id="line-17"></span><span>
+</span><span id="line-18"></span><span>    </span><span id="local-6989586621679087714"><span class="annot"><a href="L3.Util.html#mapL"><span class="hs-identifier hs-type">mapL</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087714"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087714"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-19"></span><span>    </span><span id="mapL"><span class="annot"><span class="annottext">mapL :: (String -&gt; String) -&gt; Result a -&gt; Result a
+</span><a href="L3.Util.html#mapL"><span class="hs-identifier hs-var hs-var">mapL</span></a></span></span><span> </span><span id="local-6989586621679087712"><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="#local-6989586621679087712"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087711"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087711"><span class="hs-identifier hs-var">err</span></a></span></span><span class="hs-special">)</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Result a
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Result a) -&gt; String -&gt; Result a
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String -&gt; String
+</span><a href="#local-6989586621679087712"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087711"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-20"></span><span>    </span><span class="annot"><a href="L3.Util.html#mapL"><span class="hs-identifier hs-var">mapL</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087710"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087710"><span class="hs-identifier hs-var">res</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; Result a
+forall a b. b -&gt; Either a b
+</span><span class="hs-identifier hs-var">Right</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087710"><span class="hs-identifier hs-var">res</span></a></span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span>    </span><span id="local-6989586621679087708"><span id="local-6989586621679087709"><span class="annot"><a href="L3.Util.html#mapR"><span class="hs-identifier hs-type">mapR</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679087709"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087708"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087709"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087708"><span class="hs-identifier hs-type">b</span></a></span></span></span><span>
+</span><span id="line-23"></span><span>    </span><span id="mapR"><span class="annot"><span class="annottext">mapR :: (a -&gt; b) -&gt; Result a -&gt; Result b
+</span><a href="L3.Util.html#mapR"><span class="hs-identifier hs-var hs-var">mapR</span></a></span></span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087706"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087706"><span class="hs-identifier hs-var">err</span></a></span></span><span class="hs-special">)</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Result b
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087706"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-24"></span><span>    </span><span class="annot"><a href="L3.Util.html#mapR"><span class="hs-identifier hs-var">mapR</span></a></span><span> </span><span id="local-6989586621679087705"><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679087705"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087704"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087704"><span class="hs-identifier hs-var">res</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">b -&gt; Result b
+forall a b. b -&gt; Either a b
+</span><span class="hs-identifier hs-var">Right</span></span><span> </span><span class="annot"><span class="annottext">(b -&gt; Result b) -&gt; b -&gt; Result b
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">a -&gt; b
+</span><a href="#local-6989586621679087705"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087704"><span class="hs-identifier hs-var">res</span></a></span><span>
+</span><span id="line-25"></span><span>
+</span><span id="line-26"></span><span>    </span><span id="local-6989586621679087702"><span id="local-6989586621679087703"><span class="annot"><a href="L3.Util.html#fmapR"><span class="hs-identifier hs-type">fmapR</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679087703"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087702"><span class="hs-identifier hs-type">b</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087703"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087702"><span class="hs-identifier hs-type">b</span></a></span></span></span><span>
+</span><span id="line-27"></span><span>    </span><span id="fmapR"><span class="annot"><span class="annottext">fmapR :: (a -&gt; Result b) -&gt; Result a -&gt; Result b
+</span><a href="L3.Util.html#fmapR"><span class="hs-identifier hs-var hs-var">fmapR</span></a></span></span><span> </span><span class="annot"><span class="annottext">a -&gt; Result b
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087700"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087700"><span class="hs-identifier hs-var">err</span></a></span></span><span class="hs-special">)</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Result b
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087700"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-28"></span><span>    </span><span class="annot"><a href="L3.Util.html#fmapR"><span class="hs-identifier hs-var">fmapR</span></a></span><span> </span><span id="local-6989586621679087699"><span class="annot"><span class="annottext">a -&gt; Result b
+</span><a href="#local-6989586621679087699"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087698"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087698"><span class="hs-identifier hs-var">res</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; Result b
+</span><a href="#local-6989586621679087699"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087698"><span class="hs-identifier hs-var">res</span></a></span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span>    </span><span id="local-6989586621679087697"><span class="annot"><a href="L3.Util.html#flatten"><span class="hs-identifier hs-type">flatten</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087697"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087697"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-31"></span><span>    </span><span id="flatten"><span class="annot"><span class="annottext">flatten :: Result (Result a) -&gt; Result a
+</span><a href="L3.Util.html#flatten"><span class="hs-identifier hs-var hs-var">flatten</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087695"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087695"><span class="hs-identifier hs-var">err</span></a></span></span><span class="hs-special">)</span><span>          </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Result a
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087695"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-32"></span><span>    </span><span class="annot"><a href="L3.Util.html#flatten"><span class="hs-identifier hs-var">flatten</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087694"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087694"><span class="hs-identifier hs-var">err</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Result a
+forall a b. a -&gt; Either a b
+</span><span class="hs-identifier hs-var">Left</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087694"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-33"></span><span>    </span><span class="annot"><a href="L3.Util.html#flatten"><span class="hs-identifier hs-var">flatten</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087693"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087693"><span class="hs-identifier hs-var">res</span></a></span></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; Result a
+forall a b. b -&gt; Either a b
+</span><span class="hs-identifier hs-var">Right</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087693"><span class="hs-identifier hs-var">res</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span>    </span><span id="local-6989586621679087692"><span class="annot"><a href="L3.Util.html#throwL"><span class="hs-identifier hs-type">throwL</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="L3.Util.html#Result"><span class="hs-identifier hs-type">Result</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679087692"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087692"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-36"></span><span>    </span><span id="throwL"><span class="annot"><span class="annottext">throwL :: Result a -&gt; a
+</span><a href="L3.Util.html#throwL"><span class="hs-identifier hs-var hs-var">throwL</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Left</span></span><span> </span><span id="local-6989586621679087690"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087690"><span class="hs-identifier hs-var">err</span></a></span></span><span class="hs-special">)</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; a
+forall a. HasCallStack =&gt; String -&gt; a
+</span><span class="hs-identifier hs-var">error</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679087690"><span class="hs-identifier hs-var">err</span></a></span><span>
+</span><span id="line-37"></span><span>    </span><span class="annot"><a href="L3.Util.html#throwL"><span class="hs-identifier hs-var">throwL</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Right</span></span><span> </span><span id="local-6989586621679087688"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087688"><span class="hs-identifier hs-var">res</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679087688"><span class="hs-identifier hs-var">res</span></a></span><span>
+</span><span id="line-38"></span><span>
+</span><span id="line-39"></span><span>    </span><span id="local-6989586621679087687"><span class="annot"><a href="L3.Util.html#converge"><span class="hs-identifier hs-type">converge</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Eq</span></span><span> </span><span class="annot"><a href="#local-6989586621679087687"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679087687"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087687"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087687"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679087687"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-40"></span><span>    </span><span id="converge"><span class="annot"><span class="annottext">converge :: (a -&gt; a) -&gt; a -&gt; a
+</span><a href="L3.Util.html#converge"><span class="hs-identifier hs-var hs-var">converge</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">(a -&gt; Bool) -&gt; (a -&gt; a) -&gt; a -&gt; a
+forall a. (a -&gt; Bool) -&gt; (a -&gt; a) -&gt; a -&gt; a
+</span><span class="hs-identifier hs-var">until</span></span><span> </span><span class="annot"><span class="annottext">((a -&gt; Bool) -&gt; (a -&gt; a) -&gt; a -&gt; a)
+-&gt; ((a -&gt; a) -&gt; a -&gt; Bool) -&gt; (a -&gt; a) -&gt; a -&gt; a
+forall (m :: * -&gt; *) a b. Monad m =&gt; (a -&gt; m b) -&gt; m a -&gt; m b
+</span><span class="hs-operator hs-var">=&lt;&lt;</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">a -&gt; a -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">(==)</span></span><span> </span><span class="annot"><span class="annottext">(a -&gt; a -&gt; Bool) -&gt; (a -&gt; a) -&gt; a -&gt; Bool
+forall (m :: * -&gt; *) a b. Monad m =&gt; (a -&gt; m b) -&gt; m a -&gt; m b
+</span><span class="hs-operator hs-var">=&lt;&lt;</span></span><span class="hs-special">)</span><span>
+</span><span id="line-41"></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-comment">-- Unsafe variants of logger functions</span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-pragma">{-# NOINLINE</span><span> </span><span class="annot"><a href="L3.Util.html#logU"><span class="hs-pragma hs-type">logU</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-pragma">{-# NOINLINE</span><span> </span><span class="annot"><a href="L3.Util.html#debugU"><span class="hs-pragma hs-type">debugU</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-pragma">{-# NOINLINE</span><span> </span><span class="annot"><a href="L3.Util.html#infoU"><span class="hs-pragma hs-type">infoU</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-pragma">{-# NOINLINE</span><span> </span><span class="annot"><a href="L3.Util.html#noticeU"><span class="hs-pragma hs-type">noticeU</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-pragma">{-# NOINLINE</span><span> </span><span class="annot"><a href="L3.Util.html#warningU"><span class="hs-pragma hs-type">warningU</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-pragma">{-# NOINLINE</span><span> </span><span class="annot"><a href="L3.Util.html#errorU"><span class="hs-pragma hs-type">errorU</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-pragma">{-# NOINLINE</span><span> </span><span class="annot"><a href="L3.Util.html#criticalU"><span class="hs-pragma hs-type">criticalU</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-pragma">{-# NOINLINE</span><span> </span><span class="annot"><a href="L3.Util.html#alertU"><span class="hs-pragma hs-type">alertU</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-pragma">{-# NOINLINE</span><span> </span><span class="annot"><a href="L3.Util.html#emergencyU"><span class="hs-pragma hs-type">emergencyU</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-52"></span><span>    </span><span id="logU"><span class="annot"><span class="annottext">logU :: IO String -&gt; Priority -&gt; String -&gt; IO ()
+</span><a href="L3.Util.html#logU"><span class="hs-identifier hs-var hs-var">logU</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; Priority -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">logM</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Priority -&gt; String -&gt; IO ())
+-&gt; (IO String -&gt; String)
+-&gt; IO String
+-&gt; Priority
+-&gt; String
+-&gt; IO ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">IO String -&gt; String
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafePerformIO</span></span><span>
+</span><span id="line-53"></span><span>    </span><span id="debugU"><span class="annot"><span class="annottext">debugU :: IO String -&gt; String -&gt; IO ()
+</span><a href="L3.Util.html#debugU"><span class="hs-identifier hs-var hs-var">debugU</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">debugM</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; IO ())
+-&gt; (IO String -&gt; String) -&gt; IO String -&gt; String -&gt; IO ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">IO String -&gt; String
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafePerformIO</span></span><span>
+</span><span id="line-54"></span><span>    </span><span id="infoU"><span class="annot"><span class="annottext">infoU :: IO String -&gt; String -&gt; IO ()
+</span><a href="L3.Util.html#infoU"><span class="hs-identifier hs-var hs-var">infoU</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">infoM</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; IO ())
+-&gt; (IO String -&gt; String) -&gt; IO String -&gt; String -&gt; IO ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">IO String -&gt; String
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafePerformIO</span></span><span>
+</span><span id="line-55"></span><span>    </span><span id="noticeU"><span class="annot"><span class="annottext">noticeU :: IO String -&gt; String -&gt; IO ()
+</span><a href="L3.Util.html#noticeU"><span class="hs-identifier hs-var hs-var">noticeU</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">noticeM</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; IO ())
+-&gt; (IO String -&gt; String) -&gt; IO String -&gt; String -&gt; IO ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">IO String -&gt; String
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafePerformIO</span></span><span>
+</span><span id="line-56"></span><span>    </span><span id="warningU"><span class="annot"><span class="annottext">warningU :: IO String -&gt; String -&gt; IO ()
+</span><a href="L3.Util.html#warningU"><span class="hs-identifier hs-var hs-var">warningU</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">warningM</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; IO ())
+-&gt; (IO String -&gt; String) -&gt; IO String -&gt; String -&gt; IO ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">IO String -&gt; String
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafePerformIO</span></span><span>
+</span><span id="line-57"></span><span>    </span><span id="errorU"><span class="annot"><span class="annottext">errorU :: IO String -&gt; String -&gt; IO ()
+</span><a href="L3.Util.html#errorU"><span class="hs-identifier hs-var hs-var">errorU</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">errorM</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; IO ())
+-&gt; (IO String -&gt; String) -&gt; IO String -&gt; String -&gt; IO ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">IO String -&gt; String
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafePerformIO</span></span><span>
+</span><span id="line-58"></span><span>    </span><span id="criticalU"><span class="annot"><span class="annottext">criticalU :: IO String -&gt; String -&gt; IO ()
+</span><a href="L3.Util.html#criticalU"><span class="hs-identifier hs-var hs-var">criticalU</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">criticalM</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; IO ())
+-&gt; (IO String -&gt; String) -&gt; IO String -&gt; String -&gt; IO ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">IO String -&gt; String
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafePerformIO</span></span><span>
+</span><span id="line-59"></span><span>    </span><span id="alertU"><span class="annot"><span class="annottext">alertU :: IO String -&gt; String -&gt; IO ()
+</span><a href="L3.Util.html#alertU"><span class="hs-identifier hs-var hs-var">alertU</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">alertM</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; IO ())
+-&gt; (IO String -&gt; String) -&gt; IO String -&gt; String -&gt; IO ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">IO String -&gt; String
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafePerformIO</span></span><span>
+</span><span id="line-60"></span><span>    </span><span id="emergencyU"><span class="annot"><span class="annottext">emergencyU :: IO String -&gt; String -&gt; IO ()
+</span><a href="L3.Util.html#emergencyU"><span class="hs-identifier hs-var hs-var">emergencyU</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><span class="hs-identifier hs-var">emergencyM</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; IO ())
+-&gt; (IO String -&gt; String) -&gt; IO String -&gt; String -&gt; IO ()
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">IO String -&gt; String
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafePerformIO</span></span><span>
+</span><span id="line-61"></span></pre></body></html>
