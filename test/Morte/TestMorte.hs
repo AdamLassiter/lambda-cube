@@ -40,11 +40,10 @@ module Morte.TestMorte (tests) where
         contents <- readFile file
         let (typ', expr') = parse [] expr
         let (typ0, expr0) = parse [] contents
-        debugTestMorte $ "\n== " ++ show file ++ " =="
+        debugTestMorte $ "== " ++ show file ++ " =="
         debugTestMorte typ
         debugTestMorte expr
-        debugTestMorte "\n== Expression =="
-        debugTestMorte $ rstrip contents
+        debugTestMorte $ "== Expression ==" ++ "\n" ++ rstrip contents
         debugTestMorte "== Type =="
         debugTestMorte $ "Expected: " ++ showExpr typ'
         debugTestMorte $ "Actual: " ++ showExpr typ0
@@ -60,110 +59,110 @@ module Morte.TestMorte (tests) where
     example0 =
         example
             "test/Morte/example0.l3"
-            "forall (a : *) . forall (x : a) . a"
-            "lambda (a : *) . lambda (x : a) . x"
+            "π (a : *) . π (x : a) . a"
+            "λ (a : *) . λ (x : a) . x"
 
     example1 :: IO ()
     example1 =
         example
             "test/Morte/example1.l3"
-            "forall (String : *) . forall (x : String) . String"
-            "lambda (String : *) . lambda (x : String) . x"
+            "π (String : *) . π (x : String) . String"
+            "λ (String : *) . λ (x : String) . x"
 
     example2 :: IO ()
     example2 =
         example
             "test/Morte/example2.l3"
-            "forall (a : *) . a . a"
-            "lambda (a : *) . lambda (x : a) . x"
+            "π (a : *) . a . a"
+            "λ (a : *) . λ (x : a) . x"
 
     example3 :: IO ()
     example3 =
         example
             "test/Morte/example3.l3"
-            "forall (Int : *) . forall (Zero : Int) . forall (One : Int) . Int"
-            "lambda (Int : *) . lambda (Zero : Int) . lambda (One : Int) . One"
+            "π (Int : *) . π (Zero : Int) . π (One : Int) . Int"
+            "λ (Int : *) . λ (Zero : Int) . λ (One : Int) . One"
 
     example4 :: IO ()
     example4 =
         example
             "test/Morte/example4.l3"
-            "forall (a : *) . forall (x : a) . forall (y : a) . a"
-            "lambda (a : *) . lambda (x : a) . lambda (y : a) . y"
+            "π (a : *) . π (x : a) . π (y : a) . a"
+            "λ (a : *) . λ (x : a) . λ (y : a) . y"
 
     example5 :: IO ()
     example5 =
         example
             "test/Morte/example5.l3"
-            "forall (r : *) . r . r . r"
-            "lambda (r : *) . lambda (x : r) . lambda (_ : r) . x"
+            "π (r : *) . r . r . r"
+            "λ (r : *) . λ (x : r) . λ (_ : r) . x"
 
     example6 :: IO ()
     example6 =
         example
             "test/Morte/example6.l3"
-            "forall (a : *) . (forall (x : *) . (a . x . x) . x . x) . forall (x : *) . (a . x . x) . x . x"
-            "lambda (a : *) . lambda (l : forall (x : *) . (a . x . x) . x . x) . l"
+            "π (a : *) . (π (x : *) . (a . x . x) . x . x) . π (x : *) . (a . x . x) . x . x"
+            "λ (a : *) . λ (l : π (x : *) . (a . x . x) . x . x) . l"
 
     example7 :: IO ()
     example7 =
         example
             "test/Morte/example7.l3"
-            "forall (a : *) . (forall (x : *) . (a . x . x) . x . x) . forall (x : *) . (a . x . x) . x . x"
-            "lambda (a : *) . lambda (va : forall (x : *) . (a . x . x) . x . x) . va"
+            "π (a : *) . (π (x : *) . (a . x . x) . x . x) . π (x : *) . (a . x . x) . x . x"
+            "λ (a : *) . λ (va : π (x : *) . (a . x . x) . x . x) . va"
 
     example8 :: IO ()
     example8 =
         example
             "test/Morte/example8.l3"
-            "forall (a : *) . forall (b : *) . forall (c : *) . forall (f : b . c) . forall (g : a . b) . (forall (x : *) . (a . x . x) . x . x) . forall (x : *) . (c . x . x) . x . x"
-            "lambda (a : *) . lambda (b : *) . lambda (c : *) . lambda (f : b . c) . lambda (g : a . b) . lambda (l : forall (x : *) . (a . x . x) . x . x) . lambda (x : *) . lambda (Cons : c . x . x) . l x (lambda (va : a) . Cons (f (g va)))"
+            "π (a : *) . π (b : *) . π (c : *) . π (f : b . c) . π (g : a . b) . (π (x : *) . (a . x . x) . x . x) . π (x : *) . (c . x . x) . x . x"
+            "λ (a : *) . λ (b : *) . λ (c : *) . λ (f : b . c) . λ (g : a . b) . λ (l : π (x : *) . (a . x . x) . x . x) . λ (x : *) . λ (Cons : c . x . x) . l x (λ (va : a) . Cons (f (g va)))"
 
     example9 :: IO ()
     example9 =
         example
             "test/Morte/example9.l3"
-            "forall (a : *) . forall (b : *) . forall (c : *) . forall (f : b . c) . forall (g : a . b) . (forall (x : *) . (a . x . x) . x . x) . forall (x : *) . (c . x . x) . x . x"
-            "lambda (a : *) . lambda (b : *) . lambda (c : *) . lambda (f : b . c) . lambda (g : a . b) . lambda (va : forall (x : *) . (a . x . x) . x . x) . lambda (x : *) . lambda (Cons : c . x . x) . va x (lambda (va : a) . Cons (f (g va)))"
+            "π (a : *) . π (b : *) . π (c : *) . π (f : b . c) . π (g : a . b) . (π (x : *) . (a . x . x) . x . x) . π (x : *) . (c . x . x) . x . x"
+            "λ (a : *) . λ (b : *) . λ (c : *) . λ (f : b . c) . λ (g : a . b) . λ (va : π (x : *) . (a . x . x) . x . x) . λ (x : *) . λ (Cons : c . x . x) . va x (λ (va : a) . Cons (f (g va)))"
 
     example10 :: IO ()
     example10 =
         example
             "test/Morte/example10.l3"
-            "forall (a : *) . (forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x"
-            "lambda (a : *) . lambda (st : forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . st"
+            "π (a : *) . (π (x : *) . (π (s : *) . s . (s . π (x : *) . (a . s . x) . x) . x) . x) . π (x : *) . (π (s : *) . s . (s . π (x : *) . (a . s . x) . x) . x) . x"
+            "λ (a : *) . λ (st : π (x : *) . (π (s : *) . s . (s . π (x : *) . (a . s . x) . x) . x) . x) . st"
 
     example11 :: IO ()
     example11 =
         example
             "test/Morte/example11.l3"
-            "forall (a : *) . (forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x"
-            "lambda (a : *) . lambda (va : forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . va"
+            "π (a : *) . (π (x : *) . (π (s : *) . s . (s . π (x : *) . (a . s . x) . x) . x) . x) . π (x : *) . (π (s : *) . s . (s . π (x : *) . (a . s . x) . x) . x) . x"
+            "λ (a : *) . λ (va : π (x : *) . (π (s : *) . s . (s . π (x : *) . (a . s . x) . x) . x) . x) . va"
 
     example12 :: IO ()
     example12 =
         example
             "test/Morte/example12.l3"
-            "forall (a : *) . forall (b : *) . forall (c : *) . (b . c) . (a . b) . (forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (c . s . x) . x) . x) . x"
-            "lambda (a : *) . lambda (b : *) . lambda (c : *) . lambda (f : b . c) . lambda (g : a . b) . lambda (st : forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . lambda (x : *) . lambda (S : forall (s : *) . s . (s . forall (x : *) . (c . s . x) . x) . x) . st x (lambda (s : *) . lambda (seed : s) . lambda (step : s . forall (x : *) . (a . s . x) . x) . S s seed (lambda (seed : s) . lambda (x : *) . lambda (Pair : c . s . x) . step seed x (lambda (va : a) . Pair (f (g va)))))"
+            "π (a : *) . π (b : *) . π (c : *) . (b . c) . (a . b) . (π (x : *) . (π (s : *) . s . (s . π (x : *) . (a . s . x) . x) . x) . x) . π (x : *) . (π (s : *) . s . (s . π (x : *) . (c . s . x) . x) . x) . x"
+            "λ (a : *) . λ (b : *) . λ (c : *) . λ (f : b . c) . λ (g : a . b) . λ (st : π (x : *) . (π (s : *) . s . (s . π (x : *) . (a . s . x) . x) . x) . x) . λ (x : *) . λ (S : π (s : *) . s . (s . π (x : *) . (c . s . x) . x) . x) . st x (λ (s : *) . λ (seed : s) . λ (step : s . π (x : *) . (a . s . x) . x) . S s seed (λ (seed : s) . λ (x : *) . λ (Pair : c . s . x) . step seed x (λ (va : a) . Pair (f (g va)))))"
 
     example13 :: IO ()
     example13 =
         example
             "test/Morte/example13.l3"
-            "forall (a : *) . forall (b : *) . forall (c : *) . (b . c) . (a . b) . (forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (c . s . x) . x) . x) . x"
-            "lambda (a : *) . lambda (b : *) . lambda (c : *) . lambda (f : b . c) . lambda (g : a . b) . lambda (va : forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (a . s . x) . x) . x) . x) . lambda (x : *) . lambda (S : forall (s : *) . s . (s . forall (x : *) . (c . s . x) . x) . x) . va x (lambda (s : *) . lambda (seed : s) . lambda (step : s . forall (x : *) . (a . s . x) . x) . S s seed (lambda (seed : s) . lambda (x : *) . lambda (Pair : c . s . x) . step seed x (lambda (va : a) . Pair (f (g va)))))"
+            "π (a : *) . π (b : *) . π (c : *) . (b . c) . (a . b) . (π (x : *) . (π (s : *) . s . (s . π (x : *) . (a . s . x) . x) . x) . x) . π (x : *) . (π (s : *) . s . (s . π (x : *) . (c . s . x) . x) . x) . x"
+            "λ (a : *) . λ (b : *) . λ (c : *) . λ (f : b . c) . λ (g : a . b) . λ (va : π (x : *) . (π (s : *) . s . (s . π (x : *) . (a . s . x) . x) . x) . x) . λ (x : *) . λ (S : π (s : *) . s . (s . π (x : *) . (c . s . x) . x) . x) . va x (λ (s : *) . λ (seed : s) . λ (step : s . π (x : *) . (a . s . x) . x) . S s seed (λ (seed : s) . λ (x : *) . λ (Pair : c . s . x) . step seed x (λ (va : a) . Pair (f (g va)))))"
 
     example14 :: IO ()
     example14 =
         example
             "test/Morte/example14.l3"
-            "forall (String : *) . forall (U : *) . forall (Unit : U) . forall (x : *) . (String . x . x) . ((String . x) . x) . (U . x) . x"
-            "lambda (String : *) . lambda (U : *) . lambda (Unit : U) . lambda (x : *) . lambda (PutStrLn : String . x . x) . lambda (GetLine : (String . x) . x) . lambda (Return : U . x) . GetLine (lambda (va : String) . PutStrLn va (GetLine (lambda (va : String) . PutStrLn va (Return Unit))))"
+            "π (String : *) . π (U : *) . π (Unit : U) . π (x : *) . (String . x . x) . ((String . x) . x) . (U . x) . x"
+            "λ (String : *) . λ (U : *) . λ (Unit : U) . λ (x : *) . λ (PutStrLn : String . x . x) . λ (GetLine : (String . x) . x) . λ (Return : U . x) . GetLine (λ (va : String) . PutStrLn va (GetLine (λ (va : String) . PutStrLn va (Return Unit))))"
 
     example15 :: IO ()
     example15 =
         example
             "test/Morte/example15.l3"
-            "forall (String : *) . forall (r : *) . forall (x : *) . (forall (s : *) . s . (s . forall (x : *) . (String . s . x) . ((String . s) . x) . (r . x) . x) . x) . x"
-            "lambda (String : *) . lambda (r : *) . lambda (x : *) . lambda (k : forall (s : *) . s . (s . forall (x : *) . (String . s . x) . ((String . s) . x) . (r . x) . x) . x) . k (forall (x : *) . (String . x) . x . x) (lambda (x : *) . lambda (Just : String . x) . lambda (Nothing : x) . Nothing) (lambda (m : forall (x : *) . (String . x) . x . x) . m (forall (x : *) . (String . (forall (x : *) . (String . x) . x . x) . x) . ((String . forall (x : *) . (String . x) . x . x) . x) . (r . x) . x) (lambda (str : String) . lambda (x : *) . lambda (PutStrLn : String . (forall (x : *) . (String . x) . x . x) . x) . lambda (GetLine : (String . forall (x : *) . (String . x) . x . x) . x) . lambda (Return : r . x) . PutStrLn str (lambda (x : *) . lambda (Just : String . x) . lambda (Nothing : x) . Nothing)) (lambda (x : *) . lambda (PutStrLn : String . (forall (x : *) . (String . x) . x . x) . x) . lambda (GetLine : (String . forall (x : *) . (String . x) . x . x) . x) . lambda (Return : r . x) . GetLine (lambda (va : String) . lambda (x : *) . lambda (Just : String . x) . lambda (Nothing : x) . Just va)))"
+            "π (String : *) . π (r : *) . π (x : *) . (π (s : *) . s . (s . π (x : *) . (String . s . x) . ((String . s) . x) . (r . x) . x) . x) . x"
+            "λ (String : *) . λ (r : *) . λ (x : *) . λ (k : π (s : *) . s . (s . π (x : *) . (String . s . x) . ((String . s) . x) . (r . x) . x) . x) . k (π (x : *) . (String . x) . x . x) (λ (x : *) . λ (Just : String . x) . λ (Nothing : x) . Nothing) (λ (m : π (x : *) . (String . x) . x . x) . m (π (x : *) . (String . (π (x : *) . (String . x) . x . x) . x) . ((String . π (x : *) . (String . x) . x . x) . x) . (r . x) . x) (λ (str : String) . λ (x : *) . λ (PutStrLn : String . (π (x : *) . (String . x) . x . x) . x) . λ (GetLine : (String . π (x : *) . (String . x) . x . x) . x) . λ (Return : r . x) . PutStrLn str (λ (x : *) . λ (Just : String . x) . λ (Nothing : x) . Nothing)) (λ (x : *) . λ (PutStrLn : String . (π (x : *) . (String . x) . x . x) . x) . λ (GetLine : (String . π (x : *) . (String . x) . x . x) . x) . λ (Return : r . x) . GetLine (λ (va : String) . λ (x : *) . λ (Just : String . x) . λ (Nothing : x) . Just va)))"

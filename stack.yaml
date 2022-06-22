@@ -4,6 +4,5 @@ packages:
 - .
 
 build:
-  library-profiling: true
-  executable-profiling: true
-  interleaved-output: false
+#   library-profiling: true
+#   executable-profiling: true
