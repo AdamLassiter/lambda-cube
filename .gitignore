@@ -1,5 +1,6 @@
-.stack-work/
-dist-newstyle/
-*~
-*.tix
+.*
+*.hp
+*.prof
 *.lock
+*.cabal
+dist-newstyle
