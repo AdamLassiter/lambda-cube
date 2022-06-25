@@ -1,5 +1,4 @@
 profiling: True
 profiling-detail: toplevel-functions
 tests: True
-coverage: True
 test-show-details: streaming

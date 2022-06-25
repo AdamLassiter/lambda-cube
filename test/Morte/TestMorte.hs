@@ -38,8 +38,8 @@ module Morte.TestMorte (tests) where
     example :: FilePath -> String -> String -> IO ()
     example file typ expr = do
         contents <- readFile file
-        let (typ', expr') = parse [] expr
-        let (typ0, expr0) = parse [] contents
+        let (typ', expr') = parse (Ctx []) expr
+        let (typ0, expr0) = parse (Ctx []) contents
         debugTestMorte $ "== " ++ show file ++ " =="
         debugTestMorte typ
         debugTestMorte expr

@@ -9,7 +9,7 @@ module L3.Util where
             where show' :: Int -> Error -> String
                   show' i (Error (errs, cause)) = ("\n" ++) . trimR . unlines $ showErrors i errs: showCause i cause
                   showErrors i errs = trimR . unlines $ map (indent i) errs
-                  indent i = trimR . unlines . map (\l -> unwords $ replicate i "\t" ++ [trimR l]) . lines
+                  indent i = trimR . unlines . map (\l -> unwords $ replicate 1 "\t" ++ [trimR l]) . lines
                   showCause i cause = case cause of
                       Just c -> [show' (i + 1) c]
                       Nothing -> []
