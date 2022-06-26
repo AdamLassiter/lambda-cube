@@ -1,61 +1,63 @@
--- |Utilites for result types and error throwing
+-- | Utilites for result types and error throwing
 module L3.Util where
-    import Data.Char (isSpace)
 
-    newtype Error = Error ([String], Maybe Error)
-        deriving (Eq)
-    instance Show Error where
-        show = show' 0
-            where show' :: Int -> Error -> String
-                  show' i (Error (errs, cause)) = ("\n" ++) . trimR . unlines $ showErrors i errs: showCause i cause
-                  showErrors i errs = trimR . unlines $ map (indent i) errs
-                  indent i = trimR . unlines . map (\l -> unwords $ replicate 1 "\t" ++ [trimR l]) . lines
-                  showCause i cause = case cause of
-                      Just c -> [show' (i + 1) c]
-                      Nothing -> []
-                  trim = trimL . trimR
-                  trimR = reverse . trimL . reverse
-                  trimL = dropWhile isSpace
+import Data.Char (isSpace)
 
-    showIdent :: (Show a) => a -> String
-    showIdent = ("| " ++) . show
+newtype Error = Error ([String], Maybe Error)
+  deriving (Eq)
 
-    type Result a = Either Error a
+instance Show Error where
+  show = show' 0
+    where
+      show' :: Int -> Error -> String
+      show' i (Error (errs, cause)) = ("\n" ++) . trimR . unlines $ showErrors i errs : showCause i cause
+      showErrors i errs = trimR . unlines $ map (indent i) errs
+      indent i = trimR . unlines . map (\l -> unwords $ replicate 1 "\t" ++ [trimR l]) . lines
+      showCause i cause = case cause of
+        Just c -> [show' (i + 1) c]
+        Nothing -> []
+      trim = trimL . trimR
+      trimR = reverse . trimL . reverse
+      trimL = dropWhile isSpace
 
+showIdent :: (Show a) => a -> String
+showIdent = ("| " ++) . show
 
-    throw :: Error -> Result a
-    throw = Left
+type Result a = Either Error a
 
-    throwError :: [String] -> Error
-    throwError errs = Error (errs, Nothing)
+throw :: Error -> Result a
+throw = Left
 
-    rethrowError :: [String] -> Error -> Error
-    rethrowError errs cause = Error (errs, Just cause)
+throwError :: [String] -> Error
+throwError errs = Error (errs, Nothing)
 
-    unpack :: [Result a] -> Result [a]
-    unpack (Left err:_) = throw err
-    unpack (Right r:rs) = case unpack rs of
-        Left err  -> throw err
-        Right rs' -> Right (r:rs')
-    unpack []           = Right []
+rethrowError :: [String] -> Error -> Error
+rethrowError errs cause = Error (errs, Just cause)
 
-    mapL :: (Error -> Error) -> Result a -> Result a
-    mapL f (Left err)  = Left $ f err
-    mapL _ (Right res) = Right res
+unpack :: [Result a] -> Result [a]
+unpack (Left err : _) = throw err
+unpack (Right r : rs) = case unpack rs of
+  Left err -> throw err
+  Right rs' -> Right (r : rs')
+unpack [] = Right []
 
-    mapR :: (a -> b) -> Result a -> Result b
-    mapR _ (Left err)  = Left err
-    mapR f (Right res) = Right $ f res
+mapL :: (Error -> Error) -> Result a -> Result a
+mapL f (Left err) = Left $ f err
+mapL _ (Right res) = Right res
 
-    fmapR :: (a -> Result b) -> Result a -> Result b
-    fmapR _ (Left err)  = Left err
-    fmapR f (Right res) = f res
+mapR :: (a -> b) -> Result a -> Result b
+mapR _ (Left err) = Left err
+mapR f (Right res) = Right $ f res
 
-    flatten :: Result (Result a) -> Result a
-    flatten (Left err)          = Left err
-    flatten (Right (Left err))  = Left err
-    flatten (Right (Right res)) = Right res
+fmapR :: (a -> Result b) -> Result a -> Result b
+fmapR _ (Left err) = Left err
+fmapR f (Right res) = f res
 
-    throwL :: Result a -> a
-    throwL (Left err)  = Prelude.error $ show err
-    throwL (Right res) = res
+flatten :: Result (Result a) -> Result a
+flatten (Left err) = Left err
+flatten (Right (Left err)) = Left err
+flatten (Right (Right res)) = Right res
+
+throwL :: Result a -> a
+throwL (Left err) = Prelude.error $ show err
+throwL (Right res) = res

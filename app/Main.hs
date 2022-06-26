@@ -8,7 +8,7 @@ import System.Console.Haskeline
 
 -- | Run REPL
 main :: IO ()
-main = withStderrLogging $ do
+main = withStdoutLogging $ do
   let (tCtx, prel) = wrapPrelude embeddedPrelude
   -- let (tCtx, prel) = ([], id)
   runInputT defaultSettings $ repl tCtx prel
