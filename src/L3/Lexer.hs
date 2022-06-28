@@ -9,6 +9,8 @@ import L3.StringParsec
 data Token
   = OpenParen
   | CloseParen
+  | OpenSquare
+  | CloseSquare
   | HasType
   | At
   | StarT
@@ -29,8 +31,8 @@ alternatives :: [Parser String Token]
 alternatives =
   [ reserved "(" >> debugLexer "open-paren" (pure OpenParen),
     reserved ")" >> debugLexer "close-paren" (pure CloseParen),
-    reserved "[" >> debugLexer "open-paren" (pure OpenParen),
-    reserved "]" >> debugLexer "close-paren" (pure CloseParen),
+    reserved "[" >> debugLexer "open-paren" (pure OpenSquare),
+    reserved "]" >> debugLexer "close-paren" (pure CloseSquare),
     reserved "*" >> debugLexer "star" (pure StarT),
     reserved "⊤" >> debugLexer "star" (pure StarT),
     reserved "#" >> debugLexer "box" (pure BoxT),

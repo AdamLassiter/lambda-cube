@@ -6,14 +6,15 @@ import L3.Logging
 
 wrapPreludeIO :: ShowExpr -> IO ShowExpr
 wrapPreludeIO expr = do
-  (tCtx, prel) <- wrapPrelude <$> embeddedPreludeIO
+  (τ, prel) <- wrapPrelude <$> embeddedPreludeIO
   let id' = prel expr
   pure id'
 
 -- | Run benchmark
 main :: IO ()
 main =
-  withStderrLogging $
+  withStderrLogging $ do
+    setLogLevel LevelInfo
     defaultMain
       [ bench "λ(x:*).x" $ whnfIO $ wrapPreludeIO $ Lam (Name "x") Star (Var $ Name "x"),
         bench "x" $ whnfIO $ wrapPreludeIO $ Var $ Name "x",

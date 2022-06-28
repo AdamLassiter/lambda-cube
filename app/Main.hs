@@ -9,12 +9,13 @@ import System.Console.Haskeline
 -- | Run REPL
 main :: IO ()
 main = withStdoutLogging $ do
-  let (tCtx, prel) = wrapPrelude embeddedPrelude
-  -- let (tCtx, prel) = ([], id)
-  runInputT defaultSettings $ repl tCtx prel
+  setLogLevel LevelInfo
+  let (τ, prel) = wrapPrelude embeddedPrelude
+  -- let (τ, prel) = ([], id)
+  runInputT defaultSettings $ repl τ prel
 
 repl :: ShowCtx -> (ShowExpr -> ShowExpr) -> InputT IO ()
-repl tCtx prel = do
+repl τ prel = do
   isTerminalUI <- haveTerminalUI
   input' <- getInputLine (if isTerminalUI then ">> " else "")
   forM_ input' parse
@@ -22,9 +23,9 @@ repl tCtx prel = do
     parse :: String -> InputT IO ()
     parse inp = do
       let prEx = mapR prel $ fmapR parseExpr $ lexSrc inp
-      case fmapR (evalExpr tCtx) prEx of
+      case fmapR (evalExpr τ) prEx of
         Left err -> outputStrLn $ show err
         Right (t, e) -> do
           outputStrLn $ showExpr t
           outputStrLn $ showExpr $ normalize0 e
-      repl tCtx prel
+      repl τ prel

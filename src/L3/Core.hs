@@ -72,7 +72,7 @@ debugCore = debugU "Core"
 --  In this context, free v a & v /= v'  =>  substitute v v' a /= a
 --  i.e. would a substitution be performed
 free :: (Eq a, Show a) => a -> Expr a -> Bool
-free v e = debugCore ("free " ++ show v ++ " " ++ show e) (free' v e)
+free v e = debugCore ("free " ++ show v ++ ", " ++ show e) (free' v e)
 
 free' v (Var v') = v == v'
 free' v (Lam v' ta _) | v == v' = free v ta
@@ -83,7 +83,7 @@ free' v (App f a) = free v f || free v a
 free' _ _ = False
 
 fresh :: (Eq a, Enum a, Show a) => a -> Expr a -> a
-fresh v e = debugCore ("fresh " ++ show v ++ " " ++ show e) (fresh' v e)
+fresh v e = debugCore ("fresh " ++ show v ++ ", " ++ show e) (fresh' v e)
 
 fresh' from expr = v
   where
@@ -94,7 +94,7 @@ fresh' from expr = v
 -- | Substitute all occurrences of a variable v with an expression e.
 --  substitute v e E  ~  E[v := e]
 substitute :: (Eq a, Enum a, Show a) => a -> Expr a -> Expr a -> Expr a
-substitute v e e' = debugCore ("substitute " ++ show v ++ " " ++ show e ++ " " ++ show e') (substitute' v e e')
+substitute v e e' = debugCore ("substitute " ++ show v ++ ", " ++ show e ++ ", " ++ show e') (substitute' v e e')
 
 substitute' v e (Var v') | v == v' = e
 substitute' v e (Lam v' ta b) | v == v' = Lam v' (substitute v e ta) b
@@ -135,7 +135,7 @@ normalize0' e = case normalize e of
 -- | Given an 'free' index, convert an expression in Right names into Left indexes.
 --  This uses DeBruijn indicies.
 index :: (Eq a, Enum a, Show a) => Int -> Expr (Either Int a) -> Expr (Either Int a)
-index i e = debugCore ("index " ++ show i ++ " " ++ show e) (index' i e)
+index i e = debugCore ("index " ++ show i ++ ", " ++ show e) (index' i e)
 
 index' _ (Var v) = Var v
 index' i (Lam v ta b) = Lam (Left i) (index i ta) (index (i + 1) $ substitute v (Var $ Left i) b)
@@ -156,7 +156,7 @@ index0' e = index 0 (fmap Right e)
 --  and checking for exact equality. This does not apply normalisation, so
 --  represents only alpha-equivalence of expressions.
 alphaEq :: (Eq a, Enum a, Show a) => Expr a -> Expr a -> Bool
-alphaEq e e' = debugCore ("alphaEq " ++ show e ++ " " ++ show e') (alphaEq' e e')
+alphaEq e e' = debugCore ("alphaEq " ++ show e ++ ", " ++ show e') (alphaEq' e e')
 
 alphaEq' e e' = index0 e == index0 e'
 
@@ -164,15 +164,15 @@ alphaEq' e e' = index0 e == index0 e'
 --  and checking for exact equality. This does apply normalisation, so represents
 --  beta-equivalence (and implicitly alpha-equivalence) of expressions.
 betaEq :: (Eq a, Enum a, Show a) => Expr a -> Expr a -> Bool
-betaEq e e' = debugCore ("betaEq " ++ show e ++ " " ++ show e') (betaEq' e e')
+betaEq e e' = debugCore ("betaEq " ++ show e ++ ", " ++ show e') (betaEq' e e')
 
 betaEq' e e' = normalize0 e `alphaEq` normalize0 e'
 
 -- | Evaluate an expression, returning its type and normalized form
 evalExpr :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
-evalExpr (Ctx tCtx) e = debugCore ("evalExpr " ++ show tCtx ++ " " ++ show e) (evalExpr' (Ctx tCtx) e)
+evalExpr (Ctx τ) e = debugCore ("evalExpr " ++ show τ ++ ", " ++ show e) (evalExpr' (Ctx τ) e)
 
-evalExpr' tCtx e = mapR (,normalize e) (inferType tCtx e)
+evalExpr' τ e = mapR (,normalize e) (inferType τ e)
 
 -- | Type-check an expression and return the expression's type if type-checking
 --  succeeds or an error message if type-checking fails
@@ -180,48 +180,63 @@ evalExpr' tCtx e = mapR (,normalize e) (inferType tCtx e)
 --  is not necessary for just type-checking.  If you actually care about the
 --  returned type then you may want to `normalize` it afterwards.
 --  Type inference is within a type context (list of global names and their types)
-inferType1 :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
-inferType1 (Ctx tCtx) e = debugCore ("inferType1 " ++ show tCtx ++ ", " ++ show e) (inferType1' (Ctx tCtx) e)
+--
+-- | 'Weak' type infernce here refers to the lack of partial evaluation for contextual
+-- beta-equivalence. For some X, a by-value and by-reference of X should be legal:
+--   (λ (T : *) . λ (f : π (X : *) . X) . λ (x : T) . f x) X
+-- In fact, resolving T := X as beta-equivalent to X will fail for weakInferType.
+weakInferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
+weakInferType (Ctx τ) e = debugCore ("weakInferType " ++ show τ ++ ", " ++ show e) (weakInferType' (Ctx τ) e)
 
-inferType1' _ Star = return Box
-inferType1' (Ctx tCtx) Box = Left $ rethrowError ("in context:" : map showIdent tCtx) (throwError ["absurd box"])
-inferType1' (Ctx tCtx) (Var v) = case lookup v tCtx of
-  Nothing -> Left $ rethrowError ("in context:" : map showIdent tCtx) (throwError ["unbound variable:", showIdent v])
+weakInferType' _ Star = return Box
+weakInferType' (Ctx τ) Box = Left $ rethrowError ("in context:" : map showIdent τ) (throwError ["absurd box"])
+weakInferType' (Ctx τ) (Var v) = case lookup v τ of
+  Nothing -> Left $ rethrowError ("in context:" : map showIdent τ) (throwError ["unbound variable:", showIdent v])
   Just e -> Right e
-inferType1' (Ctx tCtx) (Lam v ta b) = do
-  tb <- inferType1 (Ctx ((v, ta) : tCtx)) b
+weakInferType' (Ctx τ) (Lam v ta b) = do
+  tb <- weakInferType (Ctx ((v, ta) : τ)) b
   let tf = Pi v ta tb
   -- Types may themselves be well-typed, since they are expressions
-  _ <- inferType1 (Ctx tCtx) tf
+  _ <- weakInferType (Ctx τ) tf
   return tf
-inferType1' (Ctx tCtx) (Pi v ta tb) = do
-  tta <- inferType1 (Ctx tCtx) ta
-  ttb <- inferType1 (Ctx ((v, ta) : tCtx)) tb
+weakInferType' (Ctx τ) (Pi v ta tb) = do
+  tta <- weakInferType (Ctx τ) ta
+  ttb <- weakInferType (Ctx ((v, ta) : τ)) tb
   case (tta, ttb) of
     (Star, Star) -> return Star
     (Box, Star) -> return Star
     (Star, Box) -> return Box
     (Box, Box) -> return Box
-    (l, r) -> Left $ rethrowError ("in context:" : map showIdent tCtx) (throwError ["invalid type:", showIdent (Pi v ta tb), "had left kind:", showIdent l, "had right kind:", showIdent r])
-inferType1' (Ctx tCtx) (App f a) = do
-  (v, ta, tb) <- case inferType1 (Ctx tCtx) f of
+    (l, r) -> Left $ rethrowError ("in context:" : map showIdent τ) (throwError ["invalid type:", showIdent (Pi v ta tb), "had left kind:", showIdent l, "had right kind:", showIdent r])
+weakInferType' (Ctx τ) (App f a) = do
+  (v, ta, tb) <- case weakInferType (Ctx τ) f of
     Right (Pi v ta tb) -> return (v, ta, tb)
-    Right expr -> Left $ rethrowError ("in context:" : map showIdent tCtx) (throwError ["cannot apply to non-function:", showIdent f, "had type: ", showIdent expr, "had application:", showIdent a])
+    Right expr -> Left $ rethrowError ("in context:" : map showIdent τ) (throwError ["cannot apply to non-function:", showIdent f, "had type: ", showIdent expr, "had application:", showIdent a])
     Left err -> Left $ matchBind f
       where
-        matchBind (Lam v ta b) = rethrowError ["with binding:", showIdent (v, b)] err
+        matchBind (Lam v ta b) = rethrowError ["with binding:", showIdent (v, a)] err
         matchBind f = rethrowError ["in expression:", showIdent $ App f a] err
-  ta' <- inferType1 (Ctx tCtx) a
+  ta' <- weakInferType (Ctx τ) a
   if ta `betaEq` ta'
     then return $ substitute v a tb
-    else Left $ rethrowError ("in context:" : map showIdent tCtx) (throwError ["type mismatch for function:", showIdent f, "expected type:", showIdent ta, "but given arg:", showIdent a, "and given type:", showIdent ta'])
+    else Left $ rethrowError ("in context:" : map showIdent τ) (throwError ["type mismatch for function:", showIdent f, "expected type:", showIdent ta, "but given arg:", showIdent a, "and given type:", showIdent ta'])
+
+-- | Type-check an expression and return the expression's normalized type if
+--  type-checking succeeds or an error message if type-checking fails
+-- Perform partial evaluation by substitution of lambda-applications to types
+-- to ensure the problem-case for `weakInferType` does not fail here.
+inferType1 :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
+inferType1 (Ctx τ) e = debugCore ("inferType1 " ++ show τ ++ ", " ++ show e) (inferType1' (Ctx τ) e)
+
+inferType1' τ e = weakInferType τ e
 
 -- | Type-check an expression and return the expression's normalized type if
 --  type-checking succeeds or an error message if type-checking fails
 inferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
-inferType (Ctx tCtx) e = debugCore ("inferType " ++ show tCtx ++ " " ++ show e) (inferType' (Ctx tCtx) e)
+-- TODO : substitute for types, then infer types
+inferType (Ctx τ) e = debugCore ("inferType " ++ show τ ++ ", " ++ show e) (inferType' (Ctx τ) e)
 
-inferType' tCtx e = mapR normalize $ inferType1 tCtx e
+inferType' τ e = mapR normalize $ inferType1 τ e
 
 -- | `inferType0` is the same as `inferType` with an empty context, meaning that
 --  the expression must be closed (i.e. no free variables), otherwise type-checking
@@ -234,9 +249,9 @@ inferType0' = inferType (Ctx [])
 
 -- | Deduce if an expression e is well-typed - i.e. its type can be inferred.
 wellTyped :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Bool
-wellTyped (Ctx tCtx) e = debugCore ("wellTyped " ++ show tCtx ++ ", " ++ show e) (wellTyped' (Ctx tCtx) e)
+wellTyped (Ctx τ) e = debugCore ("wellTyped " ++ show τ ++ ", " ++ show e) (wellTyped' (Ctx τ) e)
 
-wellTyped' tCtx e = case inferType tCtx e of
+wellTyped' τ e = case inferType τ e of
   Left _ -> False
   Right _ -> True
 

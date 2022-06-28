@@ -3,7 +3,7 @@
 -- | Parsec utils for parsing Strings into Strings
 module L3.StringParsec (module L3.StringParsec, module L3.Parsec) where
 
-import Control.Applicative hiding (many, some)
+import Control.Applicative ( Alternative((<|>)) )
 import Data.Char (isDigit)
 import L3.Parsec
 

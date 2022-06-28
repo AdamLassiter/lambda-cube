@@ -3,6 +3,7 @@
 -- | Parsec utils for parsing Tokens into Tokens
 module L3.TokenParsec (module L3.TokenParsec, module L3.Parsec) where
 
+import Control.Applicative ( Alternative((<|>)) )
 import L3.Lexer
 import L3.Parsec
 
@@ -43,7 +44,17 @@ symbol = satisfy isSymbol
     isSymbol _ = False
 
 parens :: Parser [Token] a -> Parser [Token] a
-parens m = do
+parens m = (roundParens m) <|> (squareParens m)
+
+squareParens :: Parser [Token] a -> Parser [Token] a
+squareParens m = do
+  _ <- reserved OpenSquare
+  n <- m
+  _ <- reserved CloseSquare
+  return n
+
+roundParens :: Parser [Token] a -> Parser [Token] a
+roundParens m = do
   _ <- reserved OpenParen
   n <- m
   _ <- reserved CloseParen

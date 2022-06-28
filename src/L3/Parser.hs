@@ -5,7 +5,8 @@
 -- | Parser from Tokens into Expressions
 module L3.Parser (module L3.Parser, module L3.Lexer, module L3.Core) where
 
-import Control.Applicative hiding (many, some)
+import Control.Applicative
+    ( Applicative(pure), Alternative(empty, (<|>)), (<$>), optional )
 import Data.Maybe
 import Debug.Trace
 import L3.Core

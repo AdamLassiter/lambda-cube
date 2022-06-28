@@ -17,10 +17,10 @@ tests :: [IO ()]
 tests =
   foldl1
     (++)
-    [ map (setDebugSourceRegex ".*Util.*" >>) L3.TestUtil.tests,
-      map (setDebugSourceRegex ".*Core.*" >>) L3.TestCore.tests,
-      map (setDebugSourceRegex ".*Lexer.*" >>) L3.TestLexer.tests,
-      map (setDebugSourceRegex ".*Loader.*" >>) L3.TestLoader.tests,
-      map (setDebugSourceRegex ".*Parser.*" >>) L3.TestParser.tests,
-      map (setDebugSourceRegex ".*Morte.*" >>) Morte.TestMorte.tests
+    [ map (setDebugSourceRegex ".*(Test|Util).*" >>) L3.TestUtil.tests,
+      map (setDebugSourceRegex ".*(Test|Lexer).*" >>) L3.TestLexer.tests,
+      map (setDebugSourceRegex ".*(Test|Parser).*" >>) L3.TestParser.tests,
+      map (setDebugSourceRegex ".*(Test|Core).*" >>) L3.TestCore.tests,
+      map (setDebugSourceRegex ".*(Test|Loader).*" >>) L3.TestLoader.tests,
+      map (setDebugSourceRegex ".*(Test|Morte).*" >>) Morte.TestMorte.tests
     ]

@@ -28,8 +28,8 @@ dependencies:
 
 library:
   source-dirs: src
-  # cpp-options:
-  # - -DLOGGING
+  cpp-options:
+  - -DLOGGING
   dependencies:
   - base
   - text
