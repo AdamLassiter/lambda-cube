@@ -17,6 +17,7 @@ description:         Please see the README on GitHub at <https://github.com/Adam
 dependencies:
 - base >=4.15
 - text >=1.2 
+- containers >=0.6
 - bytestring >=0.10
 - extra >=1.7
 - filepath >=1.4 
@@ -29,7 +30,7 @@ dependencies:
 library:
   source-dirs: src
   cpp-options:
-  - -DLOGGING
+  - -DLOGINFO
   dependencies:
   - base
   - text
@@ -53,11 +54,10 @@ tests:
   lambda-cube-test:
     main:                Spec.hs
     source-dirs:         test
-    cpp-options:
-    - -DLOGGING
     dependencies:
     - lambda-cube
     - base
+    - containers
     - filepath
 
 benchmarks:

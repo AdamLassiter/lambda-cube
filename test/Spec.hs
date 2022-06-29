@@ -1,10 +1,10 @@
 module Main (main) where
 
-import L3.Logging
+import L3.Log.Logging
 import qualified L3.TestCore
-import qualified L3.TestLexer
 import qualified L3.TestLoader
-import qualified L3.TestParser
+import qualified L3.TestLog
+import qualified L3.TestParse
 import qualified L3.TestUtil
 import qualified Morte.TestMorte
 
@@ -17,9 +17,9 @@ tests :: [IO ()]
 tests =
   foldl1
     (++)
-    [ map (setDebugSourceRegex ".*(Test|Util).*" >>) L3.TestUtil.tests,
-      map (setDebugSourceRegex ".*(Test|Lexer).*" >>) L3.TestLexer.tests,
-      map (setDebugSourceRegex ".*(Test|Parser).*" >>) L3.TestParser.tests,
+    [ map (setDebugSourceRegex ".*(Test|Log).*" >>) L3.TestLog.tests,
+      map (setDebugSourceRegex ".*(Test|Util).*" >>) L3.TestUtil.tests,
+      map (setDebugSourceRegex ".*(Test|Parse).*" >>) L3.TestParse.tests,
       map (setDebugSourceRegex ".*(Test|Core).*" >>) L3.TestCore.tests,
       map (setDebugSourceRegex ".*(Test|Loader).*" >>) L3.TestLoader.tests,
       map (setDebugSourceRegex ".*(Test|Morte).*" >>) Morte.TestMorte.tests

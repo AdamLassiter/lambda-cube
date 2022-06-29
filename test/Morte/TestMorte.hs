@@ -1,7 +1,9 @@
 module Morte.TestMorte (tests) where
 
-import L3.Loader
-import L3.Logging
+import L3.Core
+import L3.Log
+import L3.Parse hiding (parse)
+import L3.Util
 import Test
 
 debugTestMorte = debugM "TestMorte"

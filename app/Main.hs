@@ -2,8 +2,11 @@
 module Main where
 
 import Data.Foldable (forM_)
+import L3.Core
 import L3.Loader
-import L3.Logging
+import L3.Log
+import L3.Parse
+import L3.Util
 import System.Console.Haskeline
 
 -- | Run REPL
@@ -11,7 +14,6 @@ main :: IO ()
 main = withStdoutLogging $ do
   setLogLevel LevelInfo
   let (τ, prel) = wrapPrelude embeddedPrelude
-  -- let (τ, prel) = ([], id)
   runInputT defaultSettings $ repl τ prel
 
 repl :: ShowCtx -> (ShowExpr -> ShowExpr) -> InputT IO ()

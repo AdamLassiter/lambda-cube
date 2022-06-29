@@ -1,8 +1,11 @@
 module Main where
 
 import Criterion.Main
+import L3.Core
 import L3.Loader
-import L3.Logging
+import L3.Log
+import L3.Parse
+import L3.Util
 
 wrapPreludeIO :: ShowExpr -> IO ShowExpr
 wrapPreludeIO expr = do
