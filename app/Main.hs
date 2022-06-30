@@ -19,13 +19,13 @@ main = withStdoutLogging $ do
 repl :: ShowCtx -> (ShowExpr -> ShowExpr) -> InputT IO ()
 repl τ prel = do
   isTerminalUI <- haveTerminalUI
-  input' <- getInputLine (if isTerminalUI then ">> " else "")
+  input' <- getInputLine (if isTerminalUI then "λ>> " else "")
   forM_ input' parse
   where
     parse :: String -> InputT IO ()
     parse inp = do
-      let prEx = mapR prel $ fmapR parseExpr $ lexSrc inp
-      case fmapR (evalExpr τ) prEx of
+      let prelExpr = mapR prel $ fmapR parseExpr $ lexSrc inp
+      case fmapR (evalExpr τ) prelExpr of
         Left err -> outputStrLn $ show err
         Right (t, e) -> do
           outputStrLn $ showExpr t

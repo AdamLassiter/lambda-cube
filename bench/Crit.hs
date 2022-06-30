@@ -7,20 +7,18 @@ import L3.Log
 import L3.Parse
 import L3.Util
 
-wrapPreludeIO :: ShowExpr -> IO ShowExpr
-wrapPreludeIO expr = do
-  (τ, prel) <- wrapPrelude <$> embeddedPreludeIO
-  let id' = prel expr
-  pure id'
-
 -- | Run benchmark
 main :: IO ()
 main =
   withStderrLogging $ do
     setLogLevel LevelInfo
     defaultMain
-      [ bench "λ(x:*).x" $ whnfIO $ wrapPreludeIO $ Lam (Name "x") Star (Var $ Name "x"),
-        bench "x" $ whnfIO $ wrapPreludeIO $ Var $ Name "x",
-        bench "λ(x:Nat).Bool@eq (even x) (odd (Nat@Succ x))" $ whnf (parseExpr . throwL . lexSrc) "lambda (x : forall (Nat : *) -> forall (Succ : forall (_ : Nat) -> Nat) -> forall (Zero : Nat) -> Nat) -> (((((((((x) (forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool)) (lambda (x : forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool) -> (((x) (forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool)) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> False)) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> True))) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> False)) (forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool)) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> False)) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> True)) (forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool)) ((((x) (forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool)) (lambda (x : forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool) -> (((x) (forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool)) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> False)) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> True))) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> True))) (((((((x) (forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool)) (lambda (x : forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool) -> (((x) (forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool)) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> False)) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> True))) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> True)) (forall (Bool : *) -> forall (True : Bool) -> forall (False : Bool) -> Bool)) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> False)) (lambda (Bool : *) -> lambda (True : Bool) -> lambda (False : Bool) -> True))",
-        bench "λ(x:Nat).Bool@eq (even x) (odd (Nat@Succ x))" $ whnf (parseExpr . throwL . lexSrc) "lambda (x : Nat) ."
+      [ benchEval "λ(T:*) . λ(x:T) . x",
+        benchEval "λ(x:Nat) . Bool@eq (even x) (odd (Nat@Succ x))"
       ]
+
+benchEval :: String -> Benchmark
+benchEval input = bench input $ whnf (evalExpr τ) prelExpr
+  where
+    (τ, prel) = wrapPrelude embeddedPrelude
+    prelExpr = throwL $ mapR prel $ fmapR parseExpr $ lexSrc input
