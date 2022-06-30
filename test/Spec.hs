@@ -1,5 +1,6 @@
 module Main (main) where
 
+import Data.Time.Clock
 import L3.Log.Logging
 import qualified L3.TestCore
 import qualified L3.TestLoader
@@ -10,8 +11,11 @@ import qualified Morte.TestMorte
 
 main :: IO ()
 main = withStdoutLogging $ do
-  setLogLevel LevelDebug
+  setLogLevel LevelDebug 
+  start <- getCurrentTime
   sequence_ tests
+  stop <- getCurrentTime
+  infoM "Spec" $ "Ran " ++ (show $ length tests) ++ " tests in " ++ (show $ nominalDiffTimeToSeconds $ diffUTCTime stop stop) ++ " seconds"
 
 tests :: [IO ()]
 tests =

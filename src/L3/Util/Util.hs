@@ -1,5 +1,20 @@
 -- | Utilites for result types and error throwing
-module L3.Util.Util where
+module L3.Util.Util
+  ( Error (..),
+    Result (..),
+    showIndent,
+    throw,
+    throwError,
+    rethrowError,
+    unpack,
+    mapL,
+    mapR,
+    fmapR,
+    flatten,
+    throwL,
+    isError,
+  )
+where
 
 import Data.Char (isSpace)
 
@@ -20,10 +35,10 @@ instance Show Error where
       trimR = reverse . trimL . reverse
       trimL = dropWhile isSpace
 
-showIdent :: (Show a) => a -> String
-showIdent = ("| " ++) . show
-
 type Result a = Either Error a
+
+showIndent :: (Show a) => a -> String
+showIndent = ("| " ++) . show
 
 throw :: Error -> Result a
 throw = Left
@@ -61,3 +76,7 @@ flatten (Right (Right res)) = Right res
 throwL :: Result a -> a
 throwL (Left err) = Prelude.error $ show err
 throwL (Right res) = res
+
+isError :: Result a -> Bool
+isError (Left _) = True
+isError (Right _) = False

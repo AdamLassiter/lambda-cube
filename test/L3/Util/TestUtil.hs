@@ -5,7 +5,7 @@ import Test
 
 tests :: [IO ()]
 tests =
-  [ testShowIdent,
+  [ testshowIndent,
     testThrowError,
     testRethrowError,
     testUnpack,
@@ -16,10 +16,10 @@ tests =
     testThrowL
   ]
 
-testShowIdent :: IO ()
-testShowIdent = do
-  assertEq "TestUtil" (showIdent "msg") "| \"msg\"" "Show single-line indent line"
-  assertEq "TestUtil" (unlines $ map showIdent ["line1", "line2"]) "| \"line1\"\n| \"line2\"\n" "Show single-line indent line"
+testshowIndent :: IO ()
+testshowIndent = do
+  assertEq "TestUtil" (showIndent "msg") "| \"msg\"" "Show single-line indent line"
+  assertEq "TestUtil" (unlines $ map showIndent ["line1", "line2"]) "| \"line1\"\n| \"line2\"\n" "Show single-line indent line"
 
 testThrowError :: IO ()
 testThrowError = do

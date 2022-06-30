@@ -55,5 +55,8 @@ assertListEq src = assertShowing src showSome ((==), "==")
 assertListNotEmpty :: (Eq a, Show a, Eq b, Show b) => String -> [(a, b)] -> String -> IO ()
 assertListNotEmpty src x = assertShowing src showSome ((/=), "/=") x []
 
-assertNormalizedEq :: String -> ShowExpr -> ShowExpr -> String -> IO ()
+assertNormalizedEq :: (Eq a, Show a, Enum a) => String -> Expr a -> Expr a -> String -> IO ()
 assertNormalizedEq src = assertShowing src (showExpr . normalize0) (betaEq, "=β=")
+
+assertError :: String -> Result a -> String -> IO ()
+assertError src x = assertTrue src $ isError x

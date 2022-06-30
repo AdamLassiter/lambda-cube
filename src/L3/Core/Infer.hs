@@ -12,29 +12,36 @@ import L3.Util
 debug = debugU "Core::Infer"
 
 -- | Type-check an expression and return the expression's type if type-checking
---  succeeds or an error message if type-checking fails
---  `inferType'` does not necessarily normalize the type since full normalization
---  is not necessary for just type-checking.  If you actually care about the
---  returned type then you may want to `normalize` it afterwards.
---  Type inference is within a type context (list of global names and their types)
---
+-- | succeeds or an error message if type-checking fails
+-- | `inferType'` does not necessarily normalize the type since full normalization
+-- | is not necessary for just type-checking.  If you actually care about the
+-- | returned type then you may want to `normalize` it afterwards.
+-- | Type inference is within a type context (list of global names and their types)
+-- |
 -- | 'Weak' type infernce here refers to the lack of partial evaluation for contextual
--- beta-equivalence. For some X, a by-value and by-reference of X should be legal:
---   (λ (T : *) . λ (f : π (X : *) . X) . λ (x : T) . f x) X
--- In fact, resolving T := X as beta-equivalent to X will fail for weakInferType.
+-- | beta-equivalence. For some X, a by-value and by-reference of X should be legal:
+-- |   (λ (T : *) . λ (f : π (X : *) . X) . λ (x : T) . f x) X
+-- | In fact, resolving T := X as beta-equivalent to X will fail for weakInferType.
 weakInferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
 weakInferType (Ctx τ) e = debug ("weakInferType " ++ show τ ++ ", " ++ show e) (weakInferType' (Ctx τ) e)
 
 weakInferType' _ Star = return Box
-weakInferType' (Ctx τ) Box = Left $ rethrowError ("in context:" : map showIdent τ) (throwError ["absurd box"])
+weakInferType' (Ctx τ) Box =
+  Left $
+    rethrowError
+      ("in context:" : map showIndent τ)
+      ( throwError
+          [ "absurd box"
+          ]
+      )
 weakInferType' (Ctx τ) (Var v) = case lookup v τ of
   Nothing ->
     Left $
       rethrowError
-        ("in context:" : map showIdent τ)
+        ("in context:" : map showIndent τ)
         ( throwError
             [ "unbound variable:",
-              showIdent v
+              showIndent v
             ]
         )
   Just e -> Right e
@@ -55,14 +62,14 @@ weakInferType' (Ctx τ) (Pi v ta tb) = do
     (l, r) ->
       Left $
         rethrowError
-          ("in context:" : map showIdent τ)
+          ("in context:" : map showIndent τ)
           ( throwError
               [ "invalid type:",
-                showIdent (Pi v ta tb),
+                showIndent (Pi v ta tb),
                 "had left kind:",
-                showIdent l,
+                showIndent l,
                 "had right kind:",
-                showIdent r
+                showIndent r
               ]
           )
 weakInferType' (Ctx τ) (App f a) = do
@@ -71,58 +78,58 @@ weakInferType' (Ctx τ) (App f a) = do
     Right expr ->
       Left $
         rethrowError
-          ("in context:" : map showIdent τ)
+          ("in context:" : map showIndent τ)
           ( throwError
               [ "cannot apply to non-function:",
-                showIdent f,
+                showIndent f,
                 "had type: ",
-                showIdent expr,
+                showIndent expr,
                 "had application:",
-                showIdent a
+                showIndent a
               ]
           )
     Left err -> Left $ matchBind f
       where
-        matchBind (Lam v ta b) = rethrowError ["with binding:", showIdent (v, a)] err
-        matchBind f = rethrowError ["in expression:", showIdent $ App f a] err
+        matchBind (Lam v ta b) = rethrowError ["with binding:", showIndent (v, a)] err
+        matchBind f = rethrowError ["in expression:", showIndent $ App f a] err
   ta' <- weakInferType (Ctx τ) a
   if ta `betaEq` ta'
     then return $ substitute v a tb
     else
       Left $
         rethrowError
-          ("in context:" : map showIdent τ)
+          ("in context:" : map showIndent τ)
           ( throwError
               [ "type mismatch for function:",
-                showIdent f,
+                showIndent f,
                 "expected type:",
-                showIdent ta,
+                showIndent ta,
                 "but given arg:",
-                showIdent a,
+                showIndent a,
                 "and given type:",
-                showIdent ta'
+                showIndent ta'
               ]
           )
 
 -- | Type-check an expression and return the expression's normalized type if
--- type-checking succeeds or an error message if type-checking fails
--- Perform partial evaluation by substitution of lambda-applications to types
--- to ensure the problem-case for `weakInferType` does not fail here.
+-- | type-checking succeeds or an error message if type-checking fails
+-- | Perform partial evaluation by substitution of lambda-applications to types
+-- | to ensure the problem-case for `weakInferType` does not fail here.
 inferType1 :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
 inferType1 (Ctx τ) e = debug ("inferType1 " ++ show τ ++ ", " ++ show e) (inferType1' (Ctx τ) e)
 
 inferType1' τ e = weakInferType τ e
 
 -- | Type-check an expression and return the expression's normalized type if
--- type-checking succeeds or an error message if type-checking fails
+-- | type-checking succeeds or an error message if type-checking fails
 inferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
 inferType (Ctx τ) e = debug ("inferType " ++ show τ ++ ", " ++ show e) (inferType' (Ctx τ) e)
 
 inferType' τ e = mapR normalize $ inferType1 τ e
 
 -- | `inferType0` is the same as `inferType` with an empty context, meaning that
--- the expression must be closed (i.e. no free variables), otherwise type-checking
--- will fail.
+-- | the expression must be closed (i.e. no free variables), otherwise type-checking
+-- | will fail.
 inferType0 :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
 inferType0 e = debug ("inferType0 " ++ show e) (inferType0' e)
 
@@ -138,7 +145,7 @@ wellTyped' τ e = case inferType τ e of
   Right _ -> True
 
 -- | Deduce if an expression is well-typed context-free - i.e. it is additionally
--- closed and therefore well-typed without additional context.
+-- | closed and therefore well-typed without additional context.
 wellTyped0 :: (Eq a, Enum a, Show a) => Expr a -> Bool
 wellTyped0 e = debug ("wellTyped0 " ++ show e) (wellTyped0' e)
 

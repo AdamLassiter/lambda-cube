@@ -15,9 +15,9 @@ runParser :: (Alternative f, Show (f i), Show o, Eq (f i)) => Parser (f i) o -> 
 runParser m s =
   case parse m s of
     [(res, rem')] | rem' == empty -> Right res
-    [(res, rem')] -> Left $ throwError ["parser did consume:", showIdent res, "but failed to consume:", showIdent rem']
-    [] -> Left $ throwError ["parser failed to consume anything from:", showIdent s]
-    rs -> Left $ throwError ("parser produced multiple results:" : map showIdent rs)
+    [(res, rem')] -> Left $ throwError ["parser did consume:", showIndent res, "but failed to consume:", showIndent rem']
+    [] -> Left $ throwError ["parser failed to consume anything from:", showIndent s]
+    rs -> Left $ throwError ("parser produced multiple results:" : map showIndent rs)
 
 some :: (Alternative f) => f a -> f [a]
 some v = some_v

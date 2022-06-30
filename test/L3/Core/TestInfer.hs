@@ -7,7 +7,9 @@ import Test
 tests :: [IO ()]
 tests =
   [ testInferType,
-    testWellTyped
+    testInferTypeError,
+    testWellTyped,
+    testWellTypedError
   ]
 
 testInferType :: IO ()
@@ -33,6 +35,19 @@ testInferType = do
         ]
   assertEq "Core::TestInfer" (inferType (Ctx ctx) (Var (Name "map") `App` Var (Name "b") `App` Var (Name "c") `App` Var (Name "f"))) (Right $ Pi (Name "l") (App (Var $ Name "List") (Var $ Name "b")) (App (Var $ Name "List") (Var $ Name "c"))) "map :: pi a -> pi b -> lam (a -> b) -> List a -> List b, f :: b -> c ⊢ map b c f :: List b -> List c"
 
+testInferTypeError :: IO ()
+testInferTypeError = do
+  assertError "Core::TestInfer" (inferType0 $ (Box :: Expr Name)) "# :: !! absurd"
+
+  assertError "Core::TestInfer" (inferType0 $ Var $ Name "x") "x :: !! unbound"
+
+  assertError "Core::TestInfer" (inferType0 $ Pi (Name "x") (Lam (Name "y") Star (Var $ Name "y")) Star) "pi x : (lam y : * -> y) -> * :: !! invalid-kind"
+  assertError "Core::TestInfer" (inferType0 $ Pi (Name "x") Star (Lam (Name "y") Star (Var $ Name "y"))) "pi x : * -> (lam y : * -> y) :: !! invalid-kind"
+
+  assertError "Core::TestInfer" (inferType0 $ Lam (Name "x") Star ((Var $ Name "x") `App` (Var $ Name "x"))) "lam x : * -> x x :: !! non-function"
+
+  assertError "Core::TestInfer" (inferType0 $ Lam (Name "x") Star (Var $ Name "x") `App` Star) "(lam x : * -> x) * :: !! mismatch"
+
 testWellTyped :: IO ()
 testWellTyped = do
   assertTrue "Core::TestInfer" (wellTyped0 (Star :: Expr Name)) "* :: #"
@@ -55,3 +70,16 @@ testWellTyped = do
           (Name "List", Pi (Name "a") Star Star)
         ]
   assertTrue "Core::TestInfer" (wellTyped (Ctx ctx) (Var (Name "map") `App` Var (Name "b") `App` Var (Name "c") `App` Var (Name "f"))) "map :: pi a -> pi b -> lam (a -> b) -> List a -> List b, f :: b -> c ⊢ map b c f :: List b -> List c"
+
+testWellTypedError :: IO ()
+testWellTypedError = do
+  assertFalse "Core::TestInfer" (wellTyped0 $ (Box :: Expr Name)) "# :: !! absurd"
+
+  assertFalse "Core::TestInfer" (wellTyped0 $ Var $ Name "x") "x :: !! unbound"
+
+  assertFalse "Core::TestInfer" (wellTyped0 $ Pi (Name "x") (Lam (Name "y") Star (Var $ Name "y")) Star) "pi x : (lam y : * -> y) -> * :: !! invalid-kind"
+  assertFalse "Core::TestInfer" (wellTyped0 $ Pi (Name "x") Star (Lam (Name "y") Star (Var $ Name "y"))) "pi x : * -> (lam y : * -> y) :: !! invalid-kind"
+
+  assertFalse "Core::TestInfer" (wellTyped0 $ Lam (Name "x") Star ((Var $ Name "x") `App` (Var $ Name "x"))) "lam x : * -> x x :: !! non-function"
+
+  assertFalse "Core::TestInfer" (wellTyped0 $ Lam (Name "x") Star (Var $ Name "x") `App` Star) "(lam x : * -> x) * :: !! mismatch"
