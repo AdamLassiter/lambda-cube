@@ -2,5 +2,5 @@
 
 for prof in lambda-cube-*.prof; do
     echo ">>> Building Flamegraph for $prof"
-    ./flamegraph.pl $prof > resources/$prof.svg;
+    perl flamegraph.pl $prof > resources/$prof.svg;
 done

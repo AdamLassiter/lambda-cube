@@ -373,932 +373,348 @@
 <text id="matched" x="1090.00" y="85" > </text>
 <g id="frames">
 <g >
-<title>            parseExpr'.es                          L3.Parse.ExprParser               src/L3/Parse/ExprParser.hs:36:5-52                                   12441          44    0.0    0.0     0.7    (0 samples, 0.00%)</title><rect x="371.8" y="37" width="0.2" height="15.0" fill="rgb(217,18,48)" rx="2" ry="2" />
-<text  x="374.78" y="47.5" ></text>
+<title>                 satisfy                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(17,1)-(21,28)                          18351           0    0.1    0.0     0.1    0.1      1    (467,952 samples, 0.01%)</title><rect x="23.6" y="37" width="0.1" height="15.0" fill="rgb(248,93,26)" rx="2" ry="2" />
+<text  x="26.58" y="47.5" ></text>
 </g>
 <g >
-<title>               evalExpr'                           L3.Core.Eval                      src/L3/Core/Eval.hs:20:1-51                                          26501           1    0.0    0.0     0.7    (1 samples, 0.05%)</title><rect x="130.3" y="37" width="0.8" height="15.0" fill="rgb(246,228,46)" rx="2" ry="2" />
-<text  x="133.32" y="47.5" ></text>
+<title>          normalize'                      L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 18259       16334    0.1    0.0     0.1    0.0      1    (679,232 samples, 0.02%)</title><rect x="486.4" y="37" width="0.3" height="15.0" fill="rgb(221,71,53)" rx="2" ry="2" />
+<text  x="489.44" y="47.5" ></text>
 </g>
 <g >
-<title>                 option                            L3.Parse.Parser                   src/L3/Parse/Parser.hs:(21,1)-(24,14)                                31383           0    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="77.6" y="37" width="0.1" height="15.0" fill="rgb(207,143,9)" rx="2" ry="2" />
-<text  x="80.57" y="47.5" ></text>
+<title>liftPair2   Data.FileEmbed  Data/FileEmbed.hs:272:1-46                5.0    0.1     75    (941,176 samples, 0.03%)</title><rect x="614.6" y="37" width="0.3" height="15.0" fill="rgb(244,160,50)" rx="2" ry="2" />
+<text  x="617.57" y="47.5" ></text>
 </g>
 <g >
-<title>                normalize'                         L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 31344      452270    0.4    1.0     0.4    (1 samples, 0.05%)</title><rect x="127.8" y="37" width="0.6" height="15.0" fill="rgb(221,65,54)" rx="2" ry="2" />
-<text  x="130.78" y="47.5" ></text>
+<title>             free                         L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        23460        3977    0.0    0.0     0.0    0.0      0    (349,976 samples, 0.01%)</title><rect x="34.5" y="37" width="0.1" height="15.0" fill="rgb(247,96,14)" rx="2" ry="2" />
+<text  x="37.51" y="47.5" ></text>
 </g>
 <g >
-<title>          example                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(44,1)-(60,11)                               32657           0    0.2    0.0     3.6    (4 samples, 0.21%)</title><rect x="491.7" y="37" width="2.8" height="15.0" fill="rgb(251,176,37)" rx="2" ry="2" />
-<text  x="494.65" y="47.5" ></text>
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        26029       89438    0.1    0.4     0.1    0.6      2   (7,155,040 samples, 0.21%)</title><rect x="482.5" y="37" width="2.5" height="15.0" fill="rgb(215,28,15)" rx="2" ry="2" />
+<text  x="485.53" y="47.5" ></text>
 </g>
 <g >
-<title>   testWrapPrelude.(...)                           L3.Loader.TestLoader              test/L3/Loader/TestLoader.hs:64:7-52                                 12043           1    0.0    0.0     2.8    (1 samples, 0.05%)</title><rect x="937.1" y="37" width="0.9" height="15.0" fill="rgb(232,67,38)" rx="2" ry="2" />
-<text  x="940.14" y="47.5" ></text>
+<title>               free                       L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        24742       10375    0.0    0.1     0.0    0.1      0    (913,000 samples, 0.03%)</title><rect x="29.0" y="37" width="0.3" height="15.0" fill="rgb(221,72,28)" rx="2" ry="2" />
+<text  x="32.01" y="47.5" ></text>
 </g>
 <g >
-<title>              lexSrc                               L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:69:1-26                                        31369           0    0.0    0.0     0.3    (0 samples, 0.00%)</title><rect x="234.8" y="37" width="0.1" height="15.0" fill="rgb(226,116,47)" rx="2" ry="2" />
-<text  x="237.80" y="47.5" ></text>
+<title>                    item                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(12,1)-(14,23)                          20909           0    0.0    0.0     0.0    0.0      0    (589,200 samples, 0.02%)</title><rect x="15.6" y="37" width="0.2" height="15.0" fill="rgb(250,100,28)" rx="2" ry="2" />
+<text  x="18.56" y="47.5" ></text>
 </g>
 <g >
-<title>               runParser                           L3.Parse.Parsec                   src/L3/Parse/Parsec.hs:(15,1)-(20,84)                                25926           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="187.3" y="37" width="0.1" height="15.0" fill="rgb(209,229,13)" rx="2" ry="2" />
-<text  x="190.31" y="47.5" ></text>
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        16966       14609    0.1    0.1     0.2    0.1      1   (1,168,720 samples, 0.03%)</title><rect x="529.1" y="37" width="0.4" height="15.0" fill="rgb(245,33,1)" rx="2" ry="2" />
+<text  x="532.10" y="47.5" ></text>
 </g>
 <g >
-<title>         example9                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(126,1)-(130,187)                            24533           0    0.0    0.0     0.7    (0 samples, 0.00%)</title><rect x="556.0" y="37" width="0.2" height="15.0" fill="rgb(247,117,24)" rx="2" ry="2" />
-<text  x="558.99" y="47.5" ></text>
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        16991        6510    0.1    0.0     0.1    0.0      1    (520,800 samples, 0.02%)</title><rect x="529.5" y="37" width="0.2" height="15.0" fill="rgb(221,197,3)" rx="2" ry="2" />
+<text  x="532.51" y="47.5" ></text>
 </g>
 <g >
-<title>             fmapR                                 L3.Util.Util                      src/L3/Util/Util.hs:(53,1)-(54,27)                                   30611           1    0.0    0.0     2.0    (3 samples, 0.16%)</title><rect x="290.3" y="37" width="1.9" height="15.0" fill="rgb(251,18,5)" rx="2" ry="2" />
-<text  x="293.34" y="47.5" ></text>
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        23491      452270    1.1    2.1     1.4    3.1     17  (36,181,600 samples, 1.06%)</title><rect x="594.4" y="37" width="12.6" height="15.0" fill="rgb(233,118,23)" rx="2" ry="2" />
+<text  x="597.43" y="47.5" ></text>
 </g>
 <g >
-<title>        loadPrelude'                               L3.Loader.Loader                  src/L3/Loader/Loader.hs:(64,1)-(69,64)                               12054           1    0.0    0.0     2.8    (1 samples, 0.05%)</title><rect x="560.6" y="37" width="0.9" height="15.0" fill="rgb(232,220,46)" rx="2" ry="2" />
-<text  x="563.61" y="47.5" ></text>
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        24756        6718    0.0    0.0     0.0    0.0      0    (537,440 samples, 0.02%)</title><rect x="473.5" y="37" width="0.2" height="15.0" fill="rgb(207,216,12)" rx="2" ry="2" />
+<text  x="476.49" y="47.5" ></text>
 </g>
 <g >
-<title>          example                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(44,1)-(60,11)                               29947           0    0.2    0.0    37.3   (46 samples, 2.47%)</title><rect x="461.4" y="37" width="29.2" height="15.0" fill="rgb(253,27,6)" rx="2" ry="2" />
-<text  x="464.44" y="47.5" >  ..</text>
+<title>                  free                    L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        22793        4759    0.1    0.0     0.1    0.0      1    (418,792 samples, 0.01%)</title><rect x="20.1" y="37" width="0.1" height="15.0" fill="rgb(212,82,49)" rx="2" ry="2" />
+<text  x="23.09" y="47.5" ></text>
 </g>
 <g >
-<title>                debugIO.\                          L3.Parse.ExprParser               src/L3/Parse/ExprParser.hs:27:39-73                                  12446       30055    0.1    0.1     0.7    (0 samples, 0.00%)</title><rect x="78.8" y="37" width="0.2" height="15.0" fill="rgb(243,28,41)" rx="2" ry="2" />
-<text  x="81.77" y="47.5" ></text>
+<title>normalize'  L3.Core.Normal  src/L3/Core/Normal.hs:(59,1)-(66,16)     26.4   31.1    (540,783,000 samples, 15.92%; +15.92%)</title><rect x="1002.2" y="37" width="187.8" height="15.0" fill="rgb(255,108,108)" rx="2" ry="2" />
+<text  x="1005.19" y="47.5" >normalize'  L3.Core.Norm..</text>
 </g>
 <g >
-<title>                 normalize                         L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        28498       25037    0.1    0.1     0.1    (0 samples, 0.00%)</title><rect x="33.9" y="37" width="0.1" height="15.0" fill="rgb(211,154,3)" rx="2" ry="2" />
-<text  x="36.87" y="47.5" ></text>
+<title>           normalize'                     L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                  4916       11513    0.1    0.0     0.1    0.0      1    (487,688 samples, 0.01%)</title><rect x="485.0" y="37" width="0.2" height="15.0" fill="rgb(232,9,36)" rx="2" ry="2" />
+<text  x="488.02" y="47.5" ></text>
 </g>
 <g >
-<title>                reserved                           L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:49:1-29                                 12500           0    0.0    0.0     1.0    (0 samples, 0.00%)</title><rect x="129.1" y="37" width="0.2" height="15.0" fill="rgb(216,98,43)" rx="2" ry="2" />
-<text  x="132.05" y="47.5" ></text>
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        22126      907679    2.3    4.2     3.6    6.3     35  (72,614,320 samples, 2.14%)</title><rect x="530.4" y="37" width="25.2" height="15.0" fill="rgb(226,179,34)" rx="2" ry="2" />
+<text  x="533.39" y="47.5" > ..</text>
 </g>
 <g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               24547           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="314.1" y="37" width="0.2" height="15.0" fill="rgb(247,203,4)" rx="2" ry="2" />
-<text  x="317.09" y="47.5" ></text>
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        22167      452270    1.1    2.1     1.9    3.1     17  (36,181,600 samples, 1.06%)</title><rect x="297.4" y="37" width="12.6" height="15.0" fill="rgb(243,114,29)" rx="2" ry="2" />
+<text  x="300.42" y="47.5" ></text>
 </g>
 <g >
-<title>          inferType'                               L3.Core.Infer                     src/L3/Core/Infer.hs:121:1-48                                        13034          44    0.0    0.0     0.0    (0 samples, 0.00%)</title><rect x="494.5" y="37" width="0.1" height="15.0" fill="rgb(246,192,0)" rx="2" ry="2" />
-<text  x="497.50" y="47.5" ></text>
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        24737      168278    0.8    0.8     1.1    1.2     12  (13,462,240 samples, 0.40%)</title><rect x="468.8" y="37" width="4.7" height="15.0" fill="rgb(215,78,48)" rx="2" ry="2" />
+<text  x="471.82" y="47.5" ></text>
 </g>
 <g >
-<title>             parse.prEx                            Morte.TestMorte                   test/Morte/TestMorte.hs:41:5-39                                      32672           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="309.0" y="37" width="0.1" height="15.0" fill="rgb(205,95,12)" rx="2" ry="2" />
-<text  x="311.96" y="47.5" ></text>
+<title>                  free                    L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        24120        6762    0.0    0.0     0.1    0.0      0    (595,056 samples, 0.02%)</title><rect x="20.2" y="37" width="0.2" height="15.0" fill="rgb(245,170,35)" rx="2" ry="2" />
+<text  x="23.24" y="47.5" ></text>
 </g>
 <g >
-<title>normalize   L3.Core.Normal        src/L3/Core/Normal.hs:57:1-59                 46.0   (60 samples, 3.22%)</title><rect x="1132.6" y="37" width="37.9" height="15.0" fill="rgb(213,21,28)" rx="2" ry="2" />
-<text  x="1135.56" y="47.5" >nor..</text>
+<title>          normalize'                      L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 23444      944818    2.0    2.2     2.0    2.2     30  (38,111,824 samples, 1.12%)</title><rect x="505.8" y="37" width="13.3" height="15.0" fill="rgb(224,99,52)" rx="2" ry="2" />
+<text  x="508.84" y="47.5" ></text>
 </g>
 <g >
-<title>          example                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(44,1)-(60,11)                               24534           0    0.1    0.0     0.7    (0 samples, 0.00%)</title><rect x="436.5" y="37" width="0.2" height="15.0" fill="rgb(220,102,29)" rx="2" ry="2" />
-<text  x="439.49" y="47.5" ></text>
+<title>                    item                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(12,1)-(14,23)                          12041           0    0.0    0.0     0.0    0.0      0    (310,416 samples, 0.01%)</title><rect x="14.7" y="37" width="0.1" height="15.0" fill="rgb(238,18,39)" rx="2" ry="2" />
+<text  x="17.70" y="47.5" ></text>
 </g>
 <g >
-<title>                grammar                            L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:73:1-42                                        31372           0    0.0    0.0     0.3    (0 samples, 0.00%)</title><rect x="79.8" y="37" width="0.2" height="15.0" fill="rgb(253,181,22)" rx="2" ry="2" />
-<text  x="82.85" y="47.5" ></text>
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        26010       89438    0.1    0.4     0.1    0.6      1   (7,155,040 samples, 0.21%)</title><rect x="607.4" y="37" width="2.5" height="15.0" fill="rgb(214,93,20)" rx="2" ry="2" />
+<text  x="610.37" y="47.5" ></text>
 </g>
 <g >
-<title>                  normalize'                       L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 31346      452270    0.6    1.0     0.6    (1 samples, 0.05%)</title><rect x="29.3" y="37" width="0.6" height="15.0" fill="rgb(239,125,38)" rx="2" ry="2" />
-<text  x="32.31" y="47.5" ></text>
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        18296        6510    0.0    0.0     0.0    0.0      0    (520,800 samples, 0.02%)</title><rect x="183.2" y="37" width="0.2" height="15.0" fill="rgb(245,57,8)" rx="2" ry="2" />
+<text  x="186.20" y="47.5" ></text>
 </g>
 <g >
-<title>                normalize'                         L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 29872      907679    1.5    2.0     1.5    (2 samples, 0.11%)</title><rect x="124.6" y="37" width="1.2" height="15.0" fill="rgb(221,55,42)" rx="2" ry="2" />
-<text  x="127.56" y="47.5" ></text>
+<title>         liftPair2                        Data.FileEmbed                    Data/FileEmbed.hs:272:1-46                                            4744          44    5.0    0.1     5.0    0.1     75    (941,176 samples, 0.03%)</title><rect x="528.5" y="37" width="0.3" height="15.0" fill="rgb(231,115,40)" rx="2" ry="2" />
+<text  x="531.52" y="47.5" ></text>
 </g>
 <g >
-<title>                mapR                               L3.Util.Util                      src/L3/Util/Util.hs:(49,1)-(50,34)                                   29189           1    0.0    0.0    21.0   (25 samples, 1.34%)</title><rect x="81.7" y="37" width="15.6" height="15.0" fill="rgb(236,64,17)" rx="2" ry="2" />
-<text  x="84.75" y="47.5" ></text>
+<title>                 satisfy                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(17,1)-(21,28)                          24811           0    0.0    0.0     0.0    0.1      0    (395,936 samples, 0.01%)</title><rect x="24.6" y="37" width="0.1" height="15.0" fill="rgb(221,218,27)" rx="2" ry="2" />
+<text  x="27.57" y="47.5" ></text>
 </g>
 <g >
-<title>     liftBaseWith                                  Control.Monad.Trans.Control       src/Control/Monad/Trans/Control.hs:626:92-112                         3328           1    0.0    0.0    93.3   (95 samples, 5.10%)</title><rect x="750.3" y="37" width="60.2" height="15.0" fill="rgb(250,98,1)" rx="2" ry="2" />
-<text  x="753.33" y="47.5" >     l..</text>
+<title>            normalize'                    L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 20826       25037    0.1    0.1     0.1    0.1      2   (1,004,808 samples, 0.03%)</title><rect x="39.3" y="37" width="0.4" height="15.0" fill="rgb(215,144,19)" rx="2" ry="2" />
+<text  x="42.31" y="47.5" ></text>
 </g>
 <g >
-<title>               evalExpr'                           L3.Core.Eval                      src/L3/Core/Eval.hs:20:1-51                                          33847           1    0.0    0.0     0.5    (1 samples, 0.05%)</title><rect x="174.0" y="37" width="0.4" height="15.0" fill="rgb(254,83,30)" rx="2" ry="2" />
-<text  x="177.01" y="47.5" ></text>
+<title>                 satisfy                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(17,1)-(21,28)                          22222           0    0.0    0.0     0.0    0.1      0    (467,952 samples, 0.01%)</title><rect x="24.2" y="37" width="0.1" height="15.0" fill="rgb(237,201,25)" rx="2" ry="2" />
+<text  x="27.15" y="47.5" ></text>
 </g>
 <g >
-<title>     wrapPrelude'                                  L3.Loader.Loader                  src/L3/Loader/Loader.hs:(100,1)-(102,41)                             12048           0    0.0    0.0     3.1    (4 samples, 0.21%)</title><rect x="811.4" y="37" width="2.3" height="15.0" fill="rgb(237,116,21)" rx="2" ry="2" />
-<text  x="814.38" y="47.5" ></text>
+<title>          normalize'                      L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 23492      452270    0.3    1.0     0.3    1.0      4  (18,217,856 samples, 0.54%)</title><rect x="519.1" y="37" width="6.3" height="15.0" fill="rgb(212,182,40)" rx="2" ry="2" />
+<text  x="522.08" y="47.5" ></text>
 </g>
 <g >
-<title>                   satisfy                         L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(17,1)-(21,28)                          12510           0    0.2    0.1     0.7    (0 samples, 0.00%)</title><rect x="14.9" y="37" width="0.2" height="15.0" fill="rgb(211,44,12)" rx="2" ry="2" />
-<text  x="17.88" y="47.5" ></text>
+<title>          normalize'                      L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 16967       14609    0.1    0.0     0.1    0.0      2    (605,376 samples, 0.02%)</title><rect x="486.1" y="37" width="0.3" height="15.0" fill="rgb(232,44,33)" rx="2" ry="2" />
+<text  x="489.14" y="47.5" ></text>
 </g>
 <g >
-<title>           inferType1                              L3.Core.Infer                     src/L3/Core/Infer.hs:112:1-96                                        13035          44    0.0    0.0     0.0    (0 samples, 0.00%)</title><rect x="431.7" y="37" width="0.2" height="15.0" fill="rgb(210,159,17)" rx="2" ry="2" />
-<text  x="434.75" y="47.5" ></text>
+<title>            normalize'                    L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 26013      318701    0.5    0.7     0.6    0.8      8  (12,387,432 samples, 0.36%)</title><rect x="175.3" y="37" width="4.3" height="15.0" fill="rgb(252,157,17)" rx="2" ry="2" />
+<text  x="178.31" y="47.5" ></text>
 </g>
 <g >
-<title>                      item                         L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(12,1)-(14,23)                          12514           0    0.0    0.2     0.0    (0 samples, 0.00%)</title><rect x="10.8" y="37" width="0.1" height="15.0" fill="rgb(227,4,54)" rx="2" ry="2" />
-<text  x="13.82" y="47.5" ></text>
-</g>
-<g >
-<title>              lexSrc                               L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:69:1-26                                        27238           0    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="234.4" y="37" width="0.2" height="15.0" fill="rgb(243,73,39)" rx="2" ry="2" />
-<text  x="237.42" y="47.5" ></text>
-</g>
-<g >
-<title>         loadPrelude'.preludeExprs                 L3.Loader.Loader                  src/L3/Loader/Loader.hs:66:5-111                                     12056           1    0.1    0.0     2.8    (1 samples, 0.05%)</title><rect x="556.4" y="37" width="0.9" height="15.0" fill="rgb(220,194,23)" rx="2" ry="2" />
-<text  x="559.37" y="47.5" ></text>
-</g>
-<g >
-<title>             normalize0                            L3.Core.Normal                    src/L3/Core/Normal.hs:70:1-62                                        31247           2    0.0    0.0     3.9    (6 samples, 0.32%)</title><rect x="300.5" y="37" width="3.9" height="15.0" fill="rgb(221,15,35)" rx="2" ry="2" />
-<text  x="303.54" y="47.5" ></text>
-</g>
-<g >
-<title>        tests                                      L3.Loader.TestLoader              test/L3/Loader/TestLoader.hs:(11,1)-(19,3)                           10904           0    0.0    0.0    13.7    (2 samples, 0.11%)</title><rect x="563.7" y="37" width="1.2" height="15.0" fill="rgb(236,12,18)" rx="2" ry="2" />
-<text  x="566.71" y="47.5" ></text>
-</g>
-<g >
-<title>       inferType0                                  L3.Core.Infer                     src/L3/Core/Infer.hs:127:1-62                                        13031          44    0.0    0.0     0.0    (0 samples, 0.00%)</title><rect x="623.7" y="37" width="0.1" height="15.0" fill="rgb(205,95,32)" rx="2" ry="2" />
-<text  x="626.68" y="47.5" ></text>
-</g>
-<g >
-<title>                grammar                            L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:73:1-42                                        32676           0    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="80.0" y="37" width="0.1" height="15.0" fill="rgb(248,12,16)" rx="2" ry="2" />
-<text  x="82.97" y="47.5" ></text>
-</g>
-<g >
-<title>                mapR                               L3.Util.Util                      src/L3/Util/Util.hs:(49,1)-(50,34)                                   31197           1    0.0    0.0     2.0    (3 samples, 0.16%)</title><rect x="120.3" y="37" width="1.8" height="15.0" fill="rgb(247,106,43)" rx="2" ry="2" />
-<text  x="123.31" y="47.5" ></text>
-</g>
-<g >
-<title>showExpr    L3.Core.Show          src/L3/Core/Show.hs:(34,1)-(39,74)             0.6    (2 samples, 0.11%)</title><rect x="1188.9" y="37" width="1.1" height="15.0" fill="rgb(243,56,34)" rx="2" ry="2" />
-<text  x="1191.86" y="47.5" ></text>
-</g>
-<g >
-<title>             fmapR                                 L3.Util.Util                      src/L3/Util/Util.hs:(53,1)-(54,27)                                   28545           1    0.0    0.0    21.0   (25 samples, 1.34%)</title><rect x="251.6" y="37" width="15.6" height="15.0" fill="rgb(238,114,11)" rx="2" ry="2" />
-<text  x="254.65" y="47.5" ></text>
-</g>
-<g >
-<title>              evalExpr                             L3.Core.Eval                      src/L3/Core/Eval.hs:18:1-90                                          31951           1    0.0    0.0     0.9    (1 samples, 0.05%)</title><rect x="231.1" y="37" width="0.7" height="15.0" fill="rgb(224,23,28)" rx="2" ry="2" />
-<text  x="234.07" y="47.5" ></text>
-</g>
-<g >
-<title>               runParser                           L3.Parse.Parsec                   src/L3/Parse/Parsec.hs:(15,1)-(20,84)                                31370           1    0.0    0.0     0.3    (0 samples, 0.00%)</title><rect x="187.8" y="37" width="0.1" height="15.0" fill="rgb(241,156,32)" rx="2" ry="2" />
-<text  x="190.82" y="47.5" ></text>
-</g>
-<g >
-<title>             normalize0                            L3.Core.Normal                    src/L3/Core/Normal.hs:70:1-62                                        33935           1    0.0    0.0     0.4    (1 samples, 0.05%)</title><rect x="306.2" y="37" width="0.4" height="15.0" fill="rgb(214,37,17)" rx="2" ry="2" />
-<text  x="309.23" y="47.5" ></text>
-</g>
-<g >
-<title>             assertShowing.detail                  Test                              test/Test.hs:10:7-130                                                13027           1    0.0    0.0     0.5    (2 samples, 0.11%)</title><rect x="249.3" y="37" width="1.0" height="15.0" fill="rgb(228,51,31)" rx="2" ry="2" />
-<text  x="252.31" y="47.5" ></text>
-</g>
-<g >
-<title>                  option.\                         L3.Parse.Parser                   src/L3/Parse/Parser.hs:(22,3)-(24,14)                                31384       28219    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="31.5" y="37" width="0.2" height="15.0" fill="rgb(243,218,40)" rx="2" ry="2" />
-<text  x="34.53" y="47.5" ></text>
-</g>
-<g >
-<title>                mapR                               L3.Util.Util                      src/L3/Util/Util.hs:(49,1)-(50,34)                                   29781           1    0.0    0.0     2.1    (3 samples, 0.16%)</title><rect x="97.3" y="37" width="1.8" height="15.0" fill="rgb(214,26,19)" rx="2" ry="2" />
-<text  x="100.26" y="47.5" ></text>
-</g>
-<g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               28544           1    0.0    0.0    25.3   (31 samples, 1.66%)</title><rect x="315.7" y="37" width="19.5" height="15.0" fill="rgb(254,53,54)" rx="2" ry="2" />
-<text  x="318.67" y="47.5" ></text>
-</g>
-<g >
-<title>      tauNorm                                      L3.Loader.Loader                  src/L3/Loader/Loader.hs:86:1-53                                      12049        3843    0.0    0.0     3.1    (3 samples, 0.16%)</title><rect x="747.2" y="37" width="2.1" height="15.0" fill="rgb(252,123,30)" rx="2" ry="2" />
-<text  x="750.17" y="47.5" ></text>
-</g>
-<g >
-<title>                grammar                            L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:73:1-42                                        27241           0    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="79.5" y="37" width="0.1" height="15.0" fill="rgb(205,138,8)" rx="2" ry="2" />
-<text  x="82.47" y="47.5" ></text>
-</g>
-<g >
-<title>         example13                                 Morte.TestMorte                   test/Morte/TestMorte.hs:(154,1)-(158,415)                            29946           0    0.0    0.0    37.3   (46 samples, 2.47%)</title><rect x="522.2" y="37" width="29.1" height="15.0" fill="rgb(252,117,13)" rx="2" ry="2" />
-<text  x="525.17" y="47.5" >  ..</text>
-</g>
-<g >
-<title>      finally.\                                    Control.Exception.Lifted          Control/Exception/Lifted.hs:(426,22)-(427,47)                         3329           1    0.1    0.0    93.3   (95 samples, 5.10%)</title><rect x="687.0" y="37" width="60.2" height="15.0" fill="rgb(213,0,47)" rx="2" ry="2" />
-<text  x="690.01" y="47.5" >      ..</text>
-</g>
-<g >
-<title>                mapR                               L3.Util.Util                      src/L3/Util/Util.hs:(49,1)-(50,34)                                   31996           1    0.0    0.0     0.7    (1 samples, 0.05%)</title><rect x="122.1" y="37" width="0.7" height="15.0" fill="rgb(236,98,52)" rx="2" ry="2" />
-<text  x="125.15" y="47.5" ></text>
-</g>
-<g >
-<title>                 string                            L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(36,1)-(40,17)                          12505           0    0.1    0.0     0.9    (0 samples, 0.00%)</title><rect x="78.3" y="37" width="0.3" height="15.0" fill="rgb(229,62,1)" rx="2" ry="2" />
-<text  x="81.33" y="47.5" ></text>
-</g>
-<g >
-<title>                  option.\                         L3.Parse.Parser                   src/L3/Parse/Parser.hs:(22,3)-(24,14)                                25940       25841    0.1    0.0     0.4    (0 samples, 0.00%)</title><rect x="31.0" y="37" width="0.2" height="15.0" fill="rgb(211,185,51)" rx="2" ry="2" />
-<text  x="34.02" y="47.5" ></text>
-</g>
-<g >
-<title>               runParser                           L3.Parse.Parsec                   src/L3/Parse/Parsec.hs:(15,1)-(20,84)                                29964           1    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="187.7" y="37" width="0.1" height="15.0" fill="rgb(238,229,49)" rx="2" ry="2" />
-<text  x="190.69" y="47.5" ></text>
-</g>
-<g >
-<title>   testWrapPrelude.(...)                           L3.Loader.TestLoader              test/L3/Loader/TestLoader.hs:64:7-52                                 12046           0    0.0    0.0     3.1    (4 samples, 0.21%)</title><rect x="938.0" y="37" width="2.3" height="15.0" fill="rgb(251,211,14)" rx="2" ry="2" />
-<text  x="941.03" y="47.5" ></text>
-</g>
-<g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:47:7-45                                      32669           1    0.0    0.0     2.4    (3 samples, 0.16%)</title><rect x="429.8" y="37" width="1.9" height="15.0" fill="rgb(217,142,14)" rx="2" ry="2" />
-<text  x="432.85" y="47.5" ></text>
-</g>
-<g >
-<title>  withStdoutLogging                                Control.Logging                   Control/Logging.hs:(158,1)-(162,24)                                   3309           0    0.0    0.0    93.4   (95 samples, 5.10%)</title><rect x="943.5" y="37" width="60.1" height="15.0" fill="rgb(250,76,27)" rx="2" ry="2" />
-<text  x="946.48" y="47.5" >  with..</text>
-</g>
-<g >
-<title>          example                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(44,1)-(60,11)                               19335           0    0.1    0.0     0.5    (0 samples, 0.00%)</title><rect x="435.9" y="37" width="0.2" height="15.0" fill="rgb(217,129,53)" rx="2" ry="2" />
-<text  x="438.86" y="47.5" ></text>
-</g>
-<g >
-<title>                mapR                               L3.Util.Util                      src/L3/Util/Util.hs:(49,1)-(50,34)                                   26567           1    0.0    0.0     0.7    (1 samples, 0.05%)</title><rect x="80.9" y="37" width="0.7" height="15.0" fill="rgb(247,71,3)" rx="2" ry="2" />
-<text  x="83.86" y="47.5" ></text>
-</g>
-<g >
-<title>                normalize'                         L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 31250      944818    1.2    2.0     1.2    (2 samples, 0.11%)</title><rect x="126.5" y="37" width="1.3" height="15.0" fill="rgb(240,100,51)" rx="2" ry="2" />
-<text  x="129.45" y="47.5" ></text>
-</g>
-<g >
-<title>        tests                                      Morte.TestMorte                   test/Morte/TestMorte.hs:(14,1)-(31,3)                                13173           0    0.0    0.0    79.0   (93 samples, 4.99%)</title><rect x="564.9" y="37" width="58.8" height="15.0" fill="rgb(217,33,12)" rx="2" ry="2" />
-<text  x="567.85" y="47.5" >      ..</text>
-</g>
-<g >
-<title>             parse.prEx                            Morte.TestMorte                   test/Morte/TestMorte.hs:41:5-39                                      29962           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="308.5" y="37" width="0.2" height="15.0" fill="rgb(213,151,42)" rx="2" ry="2" />
-<text  x="311.51" y="47.5" ></text>
-</g>
-<g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               19348           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="313.5" y="37" width="0.2" height="15.0" fill="rgb(228,184,43)" rx="2" ry="2" />
-<text  x="316.45" y="47.5" ></text>
-</g>
-<g >
-<title>        tauSubst                                   L3.Loader.Loader                  src/L3/Loader/Loader.hs:74:1-103                                     12058       16954    0.0    0.1     3.1    (3 samples, 0.16%)</title><rect x="561.5" y="37" width="2.2" height="15.0" fill="rgb(217,120,31)" rx="2" ry="2" />
-<text  x="564.50" y="47.5" ></text>
-</g>
-<g >
-<title>                  normalize'                       L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 29874     3887688    6.8    7.8     6.8    (8 samples, 0.43%)</title><rect x="16.8" y="37" width="5.0" height="15.0" fill="rgb(250,47,53)" rx="2" ry="2" />
-<text  x="19.84" y="47.5" ></text>
-</g>
-<g >
-<title>                grammar                            L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:73:1-42                                        28550           0    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="79.6" y="37" width="0.1" height="15.0" fill="rgb(232,104,26)" rx="2" ry="2" />
-<text  x="82.59" y="47.5" ></text>
-</g>
-<g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               30610           1    0.0    0.0     4.1    (6 samples, 0.32%)</title><rect x="364.2" y="37" width="3.8" height="15.0" fill="rgb(241,210,51)" rx="2" ry="2" />
-<text  x="367.24" y="47.5" ></text>
-</g>
-<g >
-<title>              option.\                             L3.Parse.Parser                   src/L3/Parse/Parser.hs:(22,3)-(24,14)                                12494      149114    0.2    0.0     1.9    (1 samples, 0.05%)</title><rect x="247.4" y="37" width="0.5" height="15.0" fill="rgb(252,82,43)" rx="2" ry="2" />
-<text  x="250.41" y="47.5" ></text>
-</g>
-<g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:47:7-45                                      28543           1    0.0    0.0    25.3   (31 samples, 1.66%)</title><rect x="384.0" y="37" width="19.5" height="15.0" fill="rgb(244,1,0)" rx="2" ry="2" />
-<text  x="387.00" y="47.5" ></text>
-</g>
-<g >
-<title>      wrapPrelude'.(...)                           L3.Loader.Loader                  src/L3/Loader/Loader.hs:102:5-41                                     12052           1    0.0    0.0     2.8    (1 samples, 0.05%)</title><rect x="749.3" y="37" width="0.9" height="15.0" fill="rgb(211,206,25)" rx="2" ry="2" />
-<text  x="752.32" y="47.5" ></text>
-</g>
-<g >
-<title>      wrapPrelude'.\                               L3.Loader.Loader                  src/L3/Loader/Loader.hs:100:66-108                                   12057          44    0.0    0.0     0.0    (0 samples, 0.00%)</title><rect x="750.2" y="37" width="0.1" height="15.0" fill="rgb(216,148,25)" rx="2" ry="2" />
-<text  x="753.21" y="47.5" ></text>
-</g>
-<g >
-<title>             parse.prEx                            Morte.TestMorte                   test/Morte/TestMorte.hs:41:5-39                                      31368           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="308.8" y="37" width="0.2" height="15.0" fill="rgb(221,53,9)" rx="2" ry="2" />
-<text  x="311.77" y="47.5" ></text>
-</g>
-<g >
-<title>     wrapPrelude'                                  L3.Loader.Loader                  src/L3/Loader/Loader.hs:(100,1)-(102,41)                             12045           1    0.0    0.0     2.8    (1 samples, 0.05%)</title><rect x="810.5" y="37" width="0.9" height="15.0" fill="rgb(227,37,39)" rx="2" ry="2" />
-<text  x="813.49" y="47.5" ></text>
-</g>
-<g >
-<title>             normalize0                            L3.Core.Normal                    src/L3/Core/Normal.hs:70:1-62                                        31341           1    0.0    0.0     2.0    (3 samples, 0.16%)</title><rect x="304.4" y="37" width="1.8" height="15.0" fill="rgb(253,33,10)" rx="2" ry="2" />
-<text  x="307.40" y="47.5" ></text>
-</g>
-<g >
-<title>  testWrapPrelude                                  L3.Loader.TestLoader              test/L3/Loader/TestLoader.hs:(63,1)-(65,173)                         12040           0    0.0    0.0     3.1    (4 samples, 0.21%)</title><rect x="940.3" y="37" width="2.3" height="15.0" fill="rgb(211,202,8)" rx="2" ry="2" />
-<text  x="943.31" y="47.5" ></text>
-</g>
-<g >
-<title>                grammar                            L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:73:1-42                                        25928           0    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="79.3" y="37" width="0.2" height="15.0" fill="rgb(207,123,50)" rx="2" ry="2" />
-<text  x="82.34" y="47.5" ></text>
-</g>
-<g >
-<title>                 option                            L3.Parse.Parser                   src/L3/Parse/Parser.hs:(21,1)-(24,14)                                27252           0    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="77.2" y="37" width="0.1" height="15.0" fill="rgb(224,146,47)" rx="2" ry="2" />
-<text  x="80.19" y="47.5" ></text>
-</g>
-<g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               27235           1    0.0    0.0     0.7    (0 samples, 0.00%)</title><rect x="315.4" y="37" width="0.3" height="15.0" fill="rgb(210,24,22)" rx="2" ry="2" />
-<text  x="318.35" y="47.5" ></text>
-</g>
-<g >
-<title>            inferType1'                            L3.Core.Infer                     src/L3/Core/Infer.hs:114:1-35                                        13036          44    0.0    0.0     0.0    (0 samples, 0.00%)</title><rect x="313.2" y="37" width="0.1" height="15.0" fill="rgb(238,65,27)" rx="2" ry="2" />
-<text  x="316.20" y="47.5" ></text>
-</g>
-<g >
-<title>              show                                 L3.Core.Show                      src/L3/Core/Show.hs:42:3-17                                          13028           0    0.0    0.0     0.5    (2 samples, 0.11%)</title><rect x="247.9" y="37" width="1.0" height="15.0" fill="rgb(210,17,2)" rx="2" ry="2" />
-<text  x="250.91" y="47.5" ></text>
-</g>
-<g >
-<title>               debugIO                             L3.Parse.ExprParser               src/L3/Parse/ExprParser.hs:27:1-73                                   12445        1673    0.0    0.0     0.7    (0 samples, 0.00%)</title><rect x="129.8" y="37" width="0.3" height="15.0" fill="rgb(220,130,21)" rx="2" ry="2" />
-<text  x="132.81" y="47.5" ></text>
-</g>
-<g >
-<title>         example5                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(98,1)-(102,43)                              19334           0    0.0    0.0     0.5    (0 samples, 0.00%)</title><rect x="555.4" y="37" width="0.2" height="15.0" fill="rgb(236,107,9)" rx="2" ry="2" />
-<text  x="558.36" y="47.5" ></text>
-</g>
-<g >
-<title>                 normalize                         L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        29873     3887688   14.1   16.7    21.0   (24 samples, 1.29%)</title><rect x="34.0" y="37" width="15.5" height="15.0" fill="rgb(237,198,27)" rx="2" ry="2" />
-<text  x="37.00" y="47.5" ></text>
-</g>
-<g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:47:7-45                                      31365           1    0.0    0.0     1.4    (2 samples, 0.11%)</title><rect x="428.8" y="37" width="1.0" height="15.0" fill="rgb(241,49,34)" rx="2" ry="2" />
-<text  x="431.83" y="47.5" ></text>
-</g>
-<g >
-<title>              sugarE                               L3.Parse.ExprParser               src/L3/Parse/ExprParser.hs:44:1-52                                   12444           0    0.0    0.0     0.7    (0 samples, 0.00%)</title><rect x="248.9" y="37" width="0.3" height="15.0" fill="rgb(230,160,21)" rx="2" ry="2" />
-<text  x="251.93" y="47.5" ></text>
-</g>
-<g >
-<title>               normalize                           L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        31249      944818    2.7    4.1     3.9    (6 samples, 0.32%)</title><rect x="180.2" y="37" width="3.9" height="15.0" fill="rgb(246,107,53)" rx="2" ry="2" />
-<text  x="183.22" y="47.5" ></text>
-</g>
-<g >
-<title>                 option                            L3.Parse.Parser                   src/L3/Parse/Parser.hs:(21,1)-(24,14)                                28561           0    0.1    0.0     0.2    (0 samples, 0.00%)</title><rect x="77.3" y="37" width="0.1" height="15.0" fill="rgb(224,210,46)" rx="2" ry="2" />
-<text  x="80.31" y="47.5" ></text>
-</g>
-<g >
-<title>                    bind                           L3.Parse.Parser                   src/L3/Parse/Parser.hs:9:1-76                                        12511           0    0.1    0.0     0.3    (0 samples, 0.00%)</title><rect x="12.4" y="37" width="0.1" height="15.0" fill="rgb(254,121,37)" rx="2" ry="2" />
-<text  x="15.41" y="47.5" ></text>
-</g>
-<g >
-<title>                  normalize'                       L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 29940      452270    0.5    1.0     0.5    (1 samples, 0.05%)</title><rect x="21.8" y="37" width="0.6" height="15.0" fill="rgb(219,73,44)" rx="2" ry="2" />
-<text  x="24.78" y="47.5" ></text>
-</g>
-<g >
-<title>              weakInferType'                       L3.Core.Infer                     src/L3/Core/Infer.hs:(28,1)-(105,11)                                 13038        4440    0.0    0.0     0.0    (0 samples, 0.00%)</title><rect x="249.2" y="37" width="0.1" height="15.0" fill="rgb(214,7,7)" rx="2" ry="2" />
-<text  x="252.18" y="47.5" ></text>
-</g>
-<g >
-<title>         tauSubst'                                 L3.Loader.Loader                  src/L3/Loader/Loader.hs:(76,1)-(81,21)                               12059       16954    0.0    0.1     3.1    (3 samples, 0.16%)</title><rect x="557.3" y="37" width="2.0" height="15.0" fill="rgb(241,49,6)" rx="2" ry="2" />
-<text  x="560.26" y="47.5" ></text>
-</g>
-<g >
-<title>         example14                                 Morte.TestMorte                   test/Morte/TestMorte.hs:(161,1)-(165,243)                            31352           0    0.0    0.0     1.7    (2 samples, 0.11%)</title><rect x="551.3" y="37" width="1.1" height="15.0" fill="rgb(242,218,33)" rx="2" ry="2" />
-<text  x="554.30" y="47.5" ></text>
-</g>
-<g >
-<title>             fmapR                                 L3.Util.Util                      src/L3/Util/Util.hs:(53,1)-(54,27)                                   31367           1    0.0    0.0     0.9    (1 samples, 0.05%)</title><rect x="292.2" y="37" width="0.7" height="15.0" fill="rgb(213,51,28)" rx="2" ry="2" />
-<text  x="295.18" y="47.5" ></text>
-</g>
-<g >
-<title>                  normalize'                       L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 33940      318701    0.5    0.7     0.7    (1 samples, 0.05%)</title><rect x="30.2" y="37" width="0.4" height="15.0" fill="rgb(215,86,9)" rx="2" ry="2" />
-<text  x="33.20" y="47.5" ></text>
-</g>
-<g >
-<title>   finally                                         Control.Exception.Lifted          Control/Exception/Lifted.hs:(425,1)-(427,47)                          3326           1    0.0    0.0    93.3   (95 samples, 5.10%)</title><rect x="877.0" y="37" width="60.1" height="15.0" fill="rgb(244,133,23)" rx="2" ry="2" />
-<text  x="879.98" y="47.5" >   fin..</text>
-</g>
-<g >
-<title>              evalExpr                             L3.Core.Eval                      src/L3/Core/Eval.hs:18:1-90                                          29122           1    0.0    0.0    21.0   (25 samples, 1.34%)</title><rect x="190.5" y="37" width="15.6" height="15.0" fill="rgb(251,175,43)" rx="2" ry="2" />
-<text  x="193.54" y="47.5" ></text>
-</g>
-<g >
-<title>            free                                   L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        12986      607440    0.9    2.9     2.9    (3 samples, 0.16%)</title><rect x="310.7" y="37" width="1.9" height="15.0" fill="rgb(219,148,45)" rx="2" ry="2" />
-<text  x="313.73" y="47.5" ></text>
-</g>
-<g >
-<title>              lexSrc                               L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:69:1-26                                        29963           0    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="234.7" y="37" width="0.1" height="15.0" fill="rgb(250,203,10)" rx="2" ry="2" />
-<text  x="237.68" y="47.5" ></text>
-</g>
-<g >
-<title>                 normalize                         L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        32630      168278    0.5    0.7     0.7    (1 samples, 0.05%)</title><rect x="74.4" y="37" width="0.7" height="15.0" fill="rgb(215,152,18)" rx="2" ry="2" />
-<text  x="77.40" y="47.5" ></text>
-</g>
-<g >
-<title>               runParser                           L3.Parse.Parsec                   src/L3/Parse/Parsec.hs:(15,1)-(20,84)                                32674           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="187.9" y="37" width="0.2" height="15.0" fill="rgb(233,53,28)" rx="2" ry="2" />
-<text  x="190.94" y="47.5" ></text>
-</g>
-<g >
-<title>               normalize                           L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        29871      907679    2.4    3.9     3.9    (6 samples, 0.32%)</title><rect x="174.6" y="37" width="3.8" height="15.0" fill="rgb(229,170,45)" rx="2" ry="2" />
-<text  x="177.65" y="47.5" ></text>
-</g>
-<g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               29194           1    0.0    0.0     4.7    (6 samples, 0.32%)</title><rect x="335.2" y="37" width="3.7" height="15.0" fill="rgb(219,153,30)" rx="2" ry="2" />
-<text  x="338.17" y="47.5" ></text>
-</g>
-<g >
-<title>              evalExpr                             L3.Core.Eval                      src/L3/Core/Eval.hs:18:1-90                                          19926           1    0.0    0.0     0.1    (0 samples, 0.00%)</title><rect x="189.3" y="37" width="0.1" height="15.0" fill="rgb(230,95,47)" rx="2" ry="2" />
-<text  x="192.27" y="47.5" ></text>
-</g>
-<g >
-<title>             fmapR                                 L3.Util.Util                      src/L3/Util/Util.hs:(53,1)-(54,27)                                   27236           1    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="251.5" y="37" width="0.1" height="15.0" fill="rgb(218,184,3)" rx="2" ry="2" />
-<text  x="254.46" y="47.5" ></text>
-</g>
-<g >
-<title> CAF:tests19                                       L3.Loader.TestLoader              &lt;no location info&gt;                                                    3045           0    0.0    0.0     2.8    (1 samples, 0.05%)</title><rect x="1005.9" y="37" width="0.9" height="15.0" fill="rgb(225,80,37)" rx="2" ry="2" />
-<text  x="1008.91" y="47.5" ></text>
-</g>
-<g >
-<title>              normalize0'                          L3.Core.Normal                    src/L3/Core/Normal.hs:(72,1)-(74,21)                                 31248           2    0.0    0.0     3.9    (6 samples, 0.32%)</title><rect x="240.9" y="37" width="3.9" height="15.0" fill="rgb(234,148,52)" rx="2" ry="2" />
-<text  x="243.95" y="47.5" ></text>
-</g>
-<g >
-<title>               runParser                           L3.Parse.Parsec                   src/L3/Parse/Parsec.hs:(15,1)-(20,84)                                28548           1    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="187.6" y="37" width="0.1" height="15.0" fill="rgb(228,164,1)" rx="2" ry="2" />
-<text  x="190.56" y="47.5" ></text>
-</g>
-<g >
-<title>                 option                            L3.Parse.Parser                   src/L3/Parse/Parser.hs:(21,1)-(24,14)                                32687           0    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="77.7" y="37" width="0.1" height="15.0" fill="rgb(251,100,28)" rx="2" ry="2" />
-<text  x="80.69" y="47.5" ></text>
-</g>
-<g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:47:7-45                                      23231           1    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="382.3" y="37" width="0.2" height="15.0" fill="rgb(233,128,39)" rx="2" ry="2" />
-<text  x="385.29" y="47.5" ></text>
-</g>
-<g >
-<title>             parse.prEx                            Morte.TestMorte                   test/Morte/TestMorte.hs:41:5-39                                      25924           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="307.9" y="37" width="0.2" height="15.0" fill="rgb(209,113,7)" rx="2" ry="2" />
-<text  x="310.88" y="47.5" ></text>
-</g>
-<g >
-<title>             parse.prEx                            Morte.TestMorte                   test/Morte/TestMorte.hs:41:5-39                                      27237           1    0.0    0.0     0.5    (0 samples, 0.00%)</title><rect x="308.1" y="37" width="0.2" height="15.0" fill="rgb(220,203,48)" rx="2" ry="2" />
-<text  x="311.07" y="47.5" ></text>
-</g>
-<g >
-<title>                 option                            L3.Parse.Parser                   src/L3/Parse/Parser.hs:(21,1)-(24,14)                                29977           0    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="77.4" y="37" width="0.2" height="15.0" fill="rgb(252,74,45)" rx="2" ry="2" />
-<text  x="80.44" y="47.5" ></text>
-</g>
-<g >
-<title>              lexSrc                               L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:69:1-26                                        32673           0    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="234.9" y="37" width="0.2" height="15.0" fill="rgb(247,50,40)" rx="2" ry="2" />
-<text  x="237.93" y="47.5" ></text>
-</g>
-<g >
-<title>                 option                            L3.Parse.Parser                   src/L3/Parse/Parser.hs:(21,1)-(24,14)                                25939           0    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="77.1" y="37" width="0.1" height="15.0" fill="rgb(216,41,53)" rx="2" ry="2" />
-<text  x="80.06" y="47.5" ></text>
-</g>
-<g >
-<title>              lexSrc                               L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:69:1-26                                        25925           0    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="234.3" y="37" width="0.1" height="15.0" fill="rgb(227,107,18)" rx="2" ry="2" />
-<text  x="237.30" y="47.5" ></text>
-</g>
-<g >
-<title>                 normalize                         L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        33939      318701    0.9    1.4     1.5    (2 samples, 0.11%)</title><rect x="75.1" y="37" width="1.3" height="15.0" fill="rgb(245,97,14)" rx="2" ry="2" />
-<text  x="78.10" y="47.5" ></text>
-</g>
-<g >
-<title>                  char                             L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:27:1-23                                 12509           0    0.1    0.0     0.8    (0 samples, 0.00%)</title><rect x="15.8" y="37" width="0.2" height="15.0" fill="rgb(205,220,47)" rx="2" ry="2" />
-<text  x="18.76" y="47.5" ></text>
-</g>
-<g >
-<title>                grammar                            L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:73:1-42                                        29966           0    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="79.7" y="37" width="0.1" height="15.0" fill="rgb(232,206,8)" rx="2" ry="2" />
-<text  x="82.72" y="47.5" ></text>
-</g>
-<g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:46:7-41                                      30609           1    0.0    0.0     4.1    (6 samples, 0.32%)</title><rect x="377.2" y="37" width="3.7" height="15.0" fill="rgb(211,9,36)" rx="2" ry="2" />
-<text  x="380.16" y="47.5" ></text>
-</g>
-<g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:47:7-45                                      29959           1    0.0    0.0    33.0   (40 samples, 2.15%)</title><rect x="403.5" y="37" width="25.3" height="15.0" fill="rgb(239,125,43)" rx="2" ry="2" />
-<text  x="406.50" y="47.5" > ..</text>
-</g>
-<g >
-<title>                 normalize                         L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        27185      191648    0.4    0.8     0.7    (1 samples, 0.05%)</title><rect x="33.1" y="37" width="0.8" height="15.0" fill="rgb(248,199,40)" rx="2" ry="2" />
-<text  x="36.11" y="47.5" ></text>
-</g>
-<g >
-<title>              evalExpr                             L3.Core.Eval                      src/L3/Core/Eval.hs:18:1-90                                          31158           1    0.0    0.0     2.0    (3 samples, 0.16%)</title><rect x="229.2" y="37" width="1.9" height="15.0" fill="rgb(242,24,32)" rx="2" ry="2" />
-<text  x="232.23" y="47.5" ></text>
-</g>
-<g >
-<title>               normalize                           L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        31343      452270    1.5    1.9     2.0    (3 samples, 0.16%)</title><rect x="184.1" y="37" width="1.8" height="15.0" fill="rgb(234,73,28)" rx="2" ry="2" />
-<text  x="187.08" y="47.5" ></text>
-</g>
-<g >
-<title>               alternatives                        L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:(34,1)-(59,3)                                  12496           0    0.0    0.0     1.3    (1 samples, 0.05%)</title><rect x="129.4" y="37" width="0.3" height="15.0" fill="rgb(215,74,35)" rx="2" ry="2" />
-<text  x="132.37" y="47.5" ></text>
-</g>
-<g >
-<title>       loadPrelude                                 L3.Loader.Loader                  src/L3/Loader/Loader.hs:62:1-86                                      12053           1    0.0    0.0     2.8    (1 samples, 0.05%)</title><rect x="623.8" y="37" width="0.9" height="15.0" fill="rgb(230,51,20)" rx="2" ry="2" />
-<text  x="626.81" y="47.5" ></text>
-</g>
-<g >
-<title>              normalize0'                          L3.Core.Normal                    src/L3/Core/Normal.hs:(72,1)-(74,21)                                 33936           1    0.0    0.0     0.4    (1 samples, 0.05%)</title><rect x="246.6" y="37" width="0.4" height="15.0" fill="rgb(215,165,41)" rx="2" ry="2" />
-<text  x="249.65" y="47.5" ></text>
-</g>
-<g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:47:7-45                                      19347           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="381.9" y="37" width="0.3" height="15.0" fill="rgb(250,113,1)" rx="2" ry="2" />
-<text  x="384.91" y="47.5" ></text>
-</g>
-<g >
-<title>             fmapR                                 L3.Util.Util                      src/L3/Util/Util.hs:(53,1)-(54,27)                                   29195           1    0.0    0.0     2.1    (3 samples, 0.16%)</title><rect x="267.2" y="37" width="1.9" height="15.0" fill="rgb(212,164,25)" rx="2" ry="2" />
-<text  x="270.23" y="47.5" ></text>
-</g>
-<g >
-<title>           substitute'                             L3.Core.Normal                    src/L3/Core/Normal.hs:(41,1)-(53,23)                                 12984       37849    0.1    0.1     3.1    (3 samples, 0.16%)</title><rect x="432.7" y="37" width="1.9" height="15.0" fill="rgb(249,160,42)" rx="2" ry="2" />
-<text  x="435.70" y="47.5" ></text>
-</g>
-<g >
-<title>               normalize                           L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        33954       89438    0.1    0.4     0.2    (1 samples, 0.05%)</title><rect x="186.3" y="37" width="0.4" height="15.0" fill="rgb(218,44,46)" rx="2" ry="2" />
-<text  x="189.30" y="47.5" ></text>
-</g>
-<g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               33298           1    0.0    0.0     0.9    (1 samples, 0.05%)</title><rect x="371.0" y="37" width="0.8" height="15.0" fill="rgb(234,47,15)" rx="2" ry="2" />
-<text  x="373.95" y="47.5" ></text>
-</g>
-<g >
-<title>          lexSrc                                   L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:69:1-26                                        12479           0    0.0    0.0     1.9    (1 samples, 0.05%)</title><rect x="494.6" y="37" width="0.6" height="15.0" fill="rgb(230,206,15)" rx="2" ry="2" />
-<text  x="497.63" y="47.5" ></text>
-</g>
-<g >
-<title>                  normalize'                       L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 27186      191648    0.3    0.4     0.3    (0 samples, 0.00%)</title><rect x="16.5" y="37" width="0.3" height="15.0" fill="rgb(244,131,38)" rx="2" ry="2" />
-<text  x="19.52" y="47.5" ></text>
-</g>
-<g >
-<title>        inferType0'                                L3.Core.Infer                     src/L3/Core/Infer.hs:130:1-32                                        13032          44    0.0    0.0     0.0    (0 samples, 0.00%)</title><rect x="560.5" y="37" width="0.1" height="15.0" fill="rgb(240,223,23)" rx="2" ry="2" />
-<text  x="563.49" y="47.5" ></text>
-</g>
-<g >
-<title>                normalize'                         L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 33938       89438    0.0    0.2     0.0    (0 samples, 0.00%)</title><rect x="128.4" y="37" width="0.1" height="15.0" fill="rgb(243,172,20)" rx="2" ry="2" />
-<text  x="131.42" y="47.5" ></text>
-</g>
-<g >
-<title>                     bind.\                        L3.Parse.Parser                   src/L3/Parse/Parser.hs:9:27-76                                       12512       67399    0.1    0.0     0.1    (0 samples, 0.00%)</title><rect x="11.0" y="37" width="0.1" height="15.0" fill="rgb(249,153,34)" rx="2" ry="2" />
-<text  x="14.01" y="47.5" ></text>
-</g>
-<g >
-<title>             parse.prEx                            Morte.TestMorte                   test/Morte/TestMorte.hs:41:5-39                                      28546           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="308.3" y="37" width="0.2" height="15.0" fill="rgb(237,106,11)" rx="2" ry="2" />
-<text  x="311.26" y="47.5" ></text>
-</g>
-<g >
-<title>               evalExpr'                           L3.Core.Eval                      src/L3/Core/Eval.hs:20:1-51                                          31952           1    0.0    0.0     0.9    (1 samples, 0.05%)</title><rect x="171.9" y="37" width="0.7" height="15.0" fill="rgb(236,89,16)" rx="2" ry="2" />
-<text  x="174.86" y="47.5" ></text>
-</g>
-<g >
-<title>               evalExpr'                           L3.Core.Eval                      src/L3/Core/Eval.hs:20:1-51                                          30539           1    0.0    0.0    28.7   (34 samples, 1.82%)</title><rect x="148.7" y="37" width="21.3" height="15.0" fill="rgb(225,114,37)" rx="2" ry="2" />
-<text  x="151.75" y="47.5" > ..</text>
-</g>
-<g >
-<title>                mapR                               L3.Util.Util                      src/L3/Util/Util.hs:(49,1)-(50,34)                                   33885           1    0.0    0.0     0.4    (1 samples, 0.05%)</title><rect x="124.2" y="37" width="0.4" height="15.0" fill="rgb(225,136,39)" rx="2" ry="2" />
-<text  x="127.18" y="47.5" ></text>
-</g>
-<g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:47:7-45                                      24546           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="382.5" y="37" width="0.2" height="15.0" fill="rgb(233,165,49)" rx="2" ry="2" />
-<text  x="385.48" y="47.5" ></text>
-</g>
-<g >
-<title>               evalExpr'                           L3.Core.Eval                      src/L3/Core/Eval.hs:20:1-51                                          33249           1    0.0    0.0     1.6    (2 samples, 0.11%)</title><rect x="172.6" y="37" width="1.4" height="15.0" fill="rgb(250,77,36)" rx="2" ry="2" />
-<text  x="175.62" y="47.5" ></text>
-</g>
-<g >
-<title>             runParser                             L3.Parse.Parsec                   src/L3/Parse/Parsec.hs:(15,1)-(20,84)                                12442          44    0.0    0.0     0.7    (0 samples, 0.00%)</title><rect x="309.1" y="37" width="0.3" height="15.0" fill="rgb(247,7,25)" rx="2" ry="2" />
-<text  x="312.15" y="47.5" ></text>
-</g>
-<g >
-<title>             normalize0                            L3.Core.Normal                    src/L3/Core/Normal.hs:70:1-62                                        33952           1    0.0    0.0     0.2    (1 samples, 0.05%)</title><rect x="306.6" y="37" width="0.4" height="15.0" fill="rgb(213,180,9)" rx="2" ry="2" />
-<text  x="309.61" y="47.5" ></text>
-</g>
-<g >
-<title>                  option.\                         L3.Parse.Parser                   src/L3/Parse/Parser.hs:(22,3)-(24,14)                                28562       25841    0.0    0.0     0.1    (0 samples, 0.00%)</title><rect x="31.3" y="37" width="0.1" height="15.0" fill="rgb(221,224,38)" rx="2" ry="2" />
-<text  x="34.28" y="47.5" ></text>
-</g>
-<g >
-<title>              evalExpr                             L3.Core.Eval                      src/L3/Core/Eval.hs:18:1-90                                          27813           1    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="190.3" y="37" width="0.2" height="15.0" fill="rgb(214,1,49)" rx="2" ry="2" />
-<text  x="193.35" y="47.5" ></text>
-</g>
-<g >
-<title>               normalize                           L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        29937      452270    2.0    1.9     2.5    (3 samples, 0.16%)</title><rect x="178.4" y="37" width="1.8" height="15.0" fill="rgb(241,209,31)" rx="2" ry="2" />
-<text  x="181.38" y="47.5" ></text>
-</g>
-<g >
-<title>              normalize0'                          L3.Core.Normal                    src/L3/Core/Normal.hs:(72,1)-(74,21)                                 29870           2    0.0    0.0     3.9    (6 samples, 0.32%)</title><rect x="235.4" y="37" width="3.7" height="15.0" fill="rgb(224,34,31)" rx="2" ry="2" />
-<text  x="238.37" y="47.5" ></text>
-</g>
-<g >
-<title>         inferType                                 L3.Core.Infer                     src/L3/Core/Infer.hs:119:1-93                                        13033          44    0.0    0.0     0.0    (0 samples, 0.00%)</title><rect x="556.2" y="37" width="0.2" height="15.0" fill="rgb(252,86,14)" rx="2" ry="2" />
-<text  x="559.24" y="47.5" ></text>
-</g>
-<g >
-<title>          example                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(44,1)-(60,11)                               27222           0    0.2    0.0     1.0    (1 samples, 0.05%)</title><rect x="437.8" y="37" width="0.4" height="15.0" fill="rgb(230,89,43)" rx="2" ry="2" />
-<text  x="440.82" y="47.5" ></text>
-</g>
-<g >
-<title>                  option.\                         L3.Parse.Parser                   src/L3/Parse/Parser.hs:(22,3)-(24,14)                                32688       22713    0.1    0.0     0.4    (0 samples, 0.00%)</title><rect x="31.7" y="37" width="0.1" height="15.0" fill="rgb(240,136,28)" rx="2" ry="2" />
-<text  x="34.66" y="47.5" ></text>
-</g>
-<g >
-<title>                normalize'                         L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 29938      452270    0.5    1.0     0.5    (1 samples, 0.05%)</title><rect x="125.8" y="37" width="0.7" height="15.0" fill="rgb(205,77,36)" rx="2" ry="2" />
-<text  x="128.82" y="47.5" ></text>
-</g>
-<g >
-<title>           assert                                  Test                              test/Test.hs:21:1-35                                                 11497           0    0.0    0.0     0.7    (2 samples, 0.11%)</title><rect x="372.0" y="37" width="1.1" height="15.0" fill="rgb(211,139,50)" rx="2" ry="2" />
-<text  x="375.03" y="47.5" ></text>
-</g>
-<g >
-<title>       tauNorm'                                    L3.Loader.Loader                  src/L3/Loader/Loader.hs:(88,1)-(93,14)                               12050        3843    0.0    0.0     3.1    (3 samples, 0.16%)</title><rect x="624.7" y="37" width="2.1" height="15.0" fill="rgb(207,117,43)" rx="2" ry="2" />
-<text  x="627.70" y="47.5" ></text>
-</g>
-<g >
-<title>                 normalize                         L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        33956       89438    0.4    0.4     0.4    (1 samples, 0.05%)</title><rect x="76.4" y="37" width="0.4" height="15.0" fill="rgb(239,40,27)" rx="2" ry="2" />
-<text  x="79.43" y="47.5" ></text>
-</g>
-<g >
-<title>                  option.\                         L3.Parse.Parser                   src/L3/Parse/Parser.hs:(22,3)-(24,14)                                27253       25841    0.2    0.0     0.4    (0 samples, 0.00%)</title><rect x="31.2" y="37" width="0.1" height="15.0" fill="rgb(236,220,51)" rx="2" ry="2" />
-<text  x="34.15" y="47.5" ></text>
-</g>
-<g >
-<title>              normalize0'                          L3.Core.Normal                    src/L3/Core/Normal.hs:(72,1)-(74,21)                                 29936           1    0.0    0.0     2.5    (3 samples, 0.16%)</title><rect x="239.1" y="37" width="1.8" height="15.0" fill="rgb(231,22,31)" rx="2" ry="2" />
-<text  x="242.11" y="47.5" ></text>
-</g>
-<g >
-<title>             fmapR                                 L3.Util.Util                      src/L3/Util/Util.hs:(53,1)-(54,27)                                   33299           1    0.0    0.0     0.5    (1 samples, 0.05%)</title><rect x="294.3" y="37" width="0.4" height="15.0" fill="rgb(242,172,20)" rx="2" ry="2" />
-<text  x="297.33" y="47.5" ></text>
-</g>
-<g >
-<title>                normalize'                         L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 33955       89438    0.1    0.2     0.1    (0 samples, 0.00%)</title><rect x="128.5" y="37" width="0.2" height="15.0" fill="rgb(239,19,5)" rx="2" ry="2" />
-<text  x="131.54" y="47.5" ></text>
-</g>
-<g >
-<title>       tests                                       Main                              test/Spec.hs:(17,1)-(26,5)                                            3333           1    0.0    0.0    93.2   (95 samples, 5.10%)</title><rect x="626.8" y="37" width="60.2" height="15.0" fill="rgb(254,140,9)" rx="2" ry="2" />
-<text  x="629.85" y="47.5" >      ..</text>
-</g>
-<g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               25922           1    0.0    0.0     1.1    (2 samples, 0.11%)</title><rect x="314.3" y="37" width="1.1" height="15.0" fill="rgb(208,159,20)" rx="2" ry="2" />
-<text  x="317.34" y="47.5" ></text>
-</g>
-<g >
-<title>         example15                                 Morte.TestMorte                   test/Morte/TestMorte.hs:(168,1)-(172,938)                            32656           0    0.0    0.0     3.6    (5 samples, 0.27%)</title><rect x="552.4" y="37" width="2.8" height="15.0" fill="rgb(239,87,7)" rx="2" ry="2" />
-<text  x="555.38" y="47.5" ></text>
-</g>
-<g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:47:7-45                                      25921           1    0.0    0.0     1.1    (2 samples, 0.11%)</title><rect x="382.7" y="37" width="1.0" height="15.0" fill="rgb(210,85,13)" rx="2" ry="2" />
-<text  x="385.67" y="47.5" ></text>
-</g>
-<g >
-<title>            assertShowing                          Test                              test/Test.hs:(9,1)-(18,11)                                           11498           0    0.0    0.0     0.7    (2 samples, 0.11%)</title><rect x="309.5" y="37" width="1.1" height="15.0" fill="rgb(238,154,46)" rx="2" ry="2" />
-<text  x="312.53" y="47.5" ></text>
-</g>
-<g >
-<title>               runParser                           L3.Parse.Parsec                   src/L3/Parse/Parsec.hs:(15,1)-(20,84)                                27239           1    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="187.4" y="37" width="0.2" height="15.0" fill="rgb(232,191,1)" rx="2" ry="2" />
-<text  x="190.44" y="47.5" ></text>
-</g>
-<g >
-<title>            grammar                                L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:73:1-42                                        12482           0    0.0    0.0     1.9    (1 samples, 0.05%)</title><rect x="312.6" y="37" width="0.6" height="15.0" fill="rgb(221,95,22)" rx="2" ry="2" />
-<text  x="315.63" y="47.5" ></text>
-</g>
-<g >
-<title>             option                                L3.Parse.Parser                   src/L3/Parse/Parser.hs:(21,1)-(24,14)                                12493           0    0.0    0.0     1.9    (1 samples, 0.05%)</title><rect x="307.0" y="37" width="0.5" height="15.0" fill="rgb(212,36,28)" rx="2" ry="2" />
-<text  x="309.99" y="47.5" ></text>
-</g>
-<g >
-<title>              evalExpr                             L3.Core.Eval                      src/L3/Core/Eval.hs:18:1-90                                          33248           1    0.0    0.0     1.6    (2 samples, 0.11%)</title><rect x="231.8" y="37" width="1.4" height="15.0" fill="rgb(220,162,17)" rx="2" ry="2" />
-<text  x="234.83" y="47.5" ></text>
-</g>
-<g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               23232           1    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="313.8" y="37" width="0.2" height="15.0" fill="rgb(208,157,46)" rx="2" ry="2" />
-<text  x="316.83" y="47.5" ></text>
-</g>
-<g >
-<title>               normalize                           L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        33937       89438    0.4    0.4     0.4    (1 samples, 0.05%)</title><rect x="185.9" y="37" width="0.4" height="15.0" fill="rgb(210,102,50)" rx="2" ry="2" />
-<text  x="188.92" y="47.5" ></text>
-</g>
-<g >
-<title>              lexSrc                               L3.Parse.Lexer                    src/L3/Parse/Lexer.hs:69:1-26                                        28547           0    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="234.6" y="37" width="0.1" height="15.0" fill="rgb(212,39,35)" rx="2" ry="2" />
-<text  x="237.55" y="47.5" ></text>
-</g>
-<g >
-<title>          example                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(44,1)-(60,11)                               25909           0    0.2    0.0     1.3    (2 samples, 0.11%)</title><rect x="436.7" y="37" width="1.1" height="15.0" fill="rgb(216,185,2)" rx="2" ry="2" />
-<text  x="439.75" y="47.5" ></text>
-</g>
-<g >
-<title>             fmapR                                 L3.Util.Util                      src/L3/Util/Util.hs:(53,1)-(54,27)                                   29961           1    0.0    0.0    28.7   (34 samples, 1.82%)</title><rect x="269.1" y="37" width="21.2" height="15.0" fill="rgb(233,41,22)" rx="2" ry="2" />
-<text  x="272.06" y="47.5" > ..</text>
-</g>
-<g >
-<title>normalize'  L3.Core.Normal        src/L3/Core/Normal.hs:(59,1)-(66,16)          24.2   (29 samples, 1.56%)</title><rect x="1170.5" y="37" width="18.4" height="15.0" fill="rgb(214,118,21)" rx="2" ry="2" />
-<text  x="1173.50" y="47.5" ></text>
-</g>
-<g >
-<title>               showExpr                            L3.Core.Show                      src/L3/Core/Show.hs:(34,1)-(39,74)                                   13029        2862    0.5    1.6     0.5    (2 samples, 0.11%)</title><rect x="188.1" y="37" width="1.0" height="15.0" fill="rgb(234,28,49)" rx="2" ry="2" />
-<text  x="191.13" y="47.5" ></text>
-</g>
-<g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:46:7-41                                      29193           1    0.0    0.0     4.7    (6 samples, 0.32%)</title><rect x="373.4" y="37" width="3.8" height="15.0" fill="rgb(215,212,37)" rx="2" ry="2" />
-<text  x="376.42" y="47.5" ></text>
-</g>
-<g >
-<title>    control                                        Control.Monad.Trans.Control       src/Control/Monad/Trans/Control.hs:754:1-39                           3327           1    0.0    0.0    93.3   (95 samples, 5.10%)</title><rect x="813.7" y="37" width="60.1" height="15.0" fill="rgb(223,132,15)" rx="2" ry="2" />
-<text  x="816.66" y="47.5" >    co..</text>
-</g>
-<g >
-<title>                 normalize                         L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        20557       19846    0.1    0.1     0.1    (0 samples, 0.00%)</title><rect x="32.9" y="37" width="0.1" height="15.0" fill="rgb(233,133,37)" rx="2" ry="2" />
-<text  x="35.86" y="47.5" ></text>
-</g>
-<g >
-<title>                  option.\                         L3.Parse.Parser                   src/L3/Parse/Parser.hs:(22,3)-(24,14)                                29978       25841    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="31.4" y="37" width="0.1" height="15.0" fill="rgb(254,74,37)" rx="2" ry="2" />
-<text  x="34.40" y="47.5" ></text>
-</g>
-<g >
-<title>              evalExpr                             L3.Core.Eval                      src/L3/Core/Eval.hs:18:1-90                                          26500           1    0.0    0.0     0.7    (1 samples, 0.05%)</title><rect x="189.5" y="37" width="0.8" height="15.0" fill="rgb(211,212,1)" rx="2" ry="2" />
-<text  x="192.53" y="47.5" ></text>
-</g>
-<g >
-<title>             normalize0                            L3.Core.Normal                    src/L3/Core/Normal.hs:70:1-62                                        29869           2    0.0    0.0     3.9    (6 samples, 0.32%)</title><rect x="295.0" y="37" width="3.7" height="15.0" fill="rgb(219,152,50)" rx="2" ry="2" />
-<text  x="297.96" y="47.5" ></text>
-</g>
-<g >
-<title>                mapR                               L3.Util.Util                      src/L3/Util/Util.hs:(49,1)-(50,34)                                   33293           1    0.0    0.0     1.5    (2 samples, 0.11%)</title><rect x="122.8" y="37" width="1.4" height="15.0" fill="rgb(244,178,33)" rx="2" ry="2" />
-<text  x="125.85" y="47.5" ></text>
-</g>
-<g >
-<title>         example8                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(119,1)-(123,185)                            23218           0    0.0    0.0     0.4    (0 samples, 0.00%)</title><rect x="555.7" y="37" width="0.3" height="15.0" fill="rgb(253,0,4)" rx="2" ry="2" />
-<text  x="558.74" y="47.5" ></text>
-</g>
-<g >
-<title>               evalExpr'                           L3.Core.Eval                      src/L3/Core/Eval.hs:20:1-51                                          31159           1    0.0    0.0     2.0    (3 samples, 0.16%)</title><rect x="170.0" y="37" width="1.9" height="15.0" fill="rgb(234,203,53)" rx="2" ry="2" />
-<text  x="173.02" y="47.5" ></text>
-</g>
-<g >
-<title>         example11                                 Morte.TestMorte                   test/Morte/TestMorte.hs:(140,1)-(144,103)                            27221           0    0.0    0.0     1.0    (1 samples, 0.05%)</title><rect x="498.6" y="37" width="0.3" height="15.0" fill="rgb(207,93,4)" rx="2" ry="2" />
-<text  x="501.55" y="47.5" ></text>
-</g>
-<g >
-<title>          assertBetaEq                             Test                              test/Test.hs:43:1-45                                                 11496           0    0.0    0.0     0.7    (2 samples, 0.11%)</title><rect x="434.6" y="37" width="1.1" height="15.0" fill="rgb(216,125,2)" rx="2" ry="2" />
-<text  x="437.59" y="47.5" ></text>
-</g>
-<g >
-<title>             fmapR                                 L3.Util.Util                      src/L3/Util/Util.hs:(53,1)-(54,27)                                   25923           1    0.0    0.0     0.7    (1 samples, 0.05%)</title><rect x="250.6" y="37" width="0.9" height="15.0" fill="rgb(254,227,2)" rx="2" ry="2" />
-<text  x="253.64" y="47.5" ></text>
-</g>
-<g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               31366           1    0.0    0.0     1.4    (2 samples, 0.11%)</title><rect x="368.0" y="37" width="1.0" height="15.0" fill="rgb(228,216,54)" rx="2" ry="2" />
-<text  x="370.98" y="47.5" ></text>
-</g>
-<g >
-<title>         testWrapPrelude                           L3.Loader.TestLoader              test/L3/Loader/TestLoader.hs:(63,1)-(65,173)                         11495           0    0.0    0.0     0.7    (2 samples, 0.11%)</title><rect x="559.4" y="37" width="1.1" height="15.0" fill="rgb(242,98,37)" rx="2" ry="2" />
-<text  x="562.41" y="47.5" ></text>
-</g>
-<g >
-<title>                  normalize'                       L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 31252     5264389   11.6   10.8    11.6   (11 samples, 0.59%)</title><rect x="22.4" y="37" width="6.9" height="15.0" fill="rgb(213,54,10)" rx="2" ry="2" />
-<text  x="25.41" y="47.5" ></text>
-</g>
-<g >
-<title>  testWrapPrelude                                  L3.Loader.TestLoader              test/L3/Loader/TestLoader.hs:(63,1)-(65,173)                         12042           0    0.0    0.0     2.8    (1 samples, 0.05%)</title><rect x="942.6" y="37" width="0.9" height="15.0" fill="rgb(246,198,43)" rx="2" ry="2" />
-<text  x="945.59" y="47.5" ></text>
-</g>
-<g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               29960           1    0.0    0.0    33.0   (40 samples, 2.15%)</title><rect x="338.9" y="37" width="25.3" height="15.0" fill="rgb(232,28,43)" rx="2" ry="2" />
-<text  x="341.91" y="47.5" > ..</text>
-</g>
-<g >
-<title>               evalExpr'                           L3.Core.Eval                      src/L3/Core/Eval.hs:20:1-51                                          19927           1    0.0    0.0     0.1    (0 samples, 0.00%)</title><rect x="130.1" y="37" width="0.1" height="15.0" fill="rgb(253,186,19)" rx="2" ry="2" />
-<text  x="133.06" y="47.5" ></text>
-</g>
-<g >
-<title>              evalExpr                             L3.Core.Eval                      src/L3/Core/Eval.hs:18:1-90                                          30538           1    0.0    0.0    28.7   (34 samples, 1.82%)</title><rect x="208.0" y="37" width="21.2" height="15.0" fill="rgb(208,109,43)" rx="2" ry="2" />
-<text  x="210.95" y="47.5" > ..</text>
-</g>
-<g >
-<title>               evalExpr'                           L3.Core.Eval                      src/L3/Core/Eval.hs:20:1-51                                          27814           1    0.0    0.0     0.2    (0 samples, 0.00%)</title><rect x="131.1" y="37" width="0.2" height="15.0" fill="rgb(231,137,26)" rx="2" ry="2" />
-<text  x="134.14" y="47.5" ></text>
-</g>
-<g >
-<title>                  normalize'                       L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 32631      168278    0.0    0.3     0.2    (0 samples, 0.00%)</title><rect x="29.9" y="37" width="0.3" height="15.0" fill="rgb(219,158,32)" rx="2" ry="2" />
-<text  x="32.95" y="47.5" ></text>
-</g>
-<g >
-<title>                mapR                               L3.Util.Util                      src/L3/Util/Util.hs:(49,1)-(50,34)                                   19971           1    0.0    0.0     0.1    (0 samples, 0.00%)</title><rect x="80.6" y="37" width="0.1" height="15.0" fill="rgb(222,135,28)" rx="2" ry="2" />
-<text  x="83.61" y="47.5" ></text>
-</g>
-<g >
-<title>            parse                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(37,1)-(41,39)                               32670           1    0.0    0.0     2.4    (3 samples, 0.16%)</title><rect x="369.1" y="37" width="1.9" height="15.0" fill="rgb(221,10,31)" rx="2" ry="2" />
-<text  x="372.05" y="47.5" ></text>
-</g>
-<g >
-<title>          parseExpr                                L3.Parse.ExprParser               src/L3/Parse/ExprParser.hs:32:1-65                                   12439          44    0.0    0.0     0.7    (0 samples, 0.00%)</title><rect x="495.2" y="37" width="0.3" height="15.0" fill="rgb(251,184,5)" rx="2" ry="2" />
-<text  x="498.20" y="47.5" ></text>
-</g>
-<g >
-<title>              evalExpr                             L3.Core.Eval                      src/L3/Core/Eval.hs:18:1-90                                          33846           1    0.0    0.0     0.5    (1 samples, 0.05%)</title><rect x="233.2" y="37" width="0.4" height="15.0" fill="rgb(236,222,33)" rx="2" ry="2" />
-<text  x="236.22" y="47.5" ></text>
-</g>
-<g >
-<title>             normalize0                            L3.Core.Normal                    src/L3/Core/Normal.hs:70:1-62                                        29935           1    0.0    0.0     2.5    (3 samples, 0.16%)</title><rect x="298.7" y="37" width="1.8" height="15.0" fill="rgb(226,38,0)" rx="2" ry="2" />
-<text  x="301.70" y="47.5" ></text>
-</g>
-<g >
-<title>          substitute                               L3.Core.Normal                    src/L3/Core/Normal.hs:39:1-109                                       12983       37849    0.1    0.2     3.1    (3 samples, 0.16%)</title><rect x="495.5" y="37" width="2.0" height="15.0" fill="rgb(212,153,45)" rx="2" ry="2" />
-<text  x="498.45" y="47.5" ></text>
-</g>
-<g >
-<title> CAF:tests14                                       L3.Loader.TestLoader              &lt;no location info&gt;                                                    3046           0    0.0    0.0     3.1    (4 samples, 0.21%)</title><rect x="1003.6" y="37" width="2.3" height="15.0" fill="rgb(206,7,37)" rx="2" ry="2" />
-<text  x="1006.63" y="47.5" ></text>
-</g>
-<g >
-<title>                 normalize                         L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        31345      452270    1.5    1.9     2.0    (3 samples, 0.16%)</title><rect x="72.6" y="37" width="1.8" height="15.0" fill="rgb(251,95,43)" rx="2" ry="2" />
-<text  x="75.57" y="47.5" ></text>
-</g>
-<g >
-<title>                mapR                               L3.Util.Util                      src/L3/Util/Util.hs:(49,1)-(50,34)                                   27880           1    0.0    0.0     0.1    (0 samples, 0.00%)</title><rect x="81.6" y="37" width="0.1" height="15.0" fill="rgb(230,192,24)" rx="2" ry="2" />
-<text  x="84.62" y="47.5" ></text>
-</g>
-<g >
-<title>          example                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(44,1)-(60,11)                               28531           0    0.2    0.0    30.3   (37 samples, 1.99%)</title><rect x="438.2" y="37" width="23.2" height="15.0" fill="rgb(253,110,2)" rx="2" ry="2" />
-<text  x="441.20" y="47.5" > ..</text>
-</g>
-<g >
-<title>           parseExpr'                              L3.Parse.ExprParser               src/L3/Parse/ExprParser.hs:(34,1)-(39,17)                            12440          44    0.0    0.0     0.7    (0 samples, 0.00%)</title><rect x="431.9" y="37" width="0.2" height="15.0" fill="rgb(210,104,46)" rx="2" ry="2" />
-<text  x="434.87" y="47.5" ></text>
-</g>
-<g >
-<title>             fmapR                                 L3.Util.Util                      src/L3/Util/Util.hs:(53,1)-(54,27)                                   19349           1    0.0    0.0     0.1    (0 samples, 0.00%)</title><rect x="250.4" y="37" width="0.1" height="15.0" fill="rgb(250,168,29)" rx="2" ry="2" />
-<text  x="253.38" y="47.5" ></text>
-</g>
-<g >
-<title>                 normalize                         L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        29939      452270    1.6    1.9     2.1    (3 samples, 0.16%)</title><rect x="49.5" y="37" width="1.9" height="15.0" fill="rgb(246,140,10)" rx="2" ry="2" />
-<text  x="52.51" y="47.5" ></text>
-</g>
-<g >
-<title> main                                              Main                              test/Spec.hs:(12,1)-(14,17)                                           3308           0    0.0    0.0    93.4   (95 samples, 5.10%)</title><rect x="1006.8" y="37" width="60.2" height="15.0" fill="rgb(205,45,53)" rx="2" ry="2" />
-<text  x="1009.80" y="47.5" > main ..</text>
-</g>
-<g >
-<title>             weakInferType                         L3.Core.Infer                     src/L3/Core/Infer.hs:26:1-105                                        13037        4440    0.0    0.0     0.0    (0 samples, 0.00%)</title><rect x="309.4" y="37" width="0.1" height="15.0" fill="rgb(207,0,43)" rx="2" ry="2" />
-<text  x="312.40" y="47.5" ></text>
-</g>
-<g >
-<title>          example                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(44,1)-(60,11)                               23219           0    0.2    0.0     0.4    (0 samples, 0.00%)</title><rect x="436.2" y="37" width="0.3" height="15.0" fill="rgb(236,58,5)" rx="2" ry="2" />
-<text  x="439.24" y="47.5" ></text>
-</g>
-<g >
-<title>all (1,863 samples, 100%)</title><rect x="10.0" y="53" width="1180.0" height="15.0" fill="rgb(228,69,6)" rx="2" ry="2" />
+<title>all (3,397,641,832 samples, 100%)</title><rect x="10.0" y="53" width="1180.0" height="15.0" fill="rgb(254,207,23)" rx="2" ry="2" />
 <text  x="13.00" y="63.5" ></text>
 </g>
 <g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:47:7-45                                      27234           1    0.0    0.0     0.7    (0 samples, 0.00%)</title><rect x="383.7" y="37" width="0.3" height="15.0" fill="rgb(239,218,3)" rx="2" ry="2" />
-<text  x="386.68" y="47.5" ></text>
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        18260       10204    0.0    0.0     0.1    0.1      0    (816,320 samples, 0.02%)</title><rect x="182.9" y="37" width="0.3" height="15.0" fill="rgb(228,149,22)" rx="2" ry="2" />
+<text  x="185.92" y="47.5" ></text>
 </g>
 <g >
-<title>    wrapPrelude                                    L3.Loader.Loader                  src/L3/Loader/Loader.hs:98:1-86                                      12044           1    0.0    0.0     2.8    (1 samples, 0.05%)</title><rect x="873.8" y="37" width="0.9" height="15.0" fill="rgb(205,60,44)" rx="2" ry="2" />
-<text  x="876.82" y="47.5" ></text>
+<title>            normalize'                    L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 23446     5264389   10.6   11.6    10.7   11.7    (201,780,120 samples, 5.94%; +5.94%)</title><rect x="96.6" y="37" width="70.1" height="15.0" fill="rgb(255,172,172)" rx="2" ry="2" />
+<text  x="99.57" y="47.5" >       ..</text>
 </g>
 <g >
-<title>              normalize0'                          L3.Core.Normal                    src/L3/Core/Normal.hs:(72,1)-(74,21)                                 31342           1    0.0    0.0     2.0    (3 samples, 0.16%)</title><rect x="244.8" y="37" width="1.8" height="15.0" fill="rgb(215,219,54)" rx="2" ry="2" />
-<text  x="247.81" y="47.5" ></text>
+<title>               free                       L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        13184        4308    0.0    0.0     0.1    0.0      0    (379,104 samples, 0.01%)</title><rect x="28.3" y="37" width="0.2" height="15.0" fill="rgb(238,168,20)" rx="2" ry="2" />
+<text  x="31.34" y="47.5" ></text>
 </g>
 <g >
-<title>           example.(...)                           Morte.TestMorte                   test/Morte/TestMorte.hs:46:7-41                                      33297           1    0.0    0.0     0.9    (1 samples, 0.05%)</title><rect x="381.0" y="37" width="0.8" height="15.0" fill="rgb(213,38,8)" rx="2" ry="2" />
-<text  x="383.96" y="47.5" ></text>
+<title>            normalize'                    L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 23494      452270    0.7    1.0     0.7    1.0     10  (18,217,856 samples, 0.54%)</title><rect x="166.7" y="37" width="6.3" height="15.0" fill="rgb(208,102,23)" rx="2" ry="2" />
+<text  x="169.65" y="47.5" ></text>
 </g>
 <g >
-<title>          example                                  Morte.TestMorte                   test/Morte/TestMorte.hs:(44,1)-(60,11)                               31353           0    0.2    0.0     1.7    (2 samples, 0.11%)</title><rect x="490.6" y="37" width="1.1" height="15.0" fill="rgb(233,51,51)" rx="2" ry="2" />
-<text  x="493.57" y="47.5" ></text>
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        23443      944818    2.7    4.4     4.8    6.6     41  (75,585,440 samples, 2.22%)</title><rect x="568.2" y="37" width="26.2" height="15.0" fill="rgb(254,221,4)" rx="2" ry="2" />
+<text  x="571.18" y="47.5" > ..</text>
 </g>
 <g >
-<title>free        L3.Core.Normal        src/L3/Core/Normal.hs:17:1-66                  1.2    (3 samples, 0.16%)</title><rect x="1130.4" y="37" width="2.1" height="15.0" fill="rgb(207,139,19)" rx="2" ry="2" />
-<text  x="1133.41" y="47.5" ></text>
+<title>            normalize'                    L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 26030       89438    0.0    0.2     0.0    0.2      0   (4,060,160 samples, 0.12%)</title><rect x="179.6" y="37" width="1.4" height="15.0" fill="rgb(245,54,52)" rx="2" ry="2" />
+<text  x="182.62" y="47.5" ></text>
 </g>
 <g >
-<title>              normalize0'                          L3.Core.Normal                    src/L3/Core/Normal.hs:(72,1)-(74,21)                                 33953           1    0.0    0.0     0.2    (1 samples, 0.05%)</title><rect x="247.0" y="37" width="0.4" height="15.0" fill="rgb(229,216,17)" rx="2" ry="2" />
-<text  x="250.03" y="47.5" ></text>
+<title>             free                         L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                         6011        8157    0.0    0.0     0.1    0.0      0    (717,816 samples, 0.02%)</title><rect x="34.1" y="37" width="0.3" height="15.0" fill="rgb(237,154,36)" rx="2" ry="2" />
+<text  x="37.14" y="47.5" ></text>
 </g>
 <g >
-<title>                 normalize                         L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        31251     5264389   17.0   22.6    28.6   (34 samples, 1.82%)</title><rect x="51.4" y="37" width="21.2" height="15.0" fill="rgb(251,115,42)" rx="2" ry="2" />
-<text  x="54.35" y="47.5" ></text>
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        22165      452270    1.7    2.1     2.1    3.1     25  (36,181,600 samples, 1.06%)</title><rect x="555.6" y="37" width="12.6" height="15.0" fill="rgb(249,22,50)" rx="2" ry="2" />
+<text  x="558.61" y="47.5" ></text>
 </g>
 <g >
-<title>    wrapPrelude                                    L3.Loader.Loader                  src/L3/Loader/Loader.hs:98:1-86                                      12047           0    0.0    0.0     3.1    (4 samples, 0.21%)</title><rect x="874.7" y="37" width="2.3" height="15.0" fill="rgb(232,27,22)" rx="2" ry="2" />
-<text  x="877.70" y="47.5" ></text>
+<title>                debugIO.\                 L3.Parse.ExprParser               src/L3/Parse/ExprParser.hs:27:39-73                                   5471        6307    0.0    0.0     0.1    0.1      0    (305,536 samples, 0.01%)</title><rect x="25.7" y="37" width="0.1" height="15.0" fill="rgb(244,195,42)" rx="2" ry="2" />
+<text  x="28.73" y="47.5" ></text>
 </g>
 <g >
-<title>         example10                                 Morte.TestMorte                   test/Morte/TestMorte.hs:(133,1)-(137,103)                            25908           0    0.0    0.0     1.3    (2 samples, 0.11%)</title><rect x="497.5" y="37" width="1.1" height="15.0" fill="rgb(243,49,40)" rx="2" ry="2" />
-<text  x="500.48" y="47.5" ></text>
+<title>            normalize'                    L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 22168      452270    0.7    1.0     0.7    1.0     11  (18,217,856 samples, 0.54%)</title><rect x="90.2" y="37" width="6.4" height="15.0" fill="rgb(207,115,3)" rx="2" ry="2" />
+<text  x="93.25" y="47.5" ></text>
 </g>
 <g >
-<title>               evalExpr'                           L3.Core.Eval                      src/L3/Core/Eval.hs:20:1-51                                          29123           1    0.0    0.0    21.0   (25 samples, 1.34%)</title><rect x="131.3" y="37" width="15.6" height="15.0" fill="rgb(244,89,21)" rx="2" ry="2" />
-<text  x="134.33" y="47.5" ></text>
+<title>example     Morte.TestMorte test/Morte/TestMorte.hs:(44,1)-(60,11)    2.9    0.1     44   (1,634,000 samples, 0.05%)</title><rect x="613.9" y="37" width="0.6" height="15.0" fill="rgb(231,64,49)" rx="2" ry="2" />
+<text  x="616.93" y="47.5" ></text>
 </g>
 <g >
-<title>             fmapR                                 L3.Util.Util                      src/L3/Util/Util.hs:(53,1)-(54,27)                                   32671           1    0.0    0.0     1.6    (2 samples, 0.11%)</title><rect x="292.9" y="37" width="1.4" height="15.0" fill="rgb(228,93,47)" rx="2" ry="2" />
-<text  x="295.94" y="47.5" ></text>
+<title>            normalize'                    L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 13179       19846    0.0    0.0     0.1    0.1      0    (750,744 samples, 0.02%)</title><rect x="36.0" y="37" width="0.2" height="15.0" fill="rgb(246,165,34)" rx="2" ry="2" />
+<text  x="38.97" y="47.5" ></text>
 </g>
 <g >
-<title>           runParser                               L3.Parse.Parsec                   src/L3/Parse/Parsec.hs:(15,1)-(20,84)                                12480          44    0.0    0.0     1.9    (1 samples, 0.05%)</title><rect x="432.1" y="37" width="0.6" height="15.0" fill="rgb(226,190,22)" rx="2" ry="2" />
-<text  x="435.13" y="47.5" ></text>
+<title>                    item                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(12,1)-(14,23)                          22226           0    0.0    0.0     0.0    0.0      0    (589,200 samples, 0.02%)</title><rect x="15.8" y="37" width="0.2" height="15.0" fill="rgb(230,170,46)" rx="2" ry="2" />
+<text  x="18.82" y="47.5" ></text>
 </g>
 <g >
-<title>               evalExpr'                           L3.Core.Eval                      src/L3/Core/Eval.hs:20:1-51                                          29743           1    0.0    0.0     2.1    (3 samples, 0.16%)</title><rect x="146.9" y="37" width="1.8" height="15.0" fill="rgb(243,198,53)" rx="2" ry="2" />
-<text  x="149.91" y="47.5" ></text>
+<title>                  free                    L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        21476        4759    0.0    0.0     0.0    0.0      0    (418,792 samples, 0.01%)</title><rect x="19.9" y="37" width="0.2" height="15.0" fill="rgb(238,184,43)" rx="2" ry="2" />
+<text  x="22.95" y="47.5" ></text>
 </g>
 <g >
-<title>MAIN                                               MAIN                              &lt;built-in&gt;                                                            1653           0    0.1    0.0   100.0  (100 samples, 5.37%)</title><rect x="1067.0" y="37" width="63.3" height="15.0" fill="rgb(245,3,13)" rx="2" ry="2" />
-<text  x="1069.96" y="47.5" >MAIN  ..</text>
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        13178       19846    0.2    0.1     0.3    0.2      3   (1,587,680 samples, 0.05%)</title><rect x="181.9" y="37" width="0.5" height="15.0" fill="rgb(246,209,26)" rx="2" ry="2" />
+<text  x="184.90" y="47.5" ></text>
 </g>
 <g >
-<title>                  normalize'                       L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 33957       89438    0.1    0.2     0.1    (0 samples, 0.00%)</title><rect x="30.6" y="37" width="0.2" height="15.0" fill="rgb(221,198,27)" rx="2" ry="2" />
-<text  x="33.64" y="47.5" ></text>
+<title>                 satisfy                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(17,1)-(21,28)                          23548           0    0.1    0.0     0.1    0.1      1    (522,064 samples, 0.02%)</title><rect x="24.4" y="37" width="0.1" height="15.0" fill="rgb(225,191,54)" rx="2" ry="2" />
+<text  x="27.36" y="47.5" ></text>
 </g>
 <g >
-<title>         example12                                 Morte.TestMorte                   test/Morte/TestMorte.hs:(147,1)-(151,415)                            28530           0    0.0    0.0    30.3   (37 samples, 1.99%)</title><rect x="498.9" y="37" width="23.3" height="15.0" fill="rgb(217,42,21)" rx="2" ry="2" />
-<text  x="501.93" y="47.5" > ..</text>
+<title>                  free                    L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        25382        3622    0.0    0.0     0.1    0.0      0    (318,736 samples, 0.01%)</title><rect x="20.4" y="37" width="0.2" height="15.0" fill="rgb(225,109,54)" rx="2" ry="2" />
+<text  x="23.45" y="47.5" ></text>
 </g>
 <g >
-<title>              evalExpr                             L3.Core.Eval                      src/L3/Core/Eval.hs:18:1-90                                          29742           1    0.0    0.0     2.1    (3 samples, 0.16%)</title><rect x="206.1" y="37" width="1.9" height="15.0" fill="rgb(212,24,44)" rx="2" ry="2" />
-<text  x="209.12" y="47.5" ></text>
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        26012      318701    1.8    1.5     2.4    2.2     27  (25,496,080 samples, 0.75%)</title><rect x="473.7" y="37" width="8.8" height="15.0" fill="rgb(227,162,44)" rx="2" ry="2" />
+<text  x="476.68" y="47.5" ></text>
 </g>
 <g >
-<title>                mapR                               L3.Util.Util                      src/L3/Util/Util.hs:(49,1)-(50,34)                                   30605           1    0.0    0.0    28.6   (34 samples, 1.82%)</title><rect x="99.1" y="37" width="21.2" height="15.0" fill="rgb(208,195,42)" rx="2" ry="2" />
-<text  x="102.10" y="47.5" ></text>
+<title>                    item                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(12,1)-(14,23)                          18355           0    0.0    0.0     0.0    0.0      0    (589,200 samples, 0.02%)</title><rect x="15.1" y="37" width="0.2" height="15.0" fill="rgb(231,219,21)" rx="2" ry="2" />
+<text  x="18.11" y="47.5" ></text>
+</g>
+<g >
+<title>bind.\      L3.Parse.Parser src/L3/Parse/Parser.hs:9:27-76            1.8    0.1     27   (1,574,472 samples, 0.05%)</title><rect x="613.4" y="37" width="0.5" height="15.0" fill="rgb(206,180,5)" rx="2" ry="2" />
+<text  x="616.38" y="47.5" ></text>
+</g>
+<g >
+<title>normalize   L3.Core.Normal  src/L3/Core/Normal.hs:57:1-59            49.1   64.2    (1,115,135,840 samples, 32.82%; +32.82%)</title><rect x="614.9" y="37" width="387.3" height="15.0" fill="rgb(255,0,0)" rx="2" ry="2" />
+<text  x="617.90" y="47.5" >normalize   L3.Core.Normal  src/L3/Core/Normal.hs:57..</text>
+</g>
+<g >
+<title>            normalize'                    L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 24738      168278    0.3    0.4     0.3    0.4      5   (6,464,680 samples, 0.19%)</title><rect x="173.0" y="37" width="2.2" height="15.0" fill="rgb(242,5,4)" rx="2" ry="2" />
+<text  x="175.98" y="47.5" ></text>
+</g>
+<g >
+<title>                 satisfy                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(17,1)-(21,28)                          20905           0    0.0    0.0     0.0    0.1      0    (467,952 samples, 0.01%)</title><rect x="23.9" y="37" width="0.2" height="15.0" fill="rgb(217,47,44)" rx="2" ry="2" />
+<text  x="26.94" y="47.5" ></text>
+</g>
+<g >
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        24754        6718    0.0    0.0     0.1    0.0      0    (537,440 samples, 0.02%)</title><rect x="607.2" y="37" width="0.2" height="15.0" fill="rgb(224,7,44)" rx="2" ry="2" />
+<text  x="610.18" y="47.5" ></text>
+</g>
+<g >
+<title>            normalize'                    L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 18261       10204    0.0    0.0     0.1    0.0      0    (395,040 samples, 0.01%)</title><rect x="36.5" y="37" width="0.1" height="15.0" fill="rgb(208,46,44)" rx="2" ry="2" />
+<text  x="39.47" y="47.5" ></text>
+</g>
+<g >
+<title>               free                       L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        26017        8463    0.0    0.0     0.1    0.0      0    (744,744 samples, 0.02%)</title><rect x="29.3" y="37" width="0.3" height="15.0" fill="rgb(234,17,25)" rx="2" ry="2" />
+<text  x="32.32" y="47.5" ></text>
+</g>
+<g >
+<title>                    item                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(12,1)-(14,23)                          24815           0    0.0    0.0     0.0    0.0      0    (497,136 samples, 0.01%)</title><rect x="16.3" y="37" width="0.2" height="15.0" fill="rgb(236,89,2)" rx="2" ry="2" />
+<text  x="19.33" y="47.5" ></text>
+</g>
+<g >
+<title>               free                       L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        22133        3697    0.0    0.0     0.0    0.0      0    (325,336 samples, 0.01%)</title><rect x="28.6" y="37" width="0.2" height="15.0" fill="rgb(213,95,16)" rx="2" ry="2" />
+<text  x="31.64" y="47.5" ></text>
+</g>
+<g >
+<title>                    item                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(12,1)-(14,23)                          23552           0    0.0    0.0     0.0    0.0      0    (666,336 samples, 0.02%)</title><rect x="16.1" y="37" width="0.2" height="15.0" fill="rgb(240,110,18)" rx="2" ry="2" />
+<text  x="19.07" y="47.5" ></text>
+</g>
+<g >
+<title>                    item                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(12,1)-(14,23)                          19634           0    0.0    0.0     0.0    0.0      0    (589,200 samples, 0.02%)</title><rect x="15.3" y="37" width="0.2" height="15.0" fill="rgb(211,77,23)" rx="2" ry="2" />
+<text  x="18.33" y="47.5" ></text>
+</g>
+<g >
+<title>            normalize'                    L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 22129     3887688    8.2    8.4     8.2    8.4    (145,659,008 samples, 4.29%; +4.29%)</title><rect x="39.7" y="37" width="50.5" height="15.0" fill="rgb(255,182,182)" rx="2" ry="2" />
+<text  x="42.66" y="47.5" >     ..</text>
+</g>
+<g >
+<title>            normalize'                    L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 19547      191648    0.5    0.4     0.5    0.4      8   (7,501,952 samples, 0.22%)</title><rect x="36.7" y="37" width="2.6" height="15.0" fill="rgb(209,139,32)" rx="2" ry="2" />
+<text  x="39.70" y="47.5" ></text>
+</g>
+<g >
+<title>               free                       L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        23450        8383    0.0    0.0     0.0    0.0      0    (737,704 samples, 0.02%)</title><rect x="28.8" y="37" width="0.2" height="15.0" fill="rgb(223,180,54)" rx="2" ry="2" />
+<text  x="31.75" y="47.5" ></text>
+</g>
+<g >
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        16993        6510    0.1    0.0     0.1    0.0      2    (520,800 samples, 0.02%)</title><rect x="182.7" y="37" width="0.2" height="15.0" fill="rgb(227,60,15)" rx="2" ry="2" />
+<text  x="185.74" y="47.5" ></text>
+</g>
+<g >
+<title>          normalize'                      L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 22127      907679    1.3    2.1     1.3    2.1     19  (36,569,448 samples, 1.08%)</title><rect x="486.8" y="37" width="12.7" height="15.0" fill="rgb(254,73,42)" rx="2" ry="2" />
+<text  x="489.81" y="47.5" ></text>
+</g>
+<g >
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        22128     3887688   14.3   17.9    22.5   26.3    (311,015,040 samples, 9.15%; +9.15%)</title><rect x="189.4" y="37" width="108.0" height="15.0" fill="rgb(255,151,151)" rx="2" ry="2" />
+<text  x="192.40" y="47.5" >           no..</text>
+</g>
+<g >
+<title>                  free                    L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        18922        3562    0.1    0.0     0.1    0.0      1    (313,456 samples, 0.01%)</title><rect x="19.7" y="37" width="0.1" height="15.0" fill="rgb(223,158,3)" rx="2" ry="2" />
+<text  x="22.73" y="47.5" ></text>
+</g>
+<g >
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        13176        4320    0.0    0.0     0.0    0.1      0    (345,600 samples, 0.01%)</title><rect x="528.9" y="37" width="0.2" height="15.0" fill="rgb(220,125,48)" rx="2" ry="2" />
+<text  x="531.94" y="47.5" ></text>
+</g>
+<g >
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        24735        6718    0.0    0.0     0.0    0.0      0    (537,440 samples, 0.02%)</title><rect x="607.0" y="37" width="0.2" height="15.0" fill="rgb(220,69,46)" rx="2" ry="2" />
+<text  x="609.99" y="47.5" ></text>
+</g>
+<g >
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        18294        6510    0.1    0.0     0.1    0.0      2    (520,800 samples, 0.02%)</title><rect x="530.1" y="37" width="0.2" height="15.0" fill="rgb(237,120,13)" rx="2" ry="2" />
+<text  x="533.14" y="47.5" ></text>
+</g>
+<g >
+<title>          normalize'                      L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 26028       89438    0.1    0.2     0.2    0.2      2   (4,060,160 samples, 0.12%)</title><rect x="527.0" y="37" width="1.4" height="15.0" fill="rgb(223,167,3)" rx="2" ry="2" />
+<text  x="530.00" y="47.5" ></text>
+</g>
+<g >
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        23445     5264389   20.0   24.2    30.7   35.9    (421,151,120 samples, 12.40%; +12.40%)</title><rect x="310.0" y="37" width="146.3" height="15.0" fill="rgb(255,130,130)" rx="2" ry="2" />
+<text  x="312.99" y="47.5" >           normali..</text>
+</g>
+<g >
+<title>                      item                L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(12,1)-(14,23)                           5539           0    0.0    0.0     0.0    0.0      0    (666,720 samples, 0.02%)</title><rect x="12.5" y="37" width="0.2" height="15.0" fill="rgb(222,76,29)" rx="2" ry="2" />
+<text  x="15.48" y="47.5" ></text>
+</g>
+<g >
+<title>                 satisfy                  L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(17,1)-(21,28)                          19630           0    0.0    0.0     0.0    0.1      0    (467,952 samples, 0.01%)</title><rect x="23.8" y="37" width="0.1" height="15.0" fill="rgb(238,203,16)" rx="2" ry="2" />
+<text  x="26.76" y="47.5" ></text>
+</g>
+<g >
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        18258       16334    0.1    0.1     0.2    0.1      1   (1,306,720 samples, 0.04%)</title><rect x="529.7" y="37" width="0.4" height="15.0" fill="rgb(227,160,50)" rx="2" ry="2" />
+<text  x="532.69" y="47.5" ></text>
+</g>
+<g >
+<title>                   satisfy                L3.Parse.StringParsec             src/L3/Parse/StringParsec.hs:(17,1)-(21,28)                           5535           0    0.1    0.0     0.1    0.1      1    (493,928 samples, 0.01%)</title><rect x="18.6" y="37" width="0.2" height="15.0" fill="rgb(253,41,36)" rx="2" ry="2" />
+<text  x="21.62" y="47.5" ></text>
+</g>
+<g >
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        20825       25037    0.1    0.1     0.2    0.2      1   (2,002,960 samples, 0.06%)</title><rect x="188.7" y="37" width="0.7" height="15.0" fill="rgb(245,143,2)" rx="2" ry="2" />
+<text  x="191.71" y="47.5" ></text>
+</g>
+<g >
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        16968        7132    0.0    0.0     0.1    0.1      0    (570,560 samples, 0.02%)</title><rect x="182.5" y="37" width="0.2" height="15.0" fill="rgb(221,45,22)" rx="2" ry="2" />
+<text  x="185.54" y="47.5" ></text>
+</g>
+<g >
+<title>         normalize                        L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        26027       89438    0.2    0.4     0.4    0.6      3   (7,155,040 samples, 0.21%)</title><rect x="609.9" y="37" width="2.4" height="15.0" fill="rgb(242,195,46)" rx="2" ry="2" />
+<text  x="612.85" y="47.5" ></text>
+</g>
+<g >
+<title>          normalize'                      L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 22166      452270    0.5    1.0     0.5    1.0      7  (18,217,856 samples, 0.54%)</title><rect x="499.5" y="37" width="6.3" height="15.0" fill="rgb(209,189,13)" rx="2" ry="2" />
+<text  x="502.51" y="47.5" ></text>
+</g>
+<g >
+<title>            substitute                    L3.Core.Normal                    src/L3/Core/Normal.hs:39:1-109                                       25995        2760    0.1    0.0     0.1    0.0      1    (309,120 samples, 0.01%)</title><rect x="181.4" y="37" width="0.1" height="15.0" fill="rgb(226,72,43)" rx="2" ry="2" />
+<text  x="184.41" y="47.5" ></text>
+</g>
+<g >
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        19546      191648    0.5    0.9     1.1    1.3      8  (15,331,840 samples, 0.45%)</title><rect x="183.4" y="37" width="5.3" height="15.0" fill="rgb(208,204,36)" rx="2" ry="2" />
+<text  x="186.38" y="47.5" ></text>
+</g>
+<g >
+<title>          normalize                       L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                         4915       11513    0.0    0.1     0.1    0.1      0    (921,040 samples, 0.03%)</title><rect x="485.7" y="37" width="0.3" height="15.0" fill="rgb(229,181,14)" rx="2" ry="2" />
+<text  x="488.72" y="47.5" ></text>
+</g>
+<g >
+<title>           normalize                      L3.Core.Normal                    src/L3/Core/Normal.hs:57:1-59                                        23493      452270    1.3    2.1     1.9    3.1     19  (36,181,600 samples, 1.06%)</title><rect x="456.3" y="37" width="12.5" height="15.0" fill="rgb(222,107,46)" rx="2" ry="2" />
+<text  x="459.25" y="47.5" ></text>
+</g>
+<g >
+<title>                  free                    L3.Core.Normal                    src/L3/Core/Normal.hs:17:1-66                                        20201        3562    0.0    0.0     0.0    0.0      0    (313,456 samples, 0.01%)</title><rect x="19.8" y="37" width="0.1" height="15.0" fill="rgb(207,86,17)" rx="2" ry="2" />
+<text  x="22.84" y="47.5" ></text>
+</g>
+<g >
+<title>          normalize'                      L3.Core.Normal                    src/L3/Core/Normal.hs:(59,1)-(66,16)                                 26011       89438    0.1    0.2     0.1    0.2      1   (4,060,160 samples, 0.12%)</title><rect x="525.6" y="37" width="1.4" height="15.0" fill="rgb(222,64,1)" rx="2" ry="2" />
+<text  x="528.58" y="47.5" ></text>
 </g>
 </g>
 </svg>

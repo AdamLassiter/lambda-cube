@@ -30,7 +30,7 @@ dependencies:
 library:
   source-dirs: src
   cpp-options:
-  - -DLOGINFO
+  - -DLOGWARN
   dependencies:
   - base
   - text
@@ -66,6 +66,11 @@ benchmarks:
     source-dirs:         bench
     ghc-options:
     - -O2
+    - -fprof-auto
+    - -fprof-cafs
+    - -rtsopts
+    - '"-with-rtsopts=-pj -h"'
+    # - '"-with-rtsopts=-h -P -xc"'
     dependencies:
     - lambda-cube
     - base
