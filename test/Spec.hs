@@ -11,7 +11,7 @@ import qualified Morte.TestMorte
 
 main :: IO ()
 main = withStdoutLogging $ do
-  setLogLevel LevelDebug 
+  setLogLevel LevelInfo 
   start <- getCurrentTime
   sequence_ tests
   stop <- getCurrentTime

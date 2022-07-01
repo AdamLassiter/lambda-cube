@@ -12,7 +12,7 @@ import System.Console.Haskeline
 -- | Run REPL
 main :: IO ()
 main = withStdoutLogging $ do
-  setLogLevel LevelInfo
+  setLogLevel LevelWarn
   let (τ, prel) = wrapPrelude embeddedPrelude
   runInputT defaultSettings $ repl τ prel
 

@@ -2,6 +2,7 @@ module L3.Core.TestInfer (tests) where
 
 import L3.Core
 import L3.Log
+import L3.Util
 import Test
 
 tests :: [IO ()]
@@ -37,16 +38,16 @@ testInferType = do
 
 testInferTypeError :: IO ()
 testInferTypeError = do
-  assertError "Core::TestInfer" (inferType0 $ (Box :: Expr Name)) "# :: !! absurd"
+  assertEq "Core::TestInfer" (inferType0 $ (Box :: Expr Name)) (Left $ Error (["in context:"], Just (Error (["absurd box"], Nothing)))) "# :: !! absurd"
 
-  assertError "Core::TestInfer" (inferType0 $ Var $ Name "x") "x :: !! unbound"
+  assertEq "Core::TestInfer" (inferType0 $ Var $ Name "x") (Left $ Error (["in context:"], Just (Error (["unbound variable:", "| x"], Nothing)))) "x :: !! unbound"
 
-  assertError "Core::TestInfer" (inferType0 $ Pi (Name "x") (Lam (Name "y") Star (Var $ Name "y")) Star) "pi x : (lam y : * -> y) -> * :: !! invalid-kind"
-  assertError "Core::TestInfer" (inferType0 $ Pi (Name "x") Star (Lam (Name "y") Star (Var $ Name "y"))) "pi x : * -> (lam y : * -> y) :: !! invalid-kind"
+  assertEq "Core::TestInfer" (inferType0 $ Pi (Name "x") (Lam (Name "y") Star (Var $ Name "y")) Star) (Left $ Error (["in context:"], Just (Error (["invalid type:", "| π [x : λ [y : *] -> y] -> *", "had left kind:", "| π [y : *] -> *", "had right kind:", "| #"], Nothing)))) "pi x : (lam y : * -> y) -> * :: !! invalid-kind"
+  assertEq "Core::TestInfer" (inferType0 $ Pi (Name "x") Star (Lam (Name "y") Star (Var $ Name "y"))) (Left $ Error (["in context:"], Just (Error (["invalid type:", "| π [x : *] -> λ [y : *] -> y", "had left kind:", "| #", "had right kind:", "| π [y : *] -> *"], Nothing)))) "pi x : * -> (lam y : * -> y) :: !! invalid-kind"
 
-  assertError "Core::TestInfer" (inferType0 $ Lam (Name "x") Star ((Var $ Name "x") `App` (Var $ Name "x"))) "lam x : * -> x x :: !! non-function"
+  assertEq "Core::TestInfer" (inferType0 $ Lam (Name "x") Star ((Var $ Name "x") `App` (Var $ Name "x"))) (Left $ Error (["in context:", "| (x,*)"], Just (Error (["cannot apply to non-function:", "| x", "had type: ", "| *", "had application:", "| x"], Nothing)))) "lam x : * -> x x :: !! non-function"
 
-  assertError "Core::TestInfer" (inferType0 $ Lam (Name "x") Star (Var $ Name "x") `App` Star) "(lam x : * -> x) * :: !! mismatch"
+  assertEq "Core::TestInfer" (inferType0 $ Lam (Name "x") Star (Var $ Name "x") `App` Star) (Left $ Error (["in context:"],Just (Error (["type mismatch for function:","| λ [x : *] -> x","expected type:","| *","but given arg:","| *","and given type:","| #"],Nothing)))) "(lam x : * -> x) * :: !! mismatch"
 
 testWellTyped :: IO ()
 testWellTyped = do

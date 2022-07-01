@@ -7,14 +7,12 @@ import L3.Util
 
 assertShowing :: String -> (a -> String) -> (a -> a -> Bool, String) -> a -> a -> String -> IO ()
 assertShowing src show' (op, showOp) actual expected msg = do
-  let detail = "\n\t" ++ "expected: " ++ show' expected ++ "\n\t" ++ "to be: " ++ showOp ++ "\n\t" ++ "actual:   " ++ show' actual
+  let detail = msg ++ "\n\t" ++ "expected: " ++ show' expected ++ "\n\t" ++ "to be: " ++ showOp ++ "\n\t" ++ "actual:   " ++ show' actual
   if actual `op` expected
     then do
-      infoM src msg
-      infoM src $ "Success, true assertion:" ++ detail
+      infoM src detail
     else do
-      warnM src msg
-      errorU src $ "Error, false assertion:" ++ detail
+      errorU src detail
   return ()
 
 assert :: (Show a) => String -> (a -> a -> Bool, String) -> a -> a -> String -> IO ()
@@ -57,6 +55,3 @@ assertListNotEmpty src x = assertShowing src showSome ((/=), "/=") x []
 
 assertNormalizedEq :: (Eq a, Show a, Enum a) => String -> Expr a -> Expr a -> String -> IO ()
 assertNormalizedEq src = assertShowing src (showExpr . normalize0) (betaEq, "=β=")
-
-assertError :: String -> Result a -> String -> IO ()
-assertError src x = assertTrue src $ isError x

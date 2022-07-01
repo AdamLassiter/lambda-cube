@@ -40,7 +40,7 @@ jobs:
     - name: Build Library and Test
       # Build the package, its tests, and run the tests tracking code coverage
       run: |
-        stack --no-terminal test --coverage
+        stack --no-terminal test
 
     - name: Report Codecov Coverage
       # Build coverage report and send to codecov.io

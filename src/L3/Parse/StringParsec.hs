@@ -69,10 +69,3 @@ word = do
   cs <- some letter
   _ <- spaces
   return cs
-
-parens :: Parser String a -> Parser String a
-parens m = do
-  _ <- reserved "("
-  n <- m
-  _ <- reserved ")"
-  return n
