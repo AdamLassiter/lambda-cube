@@ -15,7 +15,7 @@ main = withStdoutLogging $ do
   start <- getCurrentTime
   sequence_ tests
   stop <- getCurrentTime
-  infoM "Spec" $ "Ran " ++ (show $ length tests) ++ " tests in " ++ (show $ nominalDiffTimeToSeconds $ diffUTCTime stop stop) ++ " seconds"
+  infoM "Spec" $ "Ran " ++ (show $ length tests) ++ " tests in " ++ (show $ nominalDiffTimeToSeconds $ diffUTCTime stop start) ++ " seconds"
 
 tests :: [IO ()]
 tests =
