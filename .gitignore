@@ -3,4 +3,5 @@
 *.prof
 *.lock
 *.cabal
+*.tix
 dist-newstyle
