@@ -12,7 +12,6 @@ import Control.Applicative
     (<$>),
   )
 import Data.Maybe
-import Debug.Trace
 import L3.Core
 import L3.Log
 import L3.Parse.Lexer
@@ -24,7 +23,7 @@ import Prelude hiding (pi)
 
 trace = traceU "Parse::ExprParser"
 
-debugIO msgFn parser = Parser $ \i -> trace (msgFn i) (unParser parser i)
+traceIO msgFn parser = Parser $ \i -> trace (msgFn i) (unParser parser i)
 
 -- | Parse a string to a named expression (using string labels)
 --  Strip comments here, as they apply inside any context and are difficult to deal with otherwise
@@ -41,7 +40,7 @@ parseExpr' tks = es
 -- | Sugared expression, injection point for additional syntax niceties
 --  S :: [π(_:]A[)].S  | A
 sugarE :: Parser [Token] ShowExpr
-sugarE = debugIO (\i -> "sugarE " ++ show i) sugarE'
+sugarE = traceIO (\i -> "sugarE " ++ show i) sugarE'
 
 sugarE' = do
   ex <- appE
@@ -51,7 +50,7 @@ sugarE' = do
 -- | Applicative expression, unknown and unbounded length
 --  A :: F [app F ..]
 appE :: Parser [Token] ShowExpr
-appE = debugIO (\i -> "appE " ++ show i) appE'
+appE = traceIO (\i -> "appE " ++ show i) appE'
 
 appE' = do
   exprs <- some funE
@@ -60,7 +59,7 @@ appE' = do
 -- | Function expression
 --  F :: λ(s:τ).E | π(s:τ).E | T | (S)
 funE :: Parser [Token] ShowExpr
-funE = debugIO (\i -> "funE " ++ show i) funE'
+funE = traceIO (\i -> "funE " ++ show i) funE'
 
 funE' =
   lamE
@@ -71,7 +70,7 @@ funE' =
 -- | Terminal expression, bounded in length and with no children
 --  T :: * | # | n@v | v
 termE :: Parser [Token] ShowExpr
-termE = debugIO (\i -> "termE " ++ show i) termE'
+termE = traceIO (\i -> "termE " ++ show i) termE'
 
 termE' =
   star
@@ -82,7 +81,7 @@ termE' =
 -- | Arrow expression, a component of functions
 --  (->) :: (s:τ).
 arrE :: Parser [Token] (Name, ShowExpr)
-arrE = debugIO (\i -> "arrE " ++ show i) arrE'
+arrE = traceIO (\i -> "arrE " ++ show i) arrE'
 
 arrE' = do
   (i, τ) <- parens typE
@@ -92,7 +91,7 @@ arrE' = do
 -- | Type expression, a symbol has type expr
 --  τ :: s:S
 typE :: Parser [Token] (Name, ShowExpr)
-typE = debugIO (\i -> "typE " ++ show i) typE'
+typE = traceIO (\i -> "typE " ++ show i) typE'
 
 typE' = do
   t <- symbol
@@ -105,7 +104,7 @@ typE' = do
 -- | Star axiom
 --  * :: Star
 star :: Parser [Token] ShowExpr
-star = debugIO (\i -> "star " ++ show i) star'
+star = traceIO (\i -> "star " ++ show i) star'
 
 star' = do
   one StarT
@@ -114,7 +113,7 @@ star' = do
 -- | Box axiom
 --  # :: Box
 box :: Parser [Token] ShowExpr
-box = debugIO (\i -> "box " ++ show i) box'
+box = traceIO (\i -> "box " ++ show i) box'
 
 box' = do
   one BoxT
@@ -123,7 +122,7 @@ box' = do
 -- | Variable axiom
 --  s :: Var s
 var :: Parser [Token] ShowExpr
-var = debugIO (\i -> "var " ++ show i) var'
+var = traceIO (\i -> "var " ++ show i) var'
 
 var' = do
   t <- symbol
@@ -134,7 +133,7 @@ var' = do
 -- | Namespaced-variable axiom
 --  n@s :: Var n@s
 nsVar :: Parser [Token] ShowExpr
-nsVar = debugIO (\i -> "nsVar " ++ show i) nsVar'
+nsVar = traceIO (\i -> "nsVar " ++ show i) nsVar'
 
 nsVar' = do
   ns <- symbol
@@ -147,7 +146,7 @@ nsVar' = do
 -- | Lambda function
 --  λ(s:S).S :: Lam s S S
 lamE :: Parser [Token] ShowExpr
-lamE = debugIO (\i -> "lamE " ++ show i) lamE'
+lamE = traceIO (\i -> "lamE " ++ show i) lamE'
 
 lamE' = do
   _ <- one LambdaT
@@ -157,7 +156,7 @@ lamE' = do
 -- | Pi function
 --  π(s:S).S :: Lam s S S
 piE :: Parser [Token] ShowExpr
-piE = debugIO (\i -> "piE " ++ show i) piE'
+piE = traceIO (\i -> "piE " ++ show i) piE'
 
 piE' = do
   _ <- one PiT
@@ -170,7 +169,7 @@ piE' = do
 --  This is an exponential slowdown
 --  S. :: π(_:S).S
 anonPiE :: ShowExpr -> Parser [Token] ShowExpr
-anonPiE τ = debugIO (\i -> "anonPiE " ++ show i) (anonPiE' τ)
+anonPiE τ = traceIO (\i -> "anonPiE " ++ show i) (anonPiE' τ)
 
 anonPiE' τ = do
   -- τ <- appE
