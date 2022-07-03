@@ -36,30 +36,40 @@ traceU :: String -> String -> a -> a
 #ifdef LOGTRACE
 #define LOGDEBUG
 traceU src msg = Control.Logging.traceSL (pack $ brightWhite ++ src ++ reset) (pack msg)
+
 #else
+
 traceU _ _ = id
 #endif
 
 debugM :: String -> String -> IO ()
-debugU :: String -> String -> a -> a
+traceU :: String -> String -> a -> a
 #ifdef LOGDEBUG
 #define LOGINFO
 debugM src msg = Control.Logging.debugS (pack $ blue ++ src ++ reset) (pack msg)
-debugU src msg = unsafeDupablePerformIO . logId debugM src msg
+
+traceU src msg = unsafeDupablePerformIO . logId debugM src msg
+
 #else
+
 debugM _ _ = return ()
-debugU _ _ = id
+
+traceU _ _ = id
 #endif
 
 infoM :: String -> String -> IO ()
 infoU :: String -> String -> a -> a
 #ifdef LOGINFO
 #define LOGWARN
-infoM src msg  = Control.Logging.logS (pack $ green ++ src ++ reset) (pack msg)
-infoU src msg  = unsafeDupablePerformIO . logId infoM src msg
+infoM src msg = Control.Logging.logS (pack $ green ++ src ++ reset) (pack msg)
+
+infoU src msg = unsafeDupablePerformIO . logId infoM src msg
+
 #else
-infoM _ _  = return ()
-infoU _ _  = id
+
+infoM _ _ = return ()
+
+infoU _ _ = id
 #endif
 
 warnM :: String -> String -> IO ()

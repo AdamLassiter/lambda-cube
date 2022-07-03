@@ -9,12 +9,12 @@ import L3.Core.Show
 import L3.Log
 import L3.Util
 
-debug = debugU "Core::DeBruijn"
+trace = traceU "Core::DeBruijn"
 
 -- | Given an 'free' index, convert an expression in Right names into Left indexes.
 --  This uses DeBruijn indicies.
 index :: (Eq a, Enum a, Show a) => Int -> Expr (Either Int a) -> Expr (Either Int a)
-index i e = debug ("index " ++ show i ++ ", " ++ show e) (index' i e)
+index i e = trace ("index " ++ show i ++ ", " ++ show e) (index' i e)
 
 index' _ (Var v) = Var v
 index' i (Lam v ta b) = Lam (Left i) (index i ta) (index (i + 1) $ substitute v (Var $ Left i) b)
@@ -27,6 +27,6 @@ index' _ Box = Box
 --  This converts any expression to its DeBruijn indexed form, leaving global
 --  names untouched.
 index0 :: (Eq a, Enum a, Show a) => Expr a -> Expr (Either Int a)
-index0 e = debug ("index0 " ++ show e) (index0' e)
+index0 e = trace ("index0 " ++ show e) (index0' e)
 
 index0' e = index 0 (fmap Right e)

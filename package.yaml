@@ -31,7 +31,7 @@ dependencies:
 library:
   source-dirs:           src
   cpp-options:
-  - -DLOGINFO
+  - -DLOGDEBUG
   dependencies:
   - base
   - text

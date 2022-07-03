@@ -8,13 +8,13 @@ import L3.Core.Show
 import L3.Log
 import L3.Util
 
-debug = debugU "Core::Normal"
+trace = traceU "Core::Normal"
 
 -- | Is a name 'free' in an expression
 --  In this context, free v a & v /= v'  =>  substitute v v' a /= a
 --  i.e. would a substitution be performed
 free :: (Eq a, Show a) => a -> Expr a -> Bool
-free v e = debug ("free " ++ show v ++ ", " ++ show e) (free' v e)
+free v e = trace ("free " ++ show v ++ ", " ++ show e) (free' v e)
 
 free' v (Var v') = v == v'
 free' v (Lam v' ta _) | v == v' = free v ta
@@ -25,7 +25,7 @@ free' v (App f a) = free v f || free v a
 free' _ _ = False
 
 fresh :: (Eq a, Enum a, Show a) => a -> Expr a -> a
-fresh v e = debug ("fresh " ++ show v ++ ", " ++ show e) (fresh' v e)
+fresh v e = trace ("fresh " ++ show v ++ ", " ++ show e) (fresh' v e)
 
 fresh' from expr = v
   where
@@ -36,7 +36,7 @@ fresh' from expr = v
 -- | Substitute all occurrences of a variable v with an expression e.
 --  substitute v e E  ~  E[v := e]
 substitute :: (Eq a, Enum a, Show a) => a -> Expr a -> Expr a -> Expr a
-substitute v e e' = debug ("substitute " ++ show v ++ ", " ++ show e ++ ", " ++ show e') (substitute' v e e')
+substitute v e e' = trace ("substitute " ++ show v ++ ", " ++ show e ++ ", " ++ show e') (substitute' v e e')
 
 substitute' v e (Var v') | v == v' = e
 substitute' v e (Lam v' ta b) | v == v' = Lam v' (substitute v e ta) b
@@ -54,7 +54,7 @@ substitute' _ _ e' = e'
 
 -- | Given an expression, reduce it one step towards its normal form.
 normalize :: (Eq a, Enum a, Show a) => Expr a -> Expr a
-normalize e = debug ("normalize " ++ show e) (normalize' e)
+normalize e = trace ("normalize " ++ show e) (normalize' e)
 
 normalize' (Lam v ta b) = case normalize b of
   App vb (Var v') | v == v' && not (free v vb) -> vb -- ε-reduction
@@ -67,7 +67,7 @@ normalize' c = c
 
 -- | Given an expression, totally reduce it over all steps towards normal form.
 normalize0 :: (Eq a, Enum a, Show a) => Expr a -> Expr a
-normalize0 e = debug ("normalize0 " ++ show e) (normalize0' e)
+normalize0 e = trace ("normalize0 " ++ show e) (normalize0' e)
 
 normalize0' e = case normalize e of
   e' | e == e' -> e

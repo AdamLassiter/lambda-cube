@@ -27,19 +27,19 @@ import L3.Util
 import System.FilePath
 import Prelude hiding (FilePath, error)
 
-debug = debugU "Loader"
+trace = traceU "Loader"
 
 debugIO = debugM "Loader"
 
 -- | Get the last directory name from a path
 takeDirectoryName :: FilePath -> String
-takeDirectoryName p = debug ("takeDirectoryName " ++ show p) (takeDirectoryName' p)
+takeDirectoryName p = trace ("takeDirectoryName " ++ show p) (takeDirectoryName' p)
 
 takeDirectoryName' = last . splitPath . takeDirectory
 
 -- | Format a file into either non-namespaced `file` or namespaced `dir`@`file`
 takeNamespacedFileName :: FilePath -> String
-takeNamespacedFileName f = debug ("takeNamespacedFileName " ++ show f) (takeNamespacedFileName' f)
+takeNamespacedFileName f = trace ("takeNamespacedFileName " ++ show f) (takeNamespacedFileName' f)
 
 takeNamespacedFileName' f = case (splitFileName . dropExtension) f of
   ("./", file) -> file
@@ -53,13 +53,13 @@ embeddedPreludeIO' = filter ((== ".l3") . takeExtension . fst) <$> getDir "prelu
 
 -- | Embed and retrieve all '.l3' files in the prelude directory
 embeddedPrelude :: [(FilePath, ByteString)]
-embeddedPrelude = debug "embeddedPrelude" embeddedPrelude'
+embeddedPrelude = trace "embeddedPrelude" embeddedPrelude'
 
 embeddedPrelude' = filter ((== ".l3") . takeExtension . fst) $(embedDir "prelude")
 
 -- | Lex and parse the prelude into a type-context and expression-context
 loadPrelude :: [(FilePath, ByteString)] -> (ShowCtx, ShowCtx)
-loadPrelude embedded = debug ("loadPrelude " ++ show embedded) (loadPrelude' embedded)
+loadPrelude embedded = trace ("loadPrelude " ++ show embedded) (loadPrelude' embedded)
 
 loadPrelude' embedded = (Ctx τ, Ctx ε)
   where
@@ -71,7 +71,7 @@ loadPrelude' embedded = (Ctx τ, Ctx ε)
 -- | Substitute all occurrences of a variable v with an expression e, but only where
 -- v appears in a type.
 tauSubst :: (Eq a, Enum a, Show a) => a -> Expr a -> Expr a -> Expr a
-tauSubst v e e' = debug ("tauSubst " ++ show v ++ ", " ++ show e ++ ", " ++ show e') (tauSubst' v e e')
+tauSubst v e e' = trace ("tauSubst " ++ show v ++ ", " ++ show e ++ ", " ++ show e') (tauSubst' v e e')
 
 tauSubst' v e (Lam v' ta b) | v == v' = Lam v' (substitute v e ta) b
 tauSubst' v e (Lam v' ta b) = Lam v' (substitute v e ta) (tauSubst v e b)
@@ -83,7 +83,7 @@ tauSubst' _ _ e' = e'
 -- | Partially evaluate the types of an expression through lambda-application substitutions.
 -- This should remain correct, but allows for binding types and evaluating by-reference.
 tauNorm :: (Eq a, Enum a, Show a) => Expr a -> Expr a
-tauNorm e = debug ("tauNorm " ++ show e) (tauNorm' e)
+tauNorm e = trace ("tauNorm " ++ show e) (tauNorm' e)
 
 tauNorm' (App f a) = case f of
   Lam v ta b -> App (Lam v ta (tauNorm $ tauSubst v (tauNorm a) b)) (tauNorm a)
@@ -95,7 +95,7 @@ tauNorm' e = e
 -- | Fold the prelude context through lambda application into a type-context and expression-context-mapper.
 --  That is, `let a = x in b` <=> `(λ a -> b) x`
 wrapPrelude :: [(FilePath, ByteString)] -> (ShowCtx, ShowExpr -> ShowExpr)
-wrapPrelude embedded = debug ("wrapPrelude " ++ show embedded) (wrapPrelude' embedded)
+wrapPrelude embedded = trace ("wrapPrelude " ++ show embedded) (wrapPrelude' embedded)
 
 wrapPrelude' embedded = (Ctx τ, tauNorm . (foldl (\f (n, e) x -> Lam n (throwL $ inferType0 e) (f x) `App` e) id ε))
   where

@@ -22,14 +22,14 @@ import L3.Parse.TokenParsec
 import L3.Util
 import Prelude hiding (pi)
 
-debug = debugU "Parse::ExprParser"
+trace = traceU "Parse::ExprParser"
 
-debugIO msgFn parser = Parser $ \i -> debug (msgFn i) (unParser parser i)
+debugIO msgFn parser = Parser $ \i -> trace (msgFn i) (unParser parser i)
 
 -- | Parse a string to a named expression (using string labels)
 --  Strip comments here, as they apply inside any context and are difficult to deal with otherwise
 parseExpr :: [Token] -> Result ShowExpr
-parseExpr tks = debug ("parseExpr " ++ show tks) (parseExpr' tks)
+parseExpr tks = trace ("parseExpr " ++ show tks) (parseExpr' tks)
 
 parseExpr' tks = es
   where

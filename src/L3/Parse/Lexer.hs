@@ -8,7 +8,7 @@ import L3.Parse.Parser
 import L3.Parse.StringParsec
 import L3.Util
 
-debug = debugU "Parse::Lexer"
+trace = traceU "Parse::Lexer"
 
 -- | Lex strings into tokens, canonical form for the syntax definitition
 data Token
@@ -32,35 +32,35 @@ data Token
 -- | A list of Alternatives that may be used to lex a string into tokens.
 alternatives :: [Parser String Token]
 alternatives =
-  [ reserved "(" >> debug "open-paren" (pure OpenParen),
-    reserved ")" >> debug "close-paren" (pure CloseParen),
-    reserved "[" >> debug "open-paren" (pure OpenSquare),
-    reserved "]" >> debug "close-paren" (pure CloseSquare),
-    reserved "*" >> debug "star" (pure StarT),
-    reserved "⊤" >> debug "star" (pure StarT),
-    reserved "#" >> debug "box" (pure BoxT),
-    reserved "⊥" >> debug "box" (pure BoxT),
-    reserved ":" >> debug "has-type" (pure HasType),
-    reserved "∈" >> debug "has-type" (pure HasType),
-    reserved "." >> debug "arrow" (pure Arrow),
-    reserved "→" >> debug "arrow" (pure Arrow),
-    reserved "->" >> debug "arrow" (pure Arrow),
-    reserved "lambda" >> debug "lambda" (pure LambdaT),
-    reserved "∃" >> debug "lambda" (pure LambdaT),
-    reserved "λ" >> debug "lambda" (pure LambdaT),
-    reserved "forall" >> debug "pi" (pure PiT),
-    reserved "∀" >> debug "pi" (pure PiT),
-    reserved "π" >> debug "pi" (pure PiT),
-    reserved "@" >> debug "at" (pure At),
-    reserved "--" >> debug "comment" comment,
-    reserved "\n" >> debug "end-of-line" (pure EOL),
+  [ reserved "(" >> trace "open-paren" (pure OpenParen),
+    reserved ")" >> trace "close-paren" (pure CloseParen),
+    reserved "[" >> trace "open-paren" (pure OpenSquare),
+    reserved "]" >> trace "close-paren" (pure CloseSquare),
+    reserved "*" >> trace "star" (pure StarT),
+    reserved "⊤" >> trace "star" (pure StarT),
+    reserved "#" >> trace "box" (pure BoxT),
+    reserved "⊥" >> trace "box" (pure BoxT),
+    reserved ":" >> trace "has-type" (pure HasType),
+    reserved "∈" >> trace "has-type" (pure HasType),
+    reserved "." >> trace "arrow" (pure Arrow),
+    reserved "→" >> trace "arrow" (pure Arrow),
+    reserved "->" >> trace "arrow" (pure Arrow),
+    reserved "lambda" >> trace "lambda" (pure LambdaT),
+    reserved "∃" >> trace "lambda" (pure LambdaT),
+    reserved "λ" >> trace "lambda" (pure LambdaT),
+    reserved "forall" >> trace "pi" (pure PiT),
+    reserved "∀" >> trace "pi" (pure PiT),
+    reserved "π" >> trace "pi" (pure PiT),
+    reserved "@" >> trace "at" (pure At),
+    reserved "--" >> trace "comment" comment,
+    reserved "\n" >> trace "end-of-line" (pure EOL),
     Number <$> number,
     Symbol <$> word
   ]
 
 -- | Parse a comment, taking characters until an End-Of-Line
 comment :: Parser String Token
-comment = debug "comment" $ do
+comment = trace "comment" $ do
   cs <- many $ satisfy (/= '\n')
   pure $ Comment cs
 
