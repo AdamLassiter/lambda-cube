@@ -1,5 +1,5 @@
--- embedDir for prelude
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE CPP #-}
 
 -- | Load and parse '.l3' files
 module L3.Loader.Loader
@@ -97,6 +97,12 @@ tauNorm' e = e
 wrapPrelude :: [(FilePath, ByteString)] -> (ShowCtx, ShowExpr -> ShowExpr)
 wrapPrelude embedded = trace ("wrapPrelude " ++ show embedded) (wrapPrelude' embedded)
 
+#ifdef NOTAUSUB
+wrapPrelude' embedded = (Ctx τ, foldl (\f (n, e) x -> Lam n (throwL $ inferType0 e) (f x) `App` e) id ε)
+  where
+    (Ctx τ, Ctx ε) = loadPrelude embedded
+#else
 wrapPrelude' embedded = (Ctx τ, tauNorm . (foldl (\f (n, e) x -> Lam n (throwL $ inferType0 e) (f x) `App` e) id ε))
   where
     (Ctx τ, Ctx ε) = loadPrelude embedded
+#endif

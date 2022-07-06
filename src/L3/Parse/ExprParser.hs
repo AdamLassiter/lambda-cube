@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
+{-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -Wno-unused-do-bind #-}
 
 -- | Parser from Tokens into Expressions
@@ -42,10 +43,16 @@ parseExpr' tks = es
 sugarE :: Parser [Token] ShowExpr
 sugarE = traceIO (\i -> "sugarE " ++ show i) sugarE'
 
+#ifdef NOANONPI
+sugarE' = do
+  ex <- appE
+  pure $ ex
+#else
 sugarE' = do
   ex <- appE
   anonPi <- optional (anonPiE ex)
-  pure $ fromMaybe ex anonPi
+  pure $ fromMaybe ex $ anonPi
+#endif
 
 -- | Applicative expression, unknown and unbounded length
 --  A :: F [app F ..]
@@ -172,6 +179,5 @@ anonPiE :: ShowExpr -> Parser [Token] ShowExpr
 anonPiE τ = traceIO (\i -> "anonPiE " ++ show i) (anonPiE' τ)
 
 anonPiE' τ = do
-  -- τ <- appE
   _ <- one Arrow
   Pi (Name "_") τ <$> sugarE

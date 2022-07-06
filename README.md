@@ -26,6 +26,34 @@ Some thoughts on Calculus of Constructions...
 λ>> ...
 ```
 
+## Feature Flags
+
+### Syntax
+
+The following flags can be used to disable certain language features:
+
+| Flag     | Description                                 | Default              | With Flag                                                          |
+|----------|---------------------------------------------|----------------------|--------------------------------------------------------------------|
+| NOANONPI | Require explicit binds for Pi expressions   | `O.τ.I`              | `O.π(_:τ).I`                                                       |
+| NOTAUSUB | Disable stdlib types Tau type substitution  | `λ(x:Null).isNull x` | `λ(x:λ(Null:*).λ(null:Null).Null).λ(Null:*).λ(null:Null).isNull x` |
+| NOINFER  | Require explicit types for binds *          | `(λ(x:?).E x) a`     | `(λ(x:A).E x) a`                                                   |
+
+_* Not implemented_
+
+### Logging
+
+The following flags can be used to remove logging calls at compile-time:
+
+| Flag     | Description                                     |
+|----------|-------------------------------------------------|
+| LOGTRACE | Enable logging at TRACE level, implies LOGDEBUG |
+| LOGDEBUG | Enable logging at DEBUG level, implies LOGINFO  |
+| LOGINFO  | Enable logging at INFO level, implies LOGWARN   |
+| LOGWARN  | Enable logging at WARN level                    |
+
+In general, it is preferred to use `setLogLevel` or `set[Trace|Debug|Info|Warn|Error]SourceRegex`.
+Nevertheless, there may be certain scenarios where either logs will never be desired, or there is some performance impact.
+
 
 ## Performance
 
