@@ -14,8 +14,8 @@ trace = traceU "Parse::Lexer"
 data Token
   = OpenParen
   | CloseParen
-  | OpenSquare
-  | CloseSquare
+  | OpenBracket
+  | CloseBracket
   | HasType
   | At
   | StarT
@@ -34,8 +34,8 @@ alternatives :: [Parser String Token]
 alternatives =
   [ reserved "(" >> trace "open-paren" (pure OpenParen),
     reserved ")" >> trace "close-paren" (pure CloseParen),
-    reserved "[" >> trace "open-paren" (pure OpenSquare),
-    reserved "]" >> trace "close-paren" (pure CloseSquare),
+    reserved "[" >> trace "open-bracket" (pure OpenBracket),
+    reserved "]" >> trace "close-bracket" (pure CloseBracket),
     reserved "*" >> trace "star" (pure StarT),
     reserved "⊤" >> trace "star" (pure StarT),
     reserved "#" >> trace "box" (pure BoxT),

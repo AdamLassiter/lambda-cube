@@ -161,7 +161,7 @@ lamE' = do
   Lam i τ <$> sugarE
 
 -- | Pi function
---  π(s:S).S :: Lam s S S
+--  π(s:S).S :: Pi s S S
 piE :: Parser [Token] ShowExpr
 piE = traceIO (\i -> "piE " ++ show i) piE'
 
@@ -174,7 +174,7 @@ piE' = do
 --  Note the implicit expression argument, as otherwise sugar = (app >> arrow >> sugar) <|> app
 --  If this were not the case, all expressions are parsed as anonymous pis and will fail at the final arrow
 --  This is an exponential slowdown
---  S. :: π(_:S).S
+--  S :: π(_:S).S
 anonPiE :: ShowExpr -> Parser [Token] ShowExpr
 anonPiE τ = traceIO (\i -> "anonPiE " ++ show i) (anonPiE' τ)
 

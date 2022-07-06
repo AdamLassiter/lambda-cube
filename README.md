@@ -32,11 +32,14 @@ Some thoughts on Calculus of Constructions...
 
 The following flags can be used to disable certain language features:
 
-| Flag     | Description                                 | Default              | With Flag                                                          |
-|----------|---------------------------------------------|----------------------|--------------------------------------------------------------------|
-| NOANONPI | Require explicit binds for Pi expressions   | `O.τ.I`              | `O.π(_:τ).I`                                                       |
-| NOTAUSUB | Disable stdlib types Tau type substitution  | `λ(x:Null).isNull x` | `λ(x:λ(Null:*).λ(null:Null).Null).λ(Null:*).λ(null:Null).isNull x` |
-| NOINFER  | Require explicit types for binds *          | `(λ(x:?).E x) a`     | `(λ(x:A).E x) a`                                                   |
+| Flag        | Description                                        | Default              | With Flag                                                          |
+|-------------|----------------------------------------------------|----------------------|--------------------------------------------------------------------|
+| NOANONPI    | Require explicit binds for Pi expressions          | `O.τ.I`              | `O.π(_:τ).I`                                                       |
+| NOTAUSUB    | Disable stdlib types Tau type substitution         | `λ(x:Null).isNull x` | `λ(x:λ(Null:*).λ(null:Null).Null).λ(Null:*).λ(null:Null).isNull x` |
+| BRACKETTYPE | Enforce brackets uniquely in type-signatures *     | `λ[x:*].x`           | `λ(x:*).x`                                                         |
+| SETNOTATION | Enforce set-theory notation *                      | `π(τ:#).λ[x:*].x`    | `∀(τ∈⊥)->∃(x∈T)->x`                                                |
+| HSNOTATION  | Enforce haskell-like notation, implies SETNOTATION | `π(τ:#).λ[x:*].x`    | `forall(τ:#)->lambda(x:*)->x`                                      |
+| NOINFER     | Require explicit types for binds *                 | `(λ(x:?).E x) a`     | `(λ(x:A).E x) a`                                                   |
 
 _* Not implemented_
 

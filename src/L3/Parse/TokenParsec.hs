@@ -5,7 +5,7 @@ module L3.Parse.TokenParsec where
 
 import Control.Applicative (Alternative ((<|>)))
 import L3.Parse.Lexer
-  ( Token (CloseParen, CloseSquare, Number, OpenParen, OpenSquare, Symbol),
+  ( Token (CloseParen, CloseBracket, Number, OpenParen, OpenBracket, Symbol),
   )
 import L3.Parse.Parsec
 import L3.Parse.Parser
@@ -47,17 +47,17 @@ symbol = satisfy isSymbol
     isSymbol _ = False
 
 parens :: Parser [Token] a -> Parser [Token] a
-parens m = (roundParens m) <|> (squareParens m)
+parens m = parentheses m <|> brackets m
 
-squareParens :: Parser [Token] a -> Parser [Token] a
-squareParens m = do
-  _ <- reserved OpenSquare
+brackets :: Parser [Token] a -> Parser [Token] a
+brackets m = do
+  _ <- reserved OpenBracket
   n <- m
-  _ <- reserved CloseSquare
+  _ <- reserved CloseBracket
   return n
 
-roundParens :: Parser [Token] a -> Parser [Token] a
-roundParens m = do
+parentheses :: Parser [Token] a -> Parser [Token] a
+parentheses m = do
   _ <- reserved OpenParen
   n <- m
   _ <- reserved CloseParen
