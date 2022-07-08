@@ -4,24 +4,24 @@
 --
 -- in  if True then One else Zero
 
-(   lambda (Bool : *)
-->  lambda (True  : Bool)
-->  lambda (False : Bool)
-->  lambda (if : Bool -> forall (r : *) -> r -> r -> r)
-->  lambda (Int  : *)
-->  lambda (Zero : Int)
-->  lambda (One  : Int)
+(   λ (Bool : *)
+->  λ (True  : Bool)
+->  λ (False : Bool)
+->  λ (if : Bool -> π (r : *) -> r -> r -> r)
+->  λ (Int  : *)
+->  λ (Zero : Int)
+->  λ (One  : Int)
 ->  if True Int One Zero
 )
 
 -- Bool
-(forall (r : *) -> r -> r -> r)
+(π (r : *) -> r -> r -> r)
 
 -- True
-(lambda (r : *) -> lambda (x : r) -> lambda (_ : r) -> x)
+(λ (r : *) -> λ (x : r) -> λ (_ : r) -> x)
 
 -- False
-(lambda (r : *) -> lambda (_ : r) -> lambda (x : r) -> x)
+(λ (r : *) -> λ (_ : r) -> λ (x : r) -> x)
 
 -- if
-(lambda (b : forall (r : *) -> r -> r -> r) -> b)
+(λ (b : π (r : *) -> r -> r -> r) -> b)

@@ -1,24 +1,24 @@
 -- mapid1.mt
 
-(    lambda (List : * -> *)
-->   lambda (map  : forall (a : *) -> forall (b : *) -> (a -> b) -> List a -> List b)
-->   lambda (id   : forall (a : *) -> a -> a)
-    ->   lambda (a : *) -> map a a (id a)
+(    λ (List : * -> *)
+->   λ (map  : π (a : *) -> π (b : *) -> (a -> b) -> List a -> List b)
+->   λ (id   : π (a : *) -> a -> a)
+    ->   λ (a : *) -> map a a (id a)
 )
 
 -- List
-(lambda (a : *) -> forall (x : *) -> (a -> x -> x) -> x -> x)
+(λ (a : *) -> π (x : *) -> (a -> x -> x) -> x -> x)
 
 -- map
-(   lambda (a : *)
-->  lambda (b : *)
-->  lambda (f : a -> b)
-->  lambda (l : forall (x : *) -> (a -> x -> x) -> x -> x)
-->  lambda (x : *)
-->  lambda (Cons : b -> x -> x)
-->  lambda (Nil: x)
-->  l x (lambda (va : a) -> lambda (vx : x) -> Cons (f va) vx) Nil
+(   λ (a : *)
+->  λ (b : *)
+->  λ (f : a -> b)
+->  λ (l : π (x : *) -> (a -> x -> x) -> x -> x)
+->  λ (x : *)
+->  λ (Cons : b -> x -> x)
+->  λ (Nil: x)
+->  l x (λ (va : a) -> λ (vx : x) -> Cons (f va) vx) Nil
 )
 
 -- id
-(lambda (a : *) -> lambda (va : a) -> va)
+(λ (a : *) -> λ (va : a) -> va)
