@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 -- | Lexer from Strings into Tokens
 module L3.Parse.Lexer (Token (..), alternatives, comment, lexSrc, grammar) where
 
@@ -23,6 +25,7 @@ data Token
   | Arrow
   | LambdaT
   | PiT
+  | AutoT
   | Symbol String
   | Number Int
   | Comment String
@@ -37,20 +40,20 @@ alternatives =
     reserved "[" >> trace "open-bracket" (pure OpenBracket),
     reserved "]" >> trace "close-bracket" (pure CloseBracket),
     reserved "*" >> trace "star" (pure StarT),
-    reserved "⊤" >> trace "star" (pure StarT),
     reserved "#" >> trace "box" (pure BoxT),
-    reserved "⊥" >> trace "box" (pure BoxT),
     reserved ":" >> trace "has-type" (pure HasType),
-    reserved "∈" >> trace "has-type" (pure HasType),
     reserved "." >> trace "arrow" (pure Arrow),
     reserved "→" >> trace "arrow" (pure Arrow),
     reserved "->" >> trace "arrow" (pure Arrow),
-    reserved "lambda" >> trace "lambda" (pure LambdaT),
-    reserved "∃" >> trace "lambda" (pure LambdaT),
     reserved "λ" >> trace "lambda" (pure LambdaT),
-    reserved "forall" >> trace "pi" (pure PiT),
-    reserved "∀" >> trace "pi" (pure PiT),
     reserved "π" >> trace "pi" (pure PiT),
+#ifdef SETNOTATION
+    reserved "⊤" >> trace "star" (pure StarT),
+    reserved "⊥" >> trace "box" (pure BoxT),
+    reserved "∈" >> trace "has-type" (pure HasType),
+    reserved "∃" >> trace "lambda" (pure LambdaT),
+    reserved "∀" >> trace "pi" (pure PiT),
+#endif
     reserved "@" >> trace "at" (pure At),
     reserved "--" >> trace "comment" comment,
     reserved "\n" >> trace "end-of-line" (pure EOL),

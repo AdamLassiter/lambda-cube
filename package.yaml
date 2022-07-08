@@ -32,6 +32,9 @@ library:
   source-dirs:           src
   cpp-options:
   - -DLOGDEBUG
+  - -DANONYMOUSPI
+  - -DTAUSUBSTITUTE
+  - -DSETNOTATION
   dependencies:
   - base
   - text

@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE CPP #-}
-{-# OPTIONS_GHC -Wno-unused-do-bind #-}
 
 -- | Parser from Tokens into Expressions
 module L3.Parse.ExprParser (parseExpr) where
@@ -39,19 +38,17 @@ parseExpr' tks = es
     ann _ = False
 
 -- | Sugared expression, injection point for additional syntax niceties
---  S :: [π(_:]A[)].S  | A
+--  S :: A | [π(_:A)].S
 sugarE :: Parser [Token] ShowExpr
 sugarE = traceIO (\i -> "sugarE " ++ show i) sugarE'
 
-#ifdef NOANONPI
-sugarE' = do
-  ex <- appE
-  pure $ ex
-#else
+#ifdef ANONYMOUSPI
 sugarE' = do
   ex <- appE
   anonPi <- optional (anonPiE ex)
   pure $ fromMaybe ex $ anonPi
+#else
+sugarE' = do appE
 #endif
 
 -- | Applicative expression, unknown and unbounded length
@@ -68,11 +65,19 @@ appE' = do
 funE :: Parser [Token] ShowExpr
 funE = traceIO (\i -> "funE " ++ show i) funE'
 
+#ifdef STRICTPARENS
+funE' =
+  lamE
+    <|> piE
+    <|> termE
+    <|> braces sugarE
+#else
 funE' =
   lamE
     <|> piE
     <|> termE
     <|> parens sugarE
+#endif
 
 -- | Terminal expression, bounded in length and with no children
 --  T :: * | # | n@v | v
@@ -90,10 +95,17 @@ termE' =
 arrE :: Parser [Token] (Name, ShowExpr)
 arrE = traceIO (\i -> "arrE " ++ show i) arrE'
 
+#ifdef STRICTPARENS
+arrE' = do
+  (i, τ) <- brackets typE
+  _ <- one Arrow
+  pure (i, τ)
+#else 
 arrE' = do
   (i, τ) <- parens typE
   _ <- one Arrow
   pure (i, τ)
+#endif
 
 -- | Type expression, a symbol has type expr
 --  τ :: s:S
