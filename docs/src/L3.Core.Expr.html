@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- derive Traversable, Functor, Foldable</span><span>
+</span><span id="line-2"></span><span class="hs-pragma">{-# LANGUAGE DeriveTraversable #-}</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">L3.Core.Expr</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-5"></span><span>
+</span><span id="line-6"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Char</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">isDigit</span></span><span class="hs-special">)</span><span>
+</span><span id="line-7"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.List</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">intercalate</span></span><span class="hs-special">)</span><span>
+</span><span id="line-8"></span><span>
+</span><span id="line-9"></span><span class="hs-comment">-- | An expression in the calculus of constructions.</span><span>
+</span><span id="line-10"></span><span class="hs-keyword">data</span><span> </span><span id="Expr"><span class="annot"><a href="L3.Core.Expr.html#Expr"><span class="hs-identifier hs-var">Expr</span></a></span></span><span> </span><span id="local-6989586621679108594"><span class="annot"><a href="#local-6989586621679108594"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-11"></span><span>  </span><span class="hs-glyph">=</span><span> </span><span id="Star"><span class="annot"><a href="L3.Core.Expr.html#Star"><span class="hs-identifier hs-var">Star</span></a></span></span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="Box"><span class="annot"><a href="L3.Core.Expr.html#Box"><span class="hs-identifier hs-var">Box</span></a></span></span><span>
+</span><span id="line-13"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="Var"><span class="annot"><a href="L3.Core.Expr.html#Var"><span class="hs-identifier hs-var">Var</span></a></span></span><span> </span><span class="annot"><a href="#local-6989586621679108594"><span class="hs-identifier hs-type">a</span></a></span><span>
+</span><span id="line-14"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="Lam"><span class="annot"><a href="L3.Core.Expr.html#Lam"><span class="hs-identifier hs-var">Lam</span></a></span></span><span> </span><span class="annot"><a href="#local-6989586621679108594"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.Expr.html#Expr"><span class="hs-identifier hs-type">Expr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679108594"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.Expr.html#Expr"><span class="hs-identifier hs-type">Expr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679108594"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-15"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="Pi"><span class="annot"><a href="L3.Core.Expr.html#Pi"><span class="hs-identifier hs-var">Pi</span></a></span></span><span> </span><span class="annot"><a href="#local-6989586621679108594"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.Expr.html#Expr"><span class="hs-identifier hs-type">Expr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679108594"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.Expr.html#Expr"><span class="hs-identifier hs-type">Expr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679108594"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-glyph">|</span><span> </span><span id="App"><span class="annot"><a href="L3.Core.Expr.html#App"><span class="hs-identifier hs-var">App</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.Expr.html#Expr"><span class="hs-identifier hs-type">Expr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679108594"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="L3.Core.Expr.html#Expr"><span class="hs-identifier hs-type">Expr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679108594"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-17"></span><span>  </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679108584"><span id="local-6989586621679108586"><span class="annot"><span class="annottext">Expr a -&gt; Expr a -&gt; Bool
+(Expr a -&gt; Expr a -&gt; Bool)
+-&gt; (Expr a -&gt; Expr a -&gt; Bool) -&gt; Eq (Expr a)
+forall a. Eq a =&gt; Expr a -&gt; Expr a -&gt; Bool
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+/= :: Expr a -&gt; Expr a -&gt; Bool
+$c/= :: forall a. Eq a =&gt; Expr a -&gt; Expr a -&gt; Bool
+== :: Expr a -&gt; Expr a -&gt; Bool
+$c== :: forall a. Eq a =&gt; Expr a -&gt; Expr a -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679108573"><span id="local-6989586621679108575"><span id="local-6989586621679108577"><span id="local-6989586621679108579"><span class="annot"><span class="annottext">Functor Expr
+Foldable Expr
+Functor Expr
+-&gt; Foldable Expr
+-&gt; (forall (f :: * -&gt; *) a b.
+    Applicative f =&gt;
+    (a -&gt; f b) -&gt; Expr a -&gt; f (Expr b))
+-&gt; (forall (f :: * -&gt; *) a.
+    Applicative f =&gt;
+    Expr (f a) -&gt; f (Expr a))
+-&gt; (forall (m :: * -&gt; *) a b.
+    Monad m =&gt;
+    (a -&gt; m b) -&gt; Expr a -&gt; m (Expr b))
+-&gt; (forall (m :: * -&gt; *) a. Monad m =&gt; Expr (m a) -&gt; m (Expr a))
+-&gt; Traversable Expr
+(a -&gt; f b) -&gt; Expr a -&gt; f (Expr b)
+forall (t :: * -&gt; *).
+Functor t
+-&gt; Foldable t
+-&gt; (forall (f :: * -&gt; *) a b.
+    Applicative f =&gt;
+    (a -&gt; f b) -&gt; t a -&gt; f (t b))
+-&gt; (forall (f :: * -&gt; *) a. Applicative f =&gt; t (f a) -&gt; f (t a))
+-&gt; (forall (m :: * -&gt; *) a b.
+    Monad m =&gt;
+    (a -&gt; m b) -&gt; t a -&gt; m (t b))
+-&gt; (forall (m :: * -&gt; *) a. Monad m =&gt; t (m a) -&gt; m (t a))
+-&gt; Traversable t
+forall (m :: * -&gt; *) a. Monad m =&gt; Expr (m a) -&gt; m (Expr a)
+forall (f :: * -&gt; *) a. Applicative f =&gt; Expr (f a) -&gt; f (Expr a)
+forall (m :: * -&gt; *) a b.
+Monad m =&gt;
+(a -&gt; m b) -&gt; Expr a -&gt; m (Expr b)
+forall (f :: * -&gt; *) a b.
+Applicative f =&gt;
+(a -&gt; f b) -&gt; Expr a -&gt; f (Expr b)
+sequence :: Expr (m a) -&gt; m (Expr a)
+$csequence :: forall (m :: * -&gt; *) a. Monad m =&gt; Expr (m a) -&gt; m (Expr a)
+mapM :: (a -&gt; m b) -&gt; Expr a -&gt; m (Expr b)
+$cmapM :: forall (m :: * -&gt; *) a b.
+Monad m =&gt;
+(a -&gt; m b) -&gt; Expr a -&gt; m (Expr b)
+sequenceA :: Expr (f a) -&gt; f (Expr a)
+$csequenceA :: forall (f :: * -&gt; *) a. Applicative f =&gt; Expr (f a) -&gt; f (Expr a)
+traverse :: (a -&gt; f b) -&gt; Expr a -&gt; f (Expr b)
+$ctraverse :: forall (f :: * -&gt; *) a b.
+Applicative f =&gt;
+(a -&gt; f b) -&gt; Expr a -&gt; f (Expr b)
+$cp2Traversable :: Foldable Expr
+$cp1Traversable :: Functor Expr
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Traversable</span></span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679108568"><span id="local-6989586621679108570"><span class="annot"><span class="annottext">a -&gt; Expr b -&gt; Expr a
+(a -&gt; b) -&gt; Expr a -&gt; Expr b
+(forall a b. (a -&gt; b) -&gt; Expr a -&gt; Expr b)
+-&gt; (forall a b. a -&gt; Expr b -&gt; Expr a) -&gt; Functor Expr
+forall a b. a -&gt; Expr b -&gt; Expr a
+forall a b. (a -&gt; b) -&gt; Expr a -&gt; Expr b
+forall (f :: * -&gt; *).
+(forall a b. (a -&gt; b) -&gt; f a -&gt; f b)
+-&gt; (forall a b. a -&gt; f b -&gt; f a) -&gt; Functor f
+&lt;$ :: a -&gt; Expr b -&gt; Expr a
+$c&lt;$ :: forall a b. a -&gt; Expr b -&gt; Expr a
+fmap :: (a -&gt; b) -&gt; Expr a -&gt; Expr b
+$cfmap :: forall a b. (a -&gt; b) -&gt; Expr a -&gt; Expr b
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Functor</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679108533"><span id="local-6989586621679108535"><span id="local-6989586621679108537"><span id="local-6989586621679108539"><span id="local-6989586621679108541"><span id="local-6989586621679108543"><span id="local-6989586621679108545"><span id="local-6989586621679108547"><span id="local-6989586621679108549"><span id="local-6989586621679108551"><span id="local-6989586621679108553"><span id="local-6989586621679108555"><span id="local-6989586621679108557"><span id="local-6989586621679108559"><span id="local-6989586621679108561"><span id="local-6989586621679108563"><span id="local-6989586621679108565"><span class="annot"><span class="annottext">Expr a -&gt; Bool
+(a -&gt; m) -&gt; Expr a -&gt; m
+(a -&gt; b -&gt; b) -&gt; b -&gt; Expr a -&gt; b
+(forall m. Monoid m =&gt; Expr m -&gt; m)
+-&gt; (forall m a. Monoid m =&gt; (a -&gt; m) -&gt; Expr a -&gt; m)
+-&gt; (forall m a. Monoid m =&gt; (a -&gt; m) -&gt; Expr a -&gt; m)
+-&gt; (forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; Expr a -&gt; b)
+-&gt; (forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; Expr a -&gt; b)
+-&gt; (forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; Expr a -&gt; b)
+-&gt; (forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; Expr a -&gt; b)
+-&gt; (forall a. (a -&gt; a -&gt; a) -&gt; Expr a -&gt; a)
+-&gt; (forall a. (a -&gt; a -&gt; a) -&gt; Expr a -&gt; a)
+-&gt; (forall a. Expr a -&gt; [a])
+-&gt; (forall a. Expr a -&gt; Bool)
+-&gt; (forall a. Expr a -&gt; Int)
+-&gt; (forall a. Eq a =&gt; a -&gt; Expr a -&gt; Bool)
+-&gt; (forall a. Ord a =&gt; Expr a -&gt; a)
+-&gt; (forall a. Ord a =&gt; Expr a -&gt; a)
+-&gt; (forall a. Num a =&gt; Expr a -&gt; a)
+-&gt; (forall a. Num a =&gt; Expr a -&gt; a)
+-&gt; Foldable Expr
+forall a. Eq a =&gt; a -&gt; Expr a -&gt; Bool
+forall a. Num a =&gt; Expr a -&gt; a
+forall a. Ord a =&gt; Expr a -&gt; a
+forall m. Monoid m =&gt; Expr m -&gt; m
+forall a. Expr a -&gt; Bool
+forall a. Expr a -&gt; Int
+forall a. Expr a -&gt; [a]
+forall a. (a -&gt; a -&gt; a) -&gt; Expr a -&gt; a
+forall m a. Monoid m =&gt; (a -&gt; m) -&gt; Expr a -&gt; m
+forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; Expr a -&gt; b
+forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; Expr a -&gt; b
+forall (t :: * -&gt; *).
+(forall m. Monoid m =&gt; t m -&gt; m)
+-&gt; (forall m a. Monoid m =&gt; (a -&gt; m) -&gt; t a -&gt; m)
+-&gt; (forall m a. Monoid m =&gt; (a -&gt; m) -&gt; t a -&gt; m)
+-&gt; (forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b)
+-&gt; (forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b)
+-&gt; (forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b)
+-&gt; (forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b)
+-&gt; (forall a. (a -&gt; a -&gt; a) -&gt; t a -&gt; a)
+-&gt; (forall a. (a -&gt; a -&gt; a) -&gt; t a -&gt; a)
+-&gt; (forall a. t a -&gt; [a])
+-&gt; (forall a. t a -&gt; Bool)
+-&gt; (forall a. t a -&gt; Int)
+-&gt; (forall a. Eq a =&gt; a -&gt; t a -&gt; Bool)
+-&gt; (forall a. Ord a =&gt; t a -&gt; a)
+-&gt; (forall a. Ord a =&gt; t a -&gt; a)
+-&gt; (forall a. Num a =&gt; t a -&gt; a)
+-&gt; (forall a. Num a =&gt; t a -&gt; a)
+-&gt; Foldable t
+product :: Expr a -&gt; a
+$cproduct :: forall a. Num a =&gt; Expr a -&gt; a
+sum :: Expr a -&gt; a
+$csum :: forall a. Num a =&gt; Expr a -&gt; a
+minimum :: Expr a -&gt; a
+$cminimum :: forall a. Ord a =&gt; Expr a -&gt; a
+maximum :: Expr a -&gt; a
+$cmaximum :: forall a. Ord a =&gt; Expr a -&gt; a
+elem :: a -&gt; Expr a -&gt; Bool
+$celem :: forall a. Eq a =&gt; a -&gt; Expr a -&gt; Bool
+length :: Expr a -&gt; Int
+$clength :: forall a. Expr a -&gt; Int
+null :: Expr a -&gt; Bool
+$cnull :: forall a. Expr a -&gt; Bool
+toList :: Expr a -&gt; [a]
+$ctoList :: forall a. Expr a -&gt; [a]
+foldl1 :: (a -&gt; a -&gt; a) -&gt; Expr a -&gt; a
+$cfoldl1 :: forall a. (a -&gt; a -&gt; a) -&gt; Expr a -&gt; a
+foldr1 :: (a -&gt; a -&gt; a) -&gt; Expr a -&gt; a
+$cfoldr1 :: forall a. (a -&gt; a -&gt; a) -&gt; Expr a -&gt; a
+foldl' :: (b -&gt; a -&gt; b) -&gt; b -&gt; Expr a -&gt; b
+$cfoldl' :: forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; Expr a -&gt; b
+foldl :: (b -&gt; a -&gt; b) -&gt; b -&gt; Expr a -&gt; b
+$cfoldl :: forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; Expr a -&gt; b
+foldr' :: (a -&gt; b -&gt; b) -&gt; b -&gt; Expr a -&gt; b
+$cfoldr' :: forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; Expr a -&gt; b
+foldr :: (a -&gt; b -&gt; b) -&gt; b -&gt; Expr a -&gt; b
+$cfoldr :: forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; Expr a -&gt; b
+foldMap' :: (a -&gt; m) -&gt; Expr a -&gt; m
+$cfoldMap' :: forall m a. Monoid m =&gt; (a -&gt; m) -&gt; Expr a -&gt; m
+foldMap :: (a -&gt; m) -&gt; Expr a -&gt; m
+$cfoldMap :: forall m a. Monoid m =&gt; (a -&gt; m) -&gt; Expr a -&gt; m
+fold :: Expr m -&gt; m
+$cfold :: forall m. Monoid m =&gt; Expr m -&gt; m
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Foldable</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-comment">-- | A context is a stack, mapping names to bound values.</span><span>
+</span><span id="line-20"></span><span class="hs-keyword">data</span><span> </span><span id="Context"><span class="annot"><a href="L3.Core.Expr.html#Context"><span class="hs-identifier hs-var">Context</span></a></span></span><span> </span><span id="local-6989586621679108530"><span class="annot"><a href="#local-6989586621679108530"><span class="hs-identifier hs-type">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="Ctx"><span class="annot"><a href="L3.Core.Expr.html#Ctx"><span class="hs-identifier hs-var">Ctx</span></a></span></span><span> </span><span class="hs-special">[</span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679108530"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><a href="L3.Core.Expr.html#Expr"><span class="hs-identifier hs-type">Expr</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679108530"><span class="hs-identifier hs-type">a</span></a></span><span class="hs-special">)</span><span class="hs-special">]</span><span>
+</span><span id="line-21"></span></pre></body></html>

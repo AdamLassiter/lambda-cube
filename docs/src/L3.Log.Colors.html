@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">-- | Safe and unsafe logging functions wrapping Control.Logging</span><span>
+</span><span id="line-2"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">L3.Log.Colors</span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-3"></span><span>
+</span><span id="line-4"></span><span class="annot"><a href="L3.Log.Colors.html#reset"><span class="hs-identifier hs-type">reset</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-5"></span><span id="reset"><span class="annot"><span class="annottext">reset :: String
+</span><a href="L3.Log.Colors.html#reset"><span class="hs-identifier hs-var hs-var">reset</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[0m&quot;</span></span><span>
+</span><span id="line-6"></span><span>
+</span><span id="line-7"></span><span class="annot"><a href="L3.Log.Colors.html#black"><span class="hs-identifier hs-type">black</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-8"></span><span id="black"><span class="annot"><span class="annottext">black :: String
+</span><a href="L3.Log.Colors.html#black"><span class="hs-identifier hs-var hs-var">black</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[30m&quot;</span></span><span>
+</span><span id="line-9"></span><span>
+</span><span id="line-10"></span><span class="annot"><a href="L3.Log.Colors.html#red"><span class="hs-identifier hs-type">red</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-11"></span><span id="red"><span class="annot"><span class="annottext">red :: String
+</span><a href="L3.Log.Colors.html#red"><span class="hs-identifier hs-var hs-var">red</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[31m&quot;</span></span><span>
+</span><span id="line-12"></span><span>
+</span><span id="line-13"></span><span class="annot"><a href="L3.Log.Colors.html#green"><span class="hs-identifier hs-type">green</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-14"></span><span id="green"><span class="annot"><span class="annottext">green :: String
+</span><a href="L3.Log.Colors.html#green"><span class="hs-identifier hs-var hs-var">green</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[32m&quot;</span></span><span>
+</span><span id="line-15"></span><span>
+</span><span id="line-16"></span><span class="annot"><a href="L3.Log.Colors.html#yellow"><span class="hs-identifier hs-type">yellow</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-17"></span><span id="yellow"><span class="annot"><span class="annottext">yellow :: String
+</span><a href="L3.Log.Colors.html#yellow"><span class="hs-identifier hs-var hs-var">yellow</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[33m&quot;</span></span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="annot"><a href="L3.Log.Colors.html#blue"><span class="hs-identifier hs-type">blue</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-20"></span><span id="blue"><span class="annot"><span class="annottext">blue :: String
+</span><a href="L3.Log.Colors.html#blue"><span class="hs-identifier hs-var hs-var">blue</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[34m&quot;</span></span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="annot"><a href="L3.Log.Colors.html#magenta"><span class="hs-identifier hs-type">magenta</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-23"></span><span id="magenta"><span class="annot"><span class="annottext">magenta :: String
+</span><a href="L3.Log.Colors.html#magenta"><span class="hs-identifier hs-var hs-var">magenta</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[35m&quot;</span></span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="annot"><a href="L3.Log.Colors.html#cyan"><span class="hs-identifier hs-type">cyan</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-26"></span><span id="cyan"><span class="annot"><span class="annottext">cyan :: String
+</span><a href="L3.Log.Colors.html#cyan"><span class="hs-identifier hs-var hs-var">cyan</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[36m&quot;</span></span><span>
+</span><span id="line-27"></span><span>
+</span><span id="line-28"></span><span class="annot"><a href="L3.Log.Colors.html#white"><span class="hs-identifier hs-type">white</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-29"></span><span id="white"><span class="annot"><span class="annottext">white :: String
+</span><a href="L3.Log.Colors.html#white"><span class="hs-identifier hs-var hs-var">white</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[37m&quot;</span></span><span>
+</span><span id="line-30"></span><span>
+</span><span id="line-31"></span><span class="annot"><a href="L3.Log.Colors.html#brightBlack"><span class="hs-identifier hs-type">brightBlack</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-32"></span><span id="brightBlack"><span class="annot"><span class="annottext">brightBlack :: String
+</span><a href="L3.Log.Colors.html#brightBlack"><span class="hs-identifier hs-var hs-var">brightBlack</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[30;1m&quot;</span></span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="annot"><a href="L3.Log.Colors.html#brightRed"><span class="hs-identifier hs-type">brightRed</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-35"></span><span id="brightRed"><span class="annot"><span class="annottext">brightRed :: String
+</span><a href="L3.Log.Colors.html#brightRed"><span class="hs-identifier hs-var hs-var">brightRed</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[31;1m&quot;</span></span><span>
+</span><span id="line-36"></span><span>
+</span><span id="line-37"></span><span class="annot"><a href="L3.Log.Colors.html#brightGreen"><span class="hs-identifier hs-type">brightGreen</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-38"></span><span id="brightGreen"><span class="annot"><span class="annottext">brightGreen :: String
+</span><a href="L3.Log.Colors.html#brightGreen"><span class="hs-identifier hs-var hs-var">brightGreen</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[32;1m&quot;</span></span><span>
+</span><span id="line-39"></span><span>
+</span><span id="line-40"></span><span class="annot"><a href="L3.Log.Colors.html#brightYellow"><span class="hs-identifier hs-type">brightYellow</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-41"></span><span id="brightYellow"><span class="annot"><span class="annottext">brightYellow :: String
+</span><a href="L3.Log.Colors.html#brightYellow"><span class="hs-identifier hs-var hs-var">brightYellow</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[33;1m&quot;</span></span><span>
+</span><span id="line-42"></span><span>
+</span><span id="line-43"></span><span class="annot"><a href="L3.Log.Colors.html#brightBlue"><span class="hs-identifier hs-type">brightBlue</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-44"></span><span id="brightBlue"><span class="annot"><span class="annottext">brightBlue :: String
+</span><a href="L3.Log.Colors.html#brightBlue"><span class="hs-identifier hs-var hs-var">brightBlue</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[34;1m&quot;</span></span><span>
+</span><span id="line-45"></span><span>
+</span><span id="line-46"></span><span class="annot"><a href="L3.Log.Colors.html#brightMagenta"><span class="hs-identifier hs-type">brightMagenta</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-47"></span><span id="brightMagenta"><span class="annot"><span class="annottext">brightMagenta :: String
+</span><a href="L3.Log.Colors.html#brightMagenta"><span class="hs-identifier hs-var hs-var">brightMagenta</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[35;1m&quot;</span></span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span class="annot"><a href="L3.Log.Colors.html#brightCyan"><span class="hs-identifier hs-type">brightCyan</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-50"></span><span id="brightCyan"><span class="annot"><span class="annottext">brightCyan :: String
+</span><a href="L3.Log.Colors.html#brightCyan"><span class="hs-identifier hs-var hs-var">brightCyan</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[36;1m&quot;</span></span><span>
+</span><span id="line-51"></span><span>
+</span><span id="line-52"></span><span class="annot"><a href="L3.Log.Colors.html#brightWhite"><span class="hs-identifier hs-type">brightWhite</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span>
+</span><span id="line-53"></span><span id="brightWhite"><span class="annot"><span class="annottext">brightWhite :: String
+</span><a href="L3.Log.Colors.html#brightWhite"><span class="hs-identifier hs-var hs-var">brightWhite</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-string">&quot;\x001b[37;1m&quot;</span></span><span>
+</span><span id="line-54"></span></pre></body></html>
