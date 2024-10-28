@@ -2,48 +2,49 @@ name: Haskell CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: haskell-actions/setup@v2
-      with:
-        ghc-version: '8.10.4' # Exact version of ghc to use
-        enable-stack: true
-        stack-version: 'latest'
+      - uses: haskell-actions/setup@v2
+        with:
+          ghc-version: "8.10.4" # Exact version of ghc to use
+          enable-stack: true
+          stack-version: "latest"
 
-    - name: Cache
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-stack
-      with:
-        path: ~/.stack
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
+      - name: Cache
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-stack
+        with:
+          path: ~/.stack
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
-    - name: Install Dependencies
-      # Build dependencies required by 'test' (and hpc-codecov)
-      run: |
-        stack --no-terminal --install-ghc test --only-dependencies
-        stack install hpc-codecov
-    - name: Build Library and Test
-      # Build the package, its tests, and run the tests tracking code coverage
-      run: |
-        stack --no-terminal test
+      - name: Install Dependencies
+        # Build dependencies required by 'test' (and hpc-codecov)
+        run: |
+          stack --no-terminal --install-ghc test --only-dependencies
+          stack install hpc-codecov
+      - name: Build Library and Test
+        # Build the package, its tests, and run the tests tracking code coverage
+        run: |
+          stack --no-terminal test
 
-    - name: Report Codecov Coverage
-      # Build coverage report and send to codecov.io
-      run: |
-        hpc-codecov --verbose --mix=$(stack path --dist-dir)/hpc -o codecov.json $(find $(stack path --local-hpc-root) -name '*.tix')
-        bash <(curl -s https://codecov.io/bash)
+      - name: Report Codecov Coverage
+        # Build coverage report and send to codecov.io
+        env:
+          bin: /root/.local/bin
+        run: |
+          ${{ env.bin }}/hpc-codecov --verbose --mix=$(stack path --dist-dir)/hpc -o codecov.json $(find $(stack path --local-hpc-root) -name '*.tix')
+          bash <(curl -s https://codecov.io/bash)
