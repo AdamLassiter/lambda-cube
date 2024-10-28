@@ -36,4 +36,4 @@ testParser = do
 
   assertRight "Parse::TestParser" (parseT "f x") "Parse application f x expression"
 
-  assertRight "Parse::TestParser" (parseT "lambda (a : m b -> c) -> d") "Parse monadic anonymous (applicative) pi expression"
+  assertRight "Parse::TestParser" (parseT "λ (a : m b -> c) -> d") "Parse monadic anonymous (applicative) pi expression"

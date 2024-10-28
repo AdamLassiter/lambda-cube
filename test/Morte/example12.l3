@@ -24,54 +24,54 @@
 -- exampleD :: (b -> c) -> (a -> b) -> Stream a -> Stream c
 -- exampleD f g = map f . map g
 
-(   lambda (id : forall (a : *) -> a -> a)
-->  lambda (  app
-    :   forall (a : *)
-    ->  forall (b : *)
-    ->  forall (c : *)
+(   λ (id : π (a : *) -> a -> a)
+->  λ (  app
+    :   π (a : *)
+    ->  π (b : *)
+    ->  π (c : *)
     ->  (b -> c)
     ->  (a -> b)
     ->  (a -> c)
     )
-->  lambda (Pair : * -> * -> *)
-->  lambda (P : forall (a : *) -> forall (b : *) -> a -> b -> Pair a b)
-->  lambda (  first
-    :   forall (a : *)
-    ->  forall (b : *)
-    ->  forall (c : *)
+->  λ (Pair : * -> * -> *)
+->  λ (P : π (a : *) -> π (b : *) -> a -> b -> Pair a b)
+->  λ (  first
+    :   π (a : *)
+    ->  π (b : *)
+    ->  π (c : *)
     ->  (a -> b)
     ->  Pair a c
     ->  Pair b c
     )
 
-->  (   lambda (Stream : * -> *)
-    ->  lambda (  map
-        :   forall (a : *)
-        ->  forall (b : *)
+->  (   λ (Stream : * -> *)
+    ->  λ (  map
+        :   π (a : *)
+        ->  π (b : *)
         ->  (a -> b)
         ->  Stream a
         ->  Stream b
         )
 
         -- exampleA = exampleB
-    ->  (   lambda (exampleA : forall (a : *) -> Stream a -> Stream a)
-        ->  lambda (exampleB : forall (a : *) -> Stream a -> Stream a)
+    ->  (   λ (exampleA : π (a : *) -> Stream a -> Stream a)
+        ->  λ (exampleB : π (a : *) -> Stream a -> Stream a)
 
         -- exampleC = exampleD
-        ->  lambda (  exampleC
-            :   forall (a : *)
-            ->  forall (b : *)
-            ->  forall (c : *)
+        ->  λ (  exampleC
+            :   π (a : *)
+            ->  π (b : *)
+            ->  π (c : *)
             ->  (b -> c)
             ->  (a -> b)
             ->  Stream a
             ->  Stream c
             )
 
-        ->  lambda (  exampleD
-            :   forall (a : *)
-            ->  forall (b : *)
-            ->  forall (c : *)
+        ->  λ (  exampleD
+            :   π (a : *)
+            ->  π (b : *)
+            ->  π (c : *)
             ->  (b -> c)
             ->  (a -> b)
             ->  Stream a
@@ -86,92 +86,92 @@
         )
 
         -- exampleA
-        (lambda (a : *) -> map a a (id a))
+        (λ (a : *) -> map a a (id a))
   
         -- exampleB
-        (lambda (a : *) -> id (Stream a))
+        (λ (a : *) -> id (Stream a))
 
         -- exampleC
-        (   lambda (a : *)
-        ->  lambda (b : *)
-        ->  lambda (c : *)
-        ->  lambda (f : b -> c)
-        ->  lambda (g : a -> b)
+        (   λ (a : *)
+        ->  λ (b : *)
+        ->  λ (c : *)
+        ->  λ (f : b -> c)
+        ->  λ (g : a -> b)
         ->  map a c (app a b c f g)
         )
 
         --  exampleD
-        (   lambda (a : *)
-        ->  lambda (b : *)
-        ->  lambda (c : *)
-        ->  lambda (f : b -> c)
-        ->  lambda (g : a -> b)
+        (   λ (a : *)
+        ->  λ (b : *)
+        ->  λ (c : *)
+        ->  λ (f : b -> c)
+        ->  λ (g : a -> b)
         ->  app (Stream a) (Stream b) (Stream c) (map b c f) (map a b g)
         )
     )
 
     -- Stream
-    (   lambda (a : *)
-    ->  forall (x : *)
-    ->  (forall (s : *) -> s -> (s -> Pair a s) -> x)
+    (   λ (a : *)
+    ->  π (x : *)
+    ->  (π (s : *) -> s -> (s -> Pair a s) -> x)
     ->  x
     )
 
     -- map
-    (   lambda (a : *)
-    ->  lambda (b : *)
-    ->  lambda (f : a -> b)
-    ->  lambda (  st
-        :   forall (x : *) -> (forall (s : *) -> s -> (s -> Pair a s) -> x) -> x
+    (   λ (a : *)
+    ->  λ (b : *)
+    ->  λ (f : a -> b)
+    ->  λ (  st
+        :   π (x : *) -> (π (s : *) -> s -> (s -> Pair a s) -> x) -> x
         )
-    ->  lambda (x : *)
-    ->  lambda (S : forall (s : *) -> s -> (s -> Pair b s) -> x)
+    ->  λ (x : *)
+    ->  λ (S : π (s : *) -> s -> (s -> Pair b s) -> x)
     ->  st
         x
-        (   lambda (s : *)
-        ->  lambda (seed : s)
-        ->  lambda (step : s -> Pair a s)
+        (   λ (s : *)
+        ->  λ (seed : s)
+        ->  λ (step : s -> Pair a s)
         ->  S
             s
             seed
-            (lambda (seed : s) -> first a b s f (step seed))
+            (λ (seed : s) -> first a b s f (step seed))
         )
     )
 )
 
 -- id
-(lambda (a : *) -> lambda (va : a) -> va)
+(λ (a : *) -> λ (va : a) -> va)
 
 -- app
-(   lambda (a : *)
-->  lambda (b : *)
-->  lambda (c : *)
-->  lambda (f : b -> c)
-->  lambda (g : a -> b)
-->  lambda (va : a)
+(   λ (a : *)
+->  λ (b : *)
+->  λ (c : *)
+->  λ (f : b -> c)
+->  λ (g : a -> b)
+->  λ (va : a)
 ->  f (g va)
 )
 
 -- Pair
-(lambda (a : *) -> lambda (b : *) -> forall (x : *) -> (a -> b -> x) -> x)
+(λ (a : *) -> λ (b : *) -> π (x : *) -> (a -> b -> x) -> x)
 
 -- P
-(   lambda (a : *)
-->  lambda (b : *)
-->  lambda (va : a)
-->  lambda (vb : b)
-->  lambda (x : *)
-->  lambda (P : a -> b -> x)
+(   λ (a : *)
+->  λ (b : *)
+->  λ (va : a)
+->  λ (vb : b)
+->  λ (x : *)
+->  λ (P : a -> b -> x)
 ->  P va vb
 )
 
 -- first
-(   lambda (a : *)
-->  lambda (b : *)
-->  lambda (c : *)
-->  lambda (f : a -> b)
-->  lambda (p : forall (x : *) -> (a -> c -> x) -> x)
-->  lambda (x : *)
-->  lambda (Pair : b -> c -> x)
-->  p x (lambda (va : a) -> lambda (vc : c) -> Pair (f va) vc)
+(   λ (a : *)
+->  λ (b : *)
+->  λ (c : *)
+->  λ (f : a -> b)
+->  λ (p : π (x : *) -> (a -> c -> x) -> x)
+->  λ (x : *)
+->  λ (Pair : b -> c -> x)
+->  p x (λ (va : a) -> λ (vc : c) -> Pair (f va) vc)
 )

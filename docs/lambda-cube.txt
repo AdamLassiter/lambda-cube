@@ -7,20 +7,60 @@
 --   Please see the README on GitHub at
 --   <a>https://github.com/AdamLassiter/lambda-cube#readme</a>
 @package lambda-cube
-@version 0.2.0.0
+@version 0.3.0
+
+module L3.Core.Expr
+
+-- | An expression in the calculus of constructions.
+data Expr a
+Star :: Expr a
+Box :: Expr a
+Var :: a -> Expr a
+Lam :: a -> Expr a -> Expr a -> Expr a
+Pi :: a -> Expr a -> Expr a -> Expr a
+App :: Expr a -> Expr a -> Expr a
+
+-- | A context is a stack, mapping names to bound values.
+data Context a
+Ctx :: [(a, Expr a)] -> Context a
+instance Data.Foldable.Foldable L3.Core.Expr.Expr
+instance GHC.Base.Functor L3.Core.Expr.Expr
+instance Data.Traversable.Traversable L3.Core.Expr.Expr
+instance GHC.Classes.Eq a => GHC.Classes.Eq (L3.Core.Expr.Expr a)
 
 
 -- | Safe and unsafe logging functions wrapping Control.Logging
-module L3.Logging
+module L3.Log.Colors
+reset :: String
+black :: String
+red :: String
+green :: String
+yellow :: String
+blue :: String
+magenta :: String
+cyan :: String
+white :: String
+brightBlack :: String
+brightRed :: String
+brightGreen :: String
+brightYellow :: String
+brightBlue :: String
+brightMagenta :: String
+brightCyan :: String
+brightWhite :: String
+
+
+-- | Safe and unsafe logging functions wrapping Control.Logging
+module L3.Log.Logging
 logId :: (String -> String -> IO ()) -> String -> String -> a -> IO a
-debugM :: String -> String -> IO ()
-infoM :: String -> String -> IO ()
-warnM :: String -> String -> IO ()
-errorU :: String -> String -> a
 traceU :: String -> String -> a -> a
+debugM :: String -> String -> IO ()
 debugU :: String -> String -> a -> a
+infoM :: String -> String -> IO ()
 infoU :: String -> String -> a -> a
+warnM :: String -> String -> IO ()
 warnU :: String -> String -> a -> a
+errorU :: String -> String -> a
 data LogLevel
 LevelDebug :: LogLevel
 LevelInfo :: LogLevel
@@ -32,13 +72,30 @@ withFileLogging :: (MonadBaseControl IO m, MonadIO m) => FilePath -> m a -> m a
 setLogLevel :: LogLevel -> IO ()
 setDebugSourceRegex :: String -> IO ()
 
+module L3.Log
+
+module L3.Parse.Parser
+newtype Parser i o
+Parser :: (i -> [(o, i)]) -> Parser i o
+[parse] :: Parser i o -> i -> [(o, i)]
+bind :: Parser i o -> (o -> Parser i o') -> Parser i o'
+unit :: o -> Parser i o
+combine :: Parser i o -> Parser i o -> Parser i o
+failure :: Parser i o
+option :: Parser i o -> Parser i o -> Parser i o
+instance GHC.Base.Functor (L3.Parse.Parser.Parser i)
+instance GHC.Base.Applicative (L3.Parse.Parser.Parser i)
+instance GHC.Base.Monad (L3.Parse.Parser.Parser i)
+instance GHC.Base.MonadPlus (L3.Parse.Parser.Parser i)
+instance GHC.Base.Alternative (L3.Parse.Parser.Parser i)
+
 
 -- | Utilites for result types and error throwing
-module L3.Util
+module L3.Util.Util
 newtype Error
 Error :: ([String], Maybe Error) -> Error
-showIdent :: Show a => a -> String
 type Result a = Either Error a
+showIndent :: Show a => a -> String
 throw :: Error -> Result a
 throwError :: [String] -> Error
 rethrowError :: [String] -> Error -> Error
@@ -48,35 +105,25 @@ mapR :: (a -> b) -> Result a -> Result b
 fmapR :: (a -> Result b) -> Result a -> Result b
 flatten :: Result (Result a) -> Result a
 throwL :: Result a -> a
-instance GHC.Classes.Eq L3.Util.Error
-instance GHC.Show.Show L3.Util.Error
+isError :: Result a -> Bool
+instance GHC.Classes.Eq L3.Util.Util.Error
+instance GHC.Show.Show L3.Util.Util.Error
+
+module L3.Util
 
 
 -- | Small parsec-like module
-module L3.Parsec
-newtype Parser i o
-Parser :: (i -> [(o, i)]) -> Parser i o
-[parse] :: Parser i o -> i -> [(o, i)]
+module L3.Parse.Parsec
 unParser :: Parser i o -> i -> [(o, i)]
 runParser :: (Alternative f, Show (f i), Show o, Eq (f i)) => Parser (f i) o -> f i -> Result o
-bind :: Parser i o -> (o -> Parser i o') -> Parser i o'
-unit :: o -> Parser i o
-combine :: Parser i o -> Parser i o -> Parser i o
-failure :: Parser i o
-option :: Parser i o -> Parser i o -> Parser i o
 some :: Alternative f => f a -> f [a]
 many :: Alternative f => f a -> f [a]
 chainl :: Parser i o -> Parser i (o -> o -> o) -> o -> Parser i o
 chainl1 :: Parser i o -> Parser i (o -> o -> o) -> Parser i o
-instance GHC.Base.Functor (L3.Parsec.Parser i)
-instance GHC.Base.Applicative (L3.Parsec.Parser i)
-instance GHC.Base.Monad (L3.Parsec.Parser i)
-instance GHC.Base.MonadPlus (L3.Parsec.Parser i)
-instance GHC.Base.Alternative (L3.Parsec.Parser i)
 
 
 -- | Parsec utils for parsing Strings into Strings
-module L3.StringParsec
+module L3.Parse.StringParsec
 item :: Parser String Char
 satisfy :: (Char -> Bool) -> Parser String Char
 oneOf :: String -> Parser String Char
@@ -91,16 +138,17 @@ spaces :: Parser String String
 digit :: Parser String Char
 number :: Parser String Int
 word :: Parser String String
-parens :: Parser String a -> Parser String a
 
 
 -- | Lexer from Strings into Tokens
-module L3.Lexer
+module L3.Parse.Lexer
 
 -- | Lex strings into tokens, canonical form for the syntax definitition
 data Token
 OpenParen :: Token
 CloseParen :: Token
+OpenBracket :: Token
+CloseBracket :: Token
 HasType :: Token
 At :: Token
 StarT :: Token
@@ -108,11 +156,11 @@ BoxT :: Token
 Arrow :: Token
 LambdaT :: Token
 PiT :: Token
+AutoT :: Token
 Symbol :: String -> Token
 Number :: Int -> Token
 Comment :: String -> Token
 EOL :: Token
-debugLexer :: String -> a -> a
 
 -- | A list of Alternatives that may be used to lex a string into tokens.
 alternatives :: [Parser String Token]
@@ -125,12 +173,12 @@ lexSrc :: String -> Result [Token]
 
 -- | The grammar for this parser is the collection of Alternatives
 grammar :: Parser String [Token]
-instance GHC.Classes.Eq L3.Lexer.Token
-instance GHC.Show.Show L3.Lexer.Token
+instance GHC.Classes.Eq L3.Parse.Lexer.Token
+instance GHC.Show.Show L3.Parse.Lexer.Token
 
 
 -- | Parsec utils for parsing Tokens into Tokens
-module L3.TokenParsec
+module L3.Parse.TokenParsec
 item :: Parser [Token] Token
 satisfy :: (Token -> Bool) -> Parser [Token] Token
 one :: Token -> Parser [Token] Token
@@ -140,222 +188,176 @@ reserved :: Token -> Parser [Token] Token
 number :: Parser [Token] Token
 symbol :: Parser [Token] Token
 parens :: Parser [Token] a -> Parser [Token] a
+brackets :: Parser [Token] a -> Parser [Token] a
+parentheses :: Parser [Token] a -> Parser [Token] a
 
 
 -- | Type checking and type inference
-module L3.Core
-type ShowCtx = Context Name
-type ShowExpr = Expr Name
+module L3.Core.Show
 newtype Name
 Name :: String -> Name
-
--- | A context is a stack, mapping names to bound values.
-type Context a = [(a, Expr a)]
-
--- | An expression in the calculus of constructions.
-data Expr a
-Star :: Expr a
-Box :: Expr a
-Var :: a -> Expr a
-Lam :: a -> Expr a -> Expr a -> Expr a
-Pi :: a -> Expr a -> Expr a -> Expr a
-App :: Expr a -> Expr a -> Expr a
+type ShowExpr = Expr Name
 
 -- | Show an expression
-showExpr :: ShowExpr -> String
+showExpr :: Show a => Expr a -> String
+type ShowCtx = Context Name
 
 -- | Show for a context, printing each binding on a separate line.
 showCtx :: Show a => Context a -> String
-debugCore :: String -> a -> a
+instance GHC.Classes.Eq L3.Core.Show.Name
+instance GHC.Enum.Enum L3.Core.Show.Name
+instance GHC.Show.Show L3.Core.Show.Name
+instance (GHC.Enum.Enum a, GHC.Enum.Enum b) => GHC.Enum.Enum (Data.Either.Either a b)
+instance GHC.Show.Show a => GHC.Show.Show (L3.Core.Expr.Expr a)
+instance GHC.Show.Show a => GHC.Show.Show (L3.Core.Expr.Context a)
+
+
+-- | Type checking and type inference
+module L3.Core.Normal
 
 -- | Is a name <a>free</a> in an expression In this context, free v a &amp;
 --   v <i>= v' =&gt; substitute v v' a </i>= a i.e. would a substitution be
 --   performed
 free :: (Eq a, Show a) => a -> Expr a -> Bool
-free' :: (Eq a, Show a) => a -> Expr a -> Bool
 fresh :: (Eq a, Enum a, Show a) => a -> Expr a -> a
-fresh' :: (Eq a, Show a, Enum a) => a -> Expr a -> a
 
 -- | Substitute all occurrences of a variable v with an expression e.
 --   substitute v e E ~ E[v := e]
 substitute :: (Eq a, Enum a, Show a) => a -> Expr a -> Expr a -> Expr a
-substitute' :: (Eq a, Enum a, Show a) => a -> Expr a -> Expr a -> Expr a
 
 -- | Given an expression, reduce it one step towards its normal form.
 normalize :: (Eq a, Enum a, Show a) => Expr a -> Expr a
-normalize' :: (Eq a, Enum a, Show a) => Expr a -> Expr a
 
 -- | Given an expression, totally reduce it over all steps towards normal
---   form, returning this normal.
+--   form.
 normalize0 :: (Eq a, Enum a, Show a) => Expr a -> Expr a
-normalize0' :: (Eq a, Enum a, Show a) => Expr a -> Expr a
+
+
+-- | Type checking and type inference
+module L3.Core.DeBruijn
 
 -- | Given an <a>free</a> index, convert an expression in Right names into
 --   Left indexes. This uses DeBruijn indicies.
 index :: (Eq a, Enum a, Show a) => Int -> Expr (Either Int a) -> Expr (Either Int a)
-index' :: (Eq a, Enum a, Show a) => Int -> Expr (Either Int a) -> Expr (Either Int a)
 
 -- | Provide an initial <a>free</a> index of 0 and index an expression.
 --   This converts any expression to its DeBruijn indexed form, leaving
 --   global names untouched.
 index0 :: (Eq a, Enum a, Show a) => Expr a -> Expr (Either Int a)
-index0' :: (Eq a, Enum a, Show a) => Expr a -> Expr (Either Int a)
+
+
+-- | Type checking and type inference
+module L3.Core.Eq
 
 -- | Deduce whether two expressions are equivalent by converting to indexed
 --   form and checking for exact equality. This does not apply
 --   normalisation, so represents only alpha-equivalence of expressions.
 alphaEq :: (Eq a, Enum a, Show a) => Expr a -> Expr a -> Bool
-alphaEq' :: (Eq a, Enum a, Show a) => Expr a -> Expr a -> Bool
 
 -- | Deduce whether two expressions are equivalent by converting to indexed
 --   form and checking for exact equality. This does apply normalisation,
 --   so represents beta-equivalence (and implicitly alpha-equivalence) of
 --   expressions.
 betaEq :: (Eq a, Enum a, Show a) => Expr a -> Expr a -> Bool
-betaEq' :: (Eq a, Enum a, Show a) => Expr a -> Expr a -> Bool
 
--- | Evaluate an expression, returning its type and normalized form
-evalExpr :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
-evalExpr' :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
+
+-- | Type checking and type inference
+module L3.Core.Infer
 
 -- | Type-check an expression and return the expression's type if
---   type-checking succeeds or an error message if type-checking fails
+--   type-checking | succeeds or an error message if type-checking fails |
 --   <a>inferType</a>` does not necessarily normalize the type since full
---   normalization is not necessary for just type-checking. If you actually
---   care about the returned type then you may want to <a>normalize</a> it
---   afterwards. Type inference is within a type context (list of global
---   names and their types)
-inferType1 :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
-inferType1' :: (Show a, Eq a, Enum a) => [(a, Expr a)] -> Expr a -> Either Error (Expr a)
+--   normalization | is not necessary for just type-checking. If you
+--   actually care about the | returned type then you may want to
+--   <a>normalize</a> it afterwards. | Type inference is within a type
+--   context (list of global names and their types) | | <tt>Weak</tt> type
+--   infernce here refers to the lack of partial evaluation for contextual
+--   | beta-equivalence. For some X, a by-value and by-reference of X
+--   should be legal: | (λ (T : *) . λ (f : π (X : *) . X) . λ (x : T) . f
+--   x) X | In fact, resolving T := X as beta-equivalent to X will fail for
+--   weakInferType.
+weakInferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
 
 -- | Type-check an expression and return the expression's normalized type
---   if type-checking succeeds or an error message if type-checking fails
+--   if | type-checking succeeds or an error message if type-checking fails
 inferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
-inferType' :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
 
 -- | <a>inferType0</a> is the same as <a>inferType</a> with an empty
---   context, meaning that the expression must be closed (i.e. no free
---   variables), otherwise type-checking will fail.
+--   context, meaning that | the expression must be closed (i.e. no free
+--   variables), otherwise type-checking | will fail.
 inferType0 :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
-inferType0' :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a)
+
+-- | Type-check an expression and return the expression's normalized type
+--   if | type-checking succeeds or an error message if type-checking fails
+--   | Perform partial evaluation by substitution of lambda-applications to
+--   types | to ensure the problem-case for <a>weakInferType</a> does not
+--   fail here.
+inferType1 :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
 
 -- | Deduce if an expression e is well-typed - i.e. its type can be
 --   inferred.
 wellTyped :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Bool
-wellTyped' :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Bool
 
 -- | Deduce if an expression is well-typed context-free - i.e. it is
---   additionally closed and therefore well-typed without additional
+--   additionally | closed and therefore well-typed without additional
 --   context.
 wellTyped0 :: (Eq a, Enum a, Show a) => Expr a -> Bool
-wellTyped0' :: (Eq a, Enum a, Show a) => Expr a -> Bool
-instance Data.Foldable.Foldable L3.Core.Expr
-instance GHC.Base.Functor L3.Core.Expr
-instance Data.Traversable.Traversable L3.Core.Expr
-instance GHC.Show.Show a => GHC.Show.Show (L3.Core.Expr a)
-instance GHC.Classes.Eq a => GHC.Classes.Eq (L3.Core.Expr a)
-instance GHC.Classes.Eq L3.Core.Name
-instance GHC.Enum.Enum L3.Core.Name
-instance GHC.Show.Show L3.Core.Name
-instance (GHC.Enum.Enum a, GHC.Enum.Enum b) => GHC.Enum.Enum (Data.Either.Either a b)
+
+
+-- | Type checking and type inference
+module L3.Core.Eval
+
+-- | Evaluate an expression, returning its type and normalized form
+evalExpr :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a, Expr a)
+
+-- | <a>evalExpr0</a> is the same as <a>evalExpr</a> with an empty context,
+--   meaning that the expression must be closed (i.e. no free variables),
+--   otherwise evaluation will fail.
+evalExpr0 :: (Eq a, Enum a, Show a) => Expr a -> Result (Expr a, Expr a)
+
+module L3.Core
 
 
 -- | Parser from Tokens into Expressions
-module L3.Parser
-debugParser :: String -> a -> a
-debugParserM :: (i -> String) -> Parser i o -> Parser i o
+module L3.Parse.ExprParser
 
 -- | Parse a string to a named expression (using string labels) Strip
 --   comments here, as they apply inside any context and are difficult to
 --   deal with otherwise
 parseExpr :: [Token] -> Result ShowExpr
-parseExpr' :: [Token] -> Result ShowExpr
 
--- | Sugared expression, injection point for additional syntax niceties S
---   :: [π(_:]A[)].S | A
-sugarE :: Parser [Token] ShowExpr
-sugarE' :: Parser [Token] ShowExpr
-
--- | Applicative expression, unknown and unbounded length A :: F [app F ..]
-appE :: Parser [Token] ShowExpr
-appE' :: Parser [Token] (Expr Name)
-
--- | Function expression F :: λ(s:τ).E | π(s:τ).E | T | (S)
-funE :: Parser [Token] ShowExpr
-funE' :: Parser [Token] ShowExpr
-
--- | Terminal expression, bounded in length and with no children T :: * | #
---   | n@v | v
-termE :: Parser [Token] ShowExpr
-termE' :: Parser [Token] ShowExpr
-
--- | Arrow expression, a component of functions (-&gt;) :: (s:τ).
-arrE :: Parser [Token] (Name, ShowExpr)
-arrE' :: Parser [Token] (Name, ShowExpr)
-
--- | Type expression, a symbol has type expr τ :: s:S
-typE :: Parser [Token] (Name, ShowExpr)
-typE' :: Parser [Token] (Name, ShowExpr)
-
--- | Star axiom * :: Star
-star :: Parser [Token] ShowExpr
-star' :: Parser [Token] (Expr a)
-
--- | Box axiom # :: Box
-box :: Parser [Token] ShowExpr
-box' :: Parser [Token] (Expr a)
-
--- | Variable axiom s :: Var s
-var :: Parser [Token] ShowExpr
-var' :: Parser [Token] (Expr Name)
-
--- | Namespaced-variable axiom n<tt>s :: Var n</tt>s
-nsVar :: Parser [Token] ShowExpr
-nsVar' :: Parser [Token] (Expr Name)
-
--- | Lambda function λ(s:S).S :: Lam s S S
-lamE :: Parser [Token] ShowExpr
-lamE' :: Parser [Token] (Expr Name)
-
--- | Pi function π(s:S).S :: Lam s S S
-piE :: Parser [Token] ShowExpr
-piE' :: Parser [Token] (Expr Name)
-
--- | Anonymous-pi function, where the name is unused and therefore not
---   written Note the implicit expression argument, as otherwise sugar =
---   (app &gt;&gt; arrow &gt;&gt; sugar) <a>|</a> app If this were not the
---   case, all expressions are parsed as anonymous pis and will fail at the
---   final arrow This is an exponential slowdown S. :: π(_:S).S
-anonPiE :: ShowExpr -> Parser [Token] ShowExpr
-anonPiE' :: Expr Name -> Parser [Token] (Expr Name)
+module L3.Parse
 
 
 -- | Load and parse '.l3' files
-module L3.Loader
-debugLoader :: String -> a -> a
-debugLoaderM :: String -> IO ()
-
--- | Get the last directory name from a path
-takeDirectoryName :: FilePath -> String
-takeDirectoryName' :: FilePath -> FilePath
-
--- | Format a file into either non-namespaced <tt>file</tt> or namespaced
---   <tt>dir</tt>@<tt>file</tt>
-takeNamespacedFileName :: FilePath -> String
-takeNamespacedFileName' :: FilePath -> String
-embeddedPreludeIO :: IO [(FilePath, ByteString)]
-embeddedPreludeIO' :: IO [(FilePath, ByteString)]
-
--- | Embed and retrieve all '.l3' files in the prelude directory
-embeddedPrelude :: [(FilePath, ByteString)]
-embeddedPrelude' :: [(FilePath, ByteString)]
-
--- | Lex and parse the prelude into a type-context and expression-context
-loadPrelude :: [(FilePath, ByteString)] -> (ShowCtx, ShowCtx)
-loadPrelude' :: [(FilePath, ByteString)] -> ([(Name, Expr Name)], [(Name, ShowExpr)])
+module L3.Loader.Loader
 
 -- | Fold the prelude context through lambda application into a
 --   type-context and expression-context-mapper. That is, `let a = x in b`
 --   <a>=</a> `(λ a -&gt; b) x`
 wrapPrelude :: [(FilePath, ByteString)] -> (ShowCtx, ShowExpr -> ShowExpr)
-wrapPrelude' :: [(FilePath, ByteString)] -> (ShowCtx, Expr Name -> Expr Name)
+
+-- | Embed and retrieve all '.l3' files in the prelude directory
+embeddedPrelude :: [(FilePath, ByteString)]
+embeddedPreludeIO :: IO [(FilePath, ByteString)]
+
+-- | Get the last directory name from a path
+takeDirectoryName :: FilePath -> String
+
+-- | Format a file into either non-namespaced <tt>file</tt> or namespaced
+--   <tt>dir</tt>@<tt>file</tt>
+takeNamespacedFileName :: FilePath -> String
+
+-- | Lex and parse the prelude into a type-context and expression-context
+loadPrelude :: [(FilePath, ByteString)] -> (ShowCtx, ShowCtx)
+
+-- | Substitute all occurrences of a variable v with an expression e, but
+--   only where v appears in a type.
+tauSubst :: (Eq a, Enum a, Show a) => a -> Expr a -> Expr a -> Expr a
+
+-- | Partially evaluate the types of an expression through
+--   lambda-application substitutions. This should remain correct, but
+--   allows for binding types and evaluating by-reference.
+tauNorm :: (Eq a, Enum a, Show a) => Expr a -> Expr a
+
+module L3.Loader

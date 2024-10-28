@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE CPP #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- | Safe and unsafe logging functions wrapping Control.Logging</span><span>
+</span><span id="line-4"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">L3.Log.Logging</span><span>
+</span><span id="line-5"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="L3.Log.Logging.html"><span class="hs-identifier">L3.Log.Logging</span></a></span><span class="hs-special">,</span><span>
+</span><span id="line-6"></span><span>    </span><span class="annot"><span class="hs-identifier">LogLevel</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">LevelDebug</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">LevelInfo</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">LevelWarn</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">LevelError</span></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-7"></span><span>    </span><span class="annot"><span class="hs-identifier">withStderrLogging</span></span><span class="hs-special">,</span><span>
+</span><span id="line-8"></span><span>    </span><span class="annot"><span class="hs-identifier">withStdoutLogging</span></span><span class="hs-special">,</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><span class="hs-identifier">withFileLogging</span></span><span class="hs-special">,</span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><span class="hs-identifier">setLogLevel</span></span><span class="hs-special">,</span><span>
+</span><span id="line-11"></span><span>    </span><span class="annot"><span class="hs-identifier">setDebugSourceRegex</span></span><span class="hs-special">,</span><span>
+</span><span id="line-12"></span><span>  </span><span class="hs-special">)</span><span>
+</span><span id="line-13"></span><span class="hs-keyword">where</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Logging</span></span><span>
+</span><span id="line-16"></span><span>  </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">LogLevel</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">LevelDebug</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">LevelError</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">LevelInfo</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">LevelWarn</span></span><span class="hs-special">)</span><span class="hs-special">,</span><span>
+</span><span id="line-17"></span><span>    </span><span class="annot"><span class="hs-identifier">setDebugSourceRegex</span></span><span class="hs-special">,</span><span>
+</span><span id="line-18"></span><span>    </span><span class="annot"><span class="hs-identifier">setLogLevel</span></span><span class="hs-special">,</span><span>
+</span><span id="line-19"></span><span>    </span><span class="annot"><span class="hs-identifier">withFileLogging</span></span><span class="hs-special">,</span><span>
+</span><span id="line-20"></span><span>    </span><span class="annot"><span class="hs-identifier">withStderrLogging</span></span><span class="hs-special">,</span><span>
+</span><span id="line-21"></span><span>    </span><span class="annot"><span class="hs-identifier">withStdoutLogging</span></span><span class="hs-special">,</span><span>
+</span><span id="line-22"></span><span>  </span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Control.Logging</span></span><span>
+</span><span id="line-24"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.IO.Class</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">MonadIO</span></span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.Monad.Trans.Control</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">MonadBaseControl</span></span><span class="hs-special">)</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Text</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">pack</span></span><span class="hs-special">)</span><span>
+</span><span id="line-27"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">GHC.IO</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">unsafeDupablePerformIO</span></span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="L3.Log.Colors.html"><span class="hs-identifier">L3.Log.Colors</span></a></span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span id="local-6989586621679108747"><span class="annot"><a href="L3.Log.Logging.html#logId"><span class="hs-identifier hs-type">logId</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679108747"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="annot"><a href="#local-6989586621679108747"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-31"></span><span id="logId"><span class="annot"><span class="annottext">logId :: (String -&gt; String -&gt; IO ()) -&gt; String -&gt; String -&gt; a -&gt; IO a
+</span><a href="L3.Log.Logging.html#logId"><span class="hs-identifier hs-var hs-var">logId</span></a></span></span><span> </span><span id="local-6989586621679108727"><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><a href="#local-6989586621679108727"><span class="hs-identifier hs-var">logger</span></a></span></span><span> </span><span id="local-6989586621679108726"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108726"><span class="hs-identifier hs-var">src</span></a></span></span><span> </span><span id="local-6989586621679108725"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108725"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span id="local-6989586621679108724"><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679108724"><span class="hs-identifier hs-var">a</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-keyword">do</span><span>
+</span><span id="line-32"></span><span>  </span><span class="annot"><span class="annottext">()
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">&lt;-</span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><a href="#local-6989586621679108727"><span class="hs-identifier hs-var">logger</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108726"><span class="hs-identifier hs-var">src</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108725"><span class="hs-identifier hs-var">msg</span></a></span><span>
+</span><span id="line-33"></span><span>  </span><span class="annot"><span class="annottext">a -&gt; IO a
+forall (f :: * -&gt; *) a. Applicative f =&gt; a -&gt; f a
+</span><span class="hs-identifier hs-var">pure</span></span><span> </span><span class="annot"><span class="annottext">a
+</span><a href="#local-6989586621679108724"><span class="hs-identifier hs-var">a</span></a></span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span id="local-6989586621679108723"><span class="annot"><a href="L3.Log.Logging.html#traceU"><span class="hs-identifier hs-type">traceU</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679108723"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679108723"><span class="hs-identifier hs-type">a</span></a></span></span><span class="hs-cpp">
+#ifdef LOGTRACE
+</span><span class="hs-identifier">traceU</span><span> </span><span class="hs-identifier">src</span><span> </span><span class="hs-identifier">msg</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">Control.Logging.traceSL</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">pack</span><span> </span><span class="hs-operator">$</span><span> </span><span class="hs-identifier">brightWhite</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier">src</span><span> </span><span class="hs-operator">++</span><span> </span><span class="hs-identifier">reset</span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-identifier">pack</span><span> </span><span class="hs-identifier">msg</span><span class="hs-special">)</span><span class="hs-cpp">
+#define LOGDEBUG
+</span><span class="hs-cpp">#else
+</span><span id="traceU"><span class="annot"><span class="annottext">traceU :: String -&gt; String -&gt; a -&gt; a
+</span><a href="L3.Log.Logging.html#traceU"><span class="hs-identifier hs-var hs-var">traceU</span></a></span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><span class="hs-identifier">_</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">a -&gt; a
+forall a. a -&gt; a
+</span><span class="hs-identifier hs-var">id</span></span><span class="hs-cpp">
+#endif
+</span><span>
+</span><span id="line-43"></span><span class="annot"><a href="L3.Log.Logging.html#debugM"><span class="hs-identifier hs-type">debugM</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-44"></span><span id="local-6989586621679108719"><span class="annot"><a href="L3.Log.Logging.html#debugU"><span class="hs-identifier hs-type">debugU</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679108719"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679108719"><span class="hs-identifier hs-type">a</span></a></span></span><span class="hs-cpp">
+#ifdef LOGDEBUG
+</span><span id="debugM"><span class="annot"><span class="annottext">debugM :: String -&gt; String -&gt; IO ()
+</span><a href="L3.Log.Logging.html#debugM"><span class="hs-identifier hs-var hs-var">debugM</span></a></span></span><span> </span><span id="local-6989586621679108717"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108717"><span class="hs-identifier hs-var">src</span></a></span></span><span> </span><span id="local-6989586621679108716"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108716"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; IO ()
+</span><span class="hs-identifier hs-var">Control.Logging.debugS</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Text
+</span><span class="hs-identifier hs-var">pack</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Text) -&gt; String -&gt; Text
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="L3.Log.Colors.html#blue"><span class="hs-identifier hs-var">blue</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108717"><span class="hs-identifier hs-var">src</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="L3.Log.Colors.html#reset"><span class="hs-identifier hs-var">reset</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Text
+</span><span class="hs-identifier hs-var">pack</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108716"><span class="hs-identifier hs-var">msg</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-47"></span><span id="debugU"><span class="annot"><span class="annottext">debugU :: String -&gt; String -&gt; a -&gt; a
+</span><a href="L3.Log.Logging.html#debugU"><span class="hs-identifier hs-var hs-var">debugU</span></a></span></span><span> </span><span id="local-6989586621679108712"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108712"><span class="hs-identifier hs-var">src</span></a></span></span><span> </span><span id="local-6989586621679108711"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108711"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">IO a -&gt; a
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafeDupablePerformIO</span></span><span> </span><span class="annot"><span class="annottext">(IO a -&gt; a) -&gt; (a -&gt; IO a) -&gt; a -&gt; a
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; IO ()) -&gt; String -&gt; String -&gt; a -&gt; IO a
+forall a.
+(String -&gt; String -&gt; IO ()) -&gt; String -&gt; String -&gt; a -&gt; IO a
+</span><a href="L3.Log.Logging.html#logId"><span class="hs-identifier hs-var">logId</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><a href="L3.Log.Logging.html#debugM"><span class="hs-identifier hs-var">debugM</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108712"><span class="hs-identifier hs-var">src</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108711"><span class="hs-identifier hs-var">msg</span></a></span><span class="hs-cpp">
+#define LOGINFO
+</span><span class="hs-cpp">#else
+</span><span class="hs-identifier">debugM</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-51"></span><span class="hs-identifier">debugU</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">id</span><span class="hs-cpp">
+#endif
+</span><span>
+</span><span id="line-54"></span><span class="annot"><a href="L3.Log.Logging.html#infoM"><span class="hs-identifier hs-type">infoM</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-55"></span><span id="local-6989586621679108708"><span class="annot"><a href="L3.Log.Logging.html#infoU"><span class="hs-identifier hs-type">infoU</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679108708"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679108708"><span class="hs-identifier hs-type">a</span></a></span></span><span class="hs-cpp">
+#ifdef LOGINFO
+</span><span id="infoM"><span class="annot"><span class="annottext">infoM :: String -&gt; String -&gt; IO ()
+</span><a href="L3.Log.Logging.html#infoM"><span class="hs-identifier hs-var hs-var">infoM</span></a></span></span><span> </span><span id="local-6989586621679108706"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108706"><span class="hs-identifier hs-var">src</span></a></span></span><span> </span><span id="local-6989586621679108705"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108705"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; IO ()
+</span><span class="hs-identifier hs-var">Control.Logging.logS</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Text
+</span><span class="hs-identifier hs-var">pack</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Text) -&gt; String -&gt; Text
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="L3.Log.Colors.html#green"><span class="hs-identifier hs-var">green</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108706"><span class="hs-identifier hs-var">src</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="L3.Log.Colors.html#reset"><span class="hs-identifier hs-var">reset</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Text
+</span><span class="hs-identifier hs-var">pack</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108705"><span class="hs-identifier hs-var">msg</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-58"></span><span id="infoU"><span class="annot"><span class="annottext">infoU :: String -&gt; String -&gt; a -&gt; a
+</span><a href="L3.Log.Logging.html#infoU"><span class="hs-identifier hs-var hs-var">infoU</span></a></span></span><span> </span><span id="local-6989586621679108702"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108702"><span class="hs-identifier hs-var">src</span></a></span></span><span> </span><span id="local-6989586621679108701"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108701"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">IO a -&gt; a
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafeDupablePerformIO</span></span><span> </span><span class="annot"><span class="annottext">(IO a -&gt; a) -&gt; (a -&gt; IO a) -&gt; a -&gt; a
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; IO ()) -&gt; String -&gt; String -&gt; a -&gt; IO a
+forall a.
+(String -&gt; String -&gt; IO ()) -&gt; String -&gt; String -&gt; a -&gt; IO a
+</span><a href="L3.Log.Logging.html#logId"><span class="hs-identifier hs-var">logId</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><a href="L3.Log.Logging.html#infoM"><span class="hs-identifier hs-var">infoM</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108702"><span class="hs-identifier hs-var">src</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108701"><span class="hs-identifier hs-var">msg</span></a></span><span class="hs-cpp">
+#define LOGWARN
+</span><span class="hs-cpp">#else
+</span><span class="hs-identifier">infoM</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-62"></span><span class="hs-identifier">infoU</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">id</span><span class="hs-cpp">
+#endif
+</span><span>
+</span><span id="line-65"></span><span class="annot"><a href="L3.Log.Logging.html#warnM"><span class="hs-identifier hs-type">warnM</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">IO</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-66"></span><span id="local-6989586621679108699"><span class="annot"><a href="L3.Log.Logging.html#warnU"><span class="hs-identifier hs-type">warnU</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679108699"><span class="hs-identifier hs-type">a</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679108699"><span class="hs-identifier hs-type">a</span></a></span></span><span class="hs-cpp">
+#ifdef LOGWARN
+</span><span id="warnM"><span class="annot"><span class="annottext">warnM :: String -&gt; String -&gt; IO ()
+</span><a href="L3.Log.Logging.html#warnM"><span class="hs-identifier hs-var hs-var">warnM</span></a></span></span><span> </span><span id="local-6989586621679108697"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108697"><span class="hs-identifier hs-var">src</span></a></span></span><span> </span><span id="local-6989586621679108696"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108696"><span class="hs-identifier hs-var">msg</span></a></span></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; IO ()
+</span><span class="hs-identifier hs-var">Control.Logging.warnS</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Text
+</span><span class="hs-identifier hs-var">pack</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Text) -&gt; String -&gt; Text
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="L3.Log.Colors.html#yellow"><span class="hs-identifier hs-var">yellow</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108697"><span class="hs-identifier hs-var">src</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="L3.Log.Colors.html#reset"><span class="hs-identifier hs-var">reset</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Text
+</span><span class="hs-identifier hs-var">pack</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108696"><span class="hs-identifier hs-var">msg</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-69"></span><span id="warnU"><span class="annot"><span class="annottext">warnU :: String -&gt; String -&gt; a -&gt; a
+</span><a href="L3.Log.Logging.html#warnU"><span class="hs-identifier hs-var hs-var">warnU</span></a></span></span><span> </span><span id="local-6989586621679108693"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108693"><span class="hs-identifier hs-var">src</span></a></span></span><span> </span><span id="local-6989586621679108692"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108692"><span class="hs-identifier hs-var">msg</span></a></span></span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">IO a -&gt; a
+forall a. IO a -&gt; a
+</span><span class="hs-identifier hs-var">unsafeDupablePerformIO</span></span><span> </span><span class="annot"><span class="annottext">(IO a -&gt; a) -&gt; (a -&gt; IO a) -&gt; a -&gt; a
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; String -&gt; IO ()) -&gt; String -&gt; String -&gt; a -&gt; IO a
+forall a.
+(String -&gt; String -&gt; IO ()) -&gt; String -&gt; String -&gt; a -&gt; IO a
+</span><a href="L3.Log.Logging.html#logId"><span class="hs-identifier hs-var">logId</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; IO ()
+</span><a href="L3.Log.Logging.html#warnM"><span class="hs-identifier hs-var">warnM</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108693"><span class="hs-identifier hs-var">src</span></a></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108692"><span class="hs-identifier hs-var">msg</span></a></span><span class="hs-cpp">
+#else
+</span><span class="hs-identifier">warnM</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-identifier">_</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">return</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-72"></span><span class="hs-identifier">warnU</span><span> </span><span class="hs-identifier">_</span><span> </span><span class="hs-identifier">_</span><span>  </span><span class="hs-glyph">=</span><span> </span><span class="hs-identifier">id</span><span class="hs-cpp">
+#endif
+</span><span>
+</span><span id="line-75"></span><span id="local-6989586621679108691"><span class="annot"><a href="L3.Log.Logging.html#errorU"><span class="hs-identifier hs-type">errorU</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">String</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679108691"><span class="hs-identifier hs-type">a</span></a></span></span><span>
+</span><span id="line-76"></span><span id="errorU"><span class="annot"><span class="annottext">errorU :: String -&gt; String -&gt; a
+</span><a href="L3.Log.Logging.html#errorU"><span class="hs-identifier hs-var hs-var">errorU</span></a></span></span><span> </span><span id="local-6989586621679108689"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108689"><span class="hs-identifier hs-var">src</span></a></span></span><span> </span><span id="local-6989586621679108688"><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108688"><span class="hs-identifier hs-var">msg</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Text -&gt; Text -&gt; a
+forall a. Text -&gt; Text -&gt; a
+</span><span class="hs-identifier hs-var">Control.Logging.errorSL</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Text
+</span><span class="hs-identifier hs-var">pack</span></span><span> </span><span class="annot"><span class="annottext">(String -&gt; Text) -&gt; String -&gt; Text
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="L3.Log.Colors.html#red"><span class="hs-identifier hs-var">red</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108689"><span class="hs-identifier hs-var">src</span></a></span><span> </span><span class="annot"><span class="annottext">String -&gt; String -&gt; String
+forall a. [a] -&gt; [a] -&gt; [a]
+</span><span class="hs-operator hs-var">++</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="L3.Log.Colors.html#reset"><span class="hs-identifier hs-var">reset</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">String -&gt; Text
+</span><span class="hs-identifier hs-var">pack</span></span><span> </span><span class="annot"><span class="annottext">String
+</span><a href="#local-6989586621679108688"><span class="hs-identifier hs-var">msg</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-77"></span></pre></body></html>

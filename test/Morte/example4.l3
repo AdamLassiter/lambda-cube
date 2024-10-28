@@ -4,36 +4,36 @@
 --
 -- in  \x y -> snd (P x y)
 
-(   lambda (Pair : * -> * -> *)
-->  lambda (P    : forall (a : *) -> forall (b : *) -> a -> b -> Pair a b)
-->  lambda (fst  : forall (a : *) -> forall (b : *) -> Pair a b -> a)
-->  lambda (snd  : forall (a : *) -> forall (b : *) -> Pair a b -> b)
-->  lambda (a : *) -> lambda (x : a) -> lambda (y : a) -> snd a a (P a a x y)
+(   λ (Pair : * -> * -> *)
+->  λ (P    : π (a : *) -> π (b : *) -> a -> b -> Pair a b)
+->  λ (fst  : π (a : *) -> π (b : *) -> Pair a b -> a)
+->  λ (snd  : π (a : *) -> π (b : *) -> Pair a b -> b)
+->  λ (a : *) -> λ (x : a) -> λ (y : a) -> snd a a (P a a x y)
 )
 
 -- Pair
-(lambda (a : *) -> lambda (b : *) -> forall (r : *) -> (a -> b -> r) -> r)
+(λ (a : *) -> λ (b : *) -> π (r : *) -> (a -> b -> r) -> r)
 
 -- P
-(   lambda (a : *)
-->  lambda (b : *)
-->  lambda (va : a)
-->  lambda (vb : b)
-->  lambda (r : *)
-->  lambda (Pair : a -> b -> r)
+(   λ (a : *)
+->  λ (b : *)
+->  λ (va : a)
+->  λ (vb : b)
+->  λ (r : *)
+->  λ (Pair : a -> b -> r)
 ->  Pair va vb
 )
 
 -- fst
-(   lambda (a : *)
-->  lambda (b : *)
-->  lambda (p : forall (r : *) -> (a -> b -> r) -> r)
-->  p a (lambda (x : a) -> lambda (_ : b) -> x)
+(   λ (a : *)
+->  λ (b : *)
+->  λ (p : π (r : *) -> (a -> b -> r) -> r)
+->  p a (λ (x : a) -> λ (_ : b) -> x)
 )
 
 -- snd
-(   lambda (a : *)
-->  lambda (b : *)
-->  lambda (p : forall (r : *) -> (a -> b -> r) -> r)
-->  p b (lambda (_ : a) -> lambda (x : b) -> x)
+(   λ (a : *)
+->  λ (b : *)
+->  λ (p : π (r : *) -> (a -> b -> r) -> r)
+->  p b (λ (_ : a) -> λ (x : b) -> x)
 )

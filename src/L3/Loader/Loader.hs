@@ -1,5 +1,5 @@
--- embedDir for prelude
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE CPP #-}
 
 -- | Load and parse '.l3' files
 module L3.Loader.Loader
@@ -87,7 +87,7 @@ tauNorm e = trace ("tauNorm " ++ show e) (tauNorm' e)
 
 tauNorm' (App f a) = case f of
   Lam v ta b -> App (Lam v ta (tauNorm $ tauSubst v (tauNorm a) b)) (tauNorm a)
-  otherwise -> App (tauNorm f) (tauNorm a)
+  _ -> App (tauNorm f) (tauNorm a)
 tauNorm' (Lam v ta b) = Lam v (tauNorm ta) (tauNorm b)
 tauNorm' (Pi v ta b) = Pi v (tauNorm ta) (tauNorm b)
 tauNorm' e = e
@@ -97,6 +97,10 @@ tauNorm' e = e
 wrapPrelude :: [(FilePath, ByteString)] -> (ShowCtx, ShowExpr -> ShowExpr)
 wrapPrelude embedded = trace ("wrapPrelude " ++ show embedded) (wrapPrelude' embedded)
 
-wrapPrelude' embedded = (Ctx τ, tauNorm . (foldl (\f (n, e) x -> Lam n (throwL $ inferType0 e) (f x) `App` e) id ε))
+#ifdef TAUSUBSTITUTE
+wrapPrelude' embedded = (Ctx τ, tauNorm . foldl (\f (n, e) x -> Lam n (throwL $ inferType0 e) (f x) `App` e) id ε)
+#else
+wrapPrelude' embedded = (Ctx τ, foldl (\f (n, e) x -> Lam n (throwL $ inferType0 e) (f x) `App` e) id ε)
+#endif
   where
     (Ctx τ, Ctx ε) = loadPrelude embedded

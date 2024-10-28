@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
-{-# OPTIONS_GHC -Wno-unused-do-bind #-}
+{-# LANGUAGE CPP #-}
 
 -- | Parser from Tokens into Expressions
 module L3.Parse.ExprParser (parseExpr) where
@@ -38,14 +38,18 @@ parseExpr' tks = es
     ann _ = False
 
 -- | Sugared expression, injection point for additional syntax niceties
---  S :: [π(_:]A[)].S  | A
+--  S :: A | [π(_:A)].S
 sugarE :: Parser [Token] ShowExpr
 sugarE = traceIO (\i -> "sugarE " ++ show i) sugarE'
 
+#ifdef ANONYMOUSPI
 sugarE' = do
   ex <- appE
   anonPi <- optional (anonPiE ex)
-  pure $ fromMaybe ex anonPi
+  pure $ fromMaybe ex $ anonPi
+#else
+sugarE' = do appE
+#endif
 
 -- | Applicative expression, unknown and unbounded length
 --  A :: F [app F ..]
@@ -61,11 +65,19 @@ appE' = do
 funE :: Parser [Token] ShowExpr
 funE = traceIO (\i -> "funE " ++ show i) funE'
 
+#ifdef STRICTPARENS
+funE' =
+  lamE
+    <|> piE
+    <|> termE
+    <|> braces sugarE
+#else
 funE' =
   lamE
     <|> piE
     <|> termE
     <|> parens sugarE
+#endif
 
 -- | Terminal expression, bounded in length and with no children
 --  T :: * | # | n@v | v
@@ -83,10 +95,17 @@ termE' =
 arrE :: Parser [Token] (Name, ShowExpr)
 arrE = traceIO (\i -> "arrE " ++ show i) arrE'
 
+#ifdef STRICTPARENS
+arrE' = do
+  (i, τ) <- brackets typE
+  _ <- one Arrow
+  pure (i, τ)
+#else 
 arrE' = do
   (i, τ) <- parens typE
   _ <- one Arrow
   pure (i, τ)
+#endif
 
 -- | Type expression, a symbol has type expr
 --  τ :: s:S
@@ -154,7 +173,7 @@ lamE' = do
   Lam i τ <$> sugarE
 
 -- | Pi function
---  π(s:S).S :: Lam s S S
+--  π(s:S).S :: Pi s S S
 piE :: Parser [Token] ShowExpr
 piE = traceIO (\i -> "piE " ++ show i) piE'
 
@@ -167,11 +186,10 @@ piE' = do
 --  Note the implicit expression argument, as otherwise sugar = (app >> arrow >> sugar) <|> app
 --  If this were not the case, all expressions are parsed as anonymous pis and will fail at the final arrow
 --  This is an exponential slowdown
---  S. :: π(_:S).S
+--  S :: π(_:S).S
 anonPiE :: ShowExpr -> Parser [Token] ShowExpr
 anonPiE τ = traceIO (\i -> "anonPiE " ++ show i) (anonPiE' τ)
 
 anonPiE' τ = do
-  -- τ <- appE
   _ <- one Arrow
   Pi (Name "_") τ <$> sugarE
