@@ -6,6 +6,5 @@ packages:
 build:
   library-profiling: true
   executable-profiling: true
-  coverage: true
   test-arguments:
     coverage: true
