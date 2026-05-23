@@ -15,8 +15,8 @@ Some thoughts on Calculus of Constructions...
 λ [Bool : *] -> λ [True : Bool] -> λ [False : Bool] -> False
 ```
 
-
 ## Compile, Test and Install
+
 ```
 >> stack build
 >> stack test
@@ -25,10 +25,10 @@ Some thoughts on Calculus of Constructions...
 λ>> ...
 ```
 
-
 ## Syntax
 
 ### Calculus of Constructions
+
 The core syntax is constructed from any of these expressions:
 
 | Name        | Value         | Type      |
@@ -42,6 +42,7 @@ The core syntax is constructed from any of these expressions:
 | Application | (λ(x:X).e) x  | E         |
 
 ### L3
+
 A number of _required_ syntactic extensions are included to enable a self-hosted stdlib:
 
 | Name                | Value  | Example            |
@@ -54,11 +55,12 @@ A number of _required_ syntactic extensions are included to enable a self-hosted
 _* Must appear at Ln 0 Col 0 in the file, before all other content_
 -->
 
-
 ## Feature Flags
+
 In aid of usability, the core concept of L3 is enriched with these _optional_ extensions:
 
 ### Syntax Flags
+
 The following flags can be used to configure certain Lexer-level syntactic sugars:
 
 | Flag           | Description                                    | Example              |
@@ -70,8 +72,8 @@ The following flags can be used to configure certain Lexer-level syntactic sugar
 | DEBRUIJNENCODE | Enable implicit Nat-to-deBruijn encoding       | `Nat@plus 1 0`       |
 -->
 
-
 ### Semantics Flags
+
 The following flags can be used to configure certain core language behaviours:
 
 | Flag          | Description                                    | Example              |
@@ -83,8 +85,8 @@ The following flags can be used to configure certain core language behaviours:
 
 _It is left as an exercise to prove these semantic extensions are safe and well-founded._
 
-
 ### Logging Flags
+
 The following `cpp-options` flags can be used to enable/disable logging calls at compile-time:
 
 | Flag     | Description                                     |
@@ -97,36 +99,62 @@ The following `cpp-options` flags can be used to enable/disable logging calls at
 In general, it is preferred to use `setLogLevel` or `set[Trace|Debug|Info|Warn|Error]SourceRegex`.
 Nevertheless, there may be certain scenarios where either logs will never be desired, or there is some performance impact from stringification.
 
-
 ## Performance
 
 ### Benchmarking Ballpark
-#### Intel i7-4770k
-``` 
+
+#### AMD 7950X3D
+
+```
 >> stack bench
 
-benchmarking λ(T:*) . λ(x:T) . x
-time                 859.1 μs   (853.5 μs .. 864.6 μs)
-                     0.999 R²   (0.998 R² .. 1.000 R²)
-mean                 874.8 μs   (865.7 μs .. 906.9 μs)
-std dev              52.61 μs   (11.42 μs .. 109.3 μs)
-variance introduced by outliers: 49% (moderately inflated)
-                         
-benchmarking λ(x:Nat) . Bool@eq (even x) (odd (Nat@Succ x))
-time                 1.008 ms   (1.002 ms .. 1.013 ms)
+benchmarking small/polymorphic identity
+time                 836.1 μs   (831.4 μs .. 841.2 μs)
                      0.999 R²   (0.999 R² .. 1.000 R²)
-mean                 1.023 ms   (1.013 ms .. 1.069 ms)
-std dev              60.27 μs   (12.37 μs .. 136.0 μs)
-variance introduced by outliers: 47% (moderately inflated)
+mean                 852.4 μs   (845.4 μs .. 859.4 μs)
+std dev              24.17 μs   (19.35 μs .. 29.44 μs)
+variance introduced by outliers: 18% (moderately inflated)
+
+benchmarking small/nat parity relation
+time                 1.797 ms   (1.786 ms .. 1.815 ms)
+                     1.000 R²   (0.999 R² .. 1.000 R²)
+mean                 1.811 ms   (1.803 ms .. 1.825 ms)
+std dev              34.53 μs   (26.05 μs .. 51.79 μs)
+
+benchmarking closed examples/church list foldr/all
+time                 550.3 μs   (543.1 μs .. 556.0 μs)
+                     0.999 R²   (0.999 R² .. 1.000 R²)
+mean                 546.3 μs   (543.6 μs .. 550.0 μs)
+std dev              11.32 μs   (9.480 μs .. 14.90 μs)
+variance introduced by outliers: 11% (moderately inflated)
+
+benchmarking closed examples/list map composition
+time                 266.8 μs   (263.6 μs .. 269.2 μs)
+                     0.999 R²   (0.999 R² .. 1.000 R²)
+mean                 261.1 μs   (258.8 μs .. 263.3 μs)
+std dev              7.481 μs   (6.749 μs .. 8.383 μs)
+variance introduced by outliers: 23% (moderately inflated)
+
+benchmarking closed examples/stream map fusion
+time                 1.565 ms   (1.548 ms .. 1.579 ms)
+                     1.000 R²   (0.999 R² .. 1.000 R²)
+mean                 1.549 ms   (1.543 ms .. 1.556 ms)
+std dev              22.03 μs   (18.28 μs .. 27.20 μs)
+
+benchmarking closed examples/io replicate via church nat
+time                 1.538 ms   (1.529 ms .. 1.547 ms)
+                     1.000 R²   (1.000 R² .. 1.000 R²)
+mean                 1.549 ms   (1.543 ms .. 1.558 ms)
+std dev              25.19 μs   (20.33 μs .. 32.00 μs)
 ```
 
-
 ### Notes
-* L3 _should_ be totally-normalising, but this may not currently be the case
-  * `λ(x:Nat) . Bool@eq (even x) (odd (Nat@Succ x))` intuitionistically _could_ evaluate to `λ(x: Nat) . Bool@True`, but in actuality *does not*
 
+* L3 _should_ be totally-normalising, but this may not currently be the case
+  * `λ(x:Nat) . Bool@eq (even x) (odd (Nat@Succ x))` intuitionistically _could_ evaluate to `λ(x: Nat) . Bool@True`, but in actuality _does not_
 
 ## References
+
 * [ChristopherKing42/CalculusOfConstructions.hs](https://gist.github.com/ChristopherKing42/d8c9fde0869ec5c8feae71714e069214)
 * [Gabriel439/Haskell-Morte-Library](https://github.com/Gabriel439/Haskell-Morte-Library)
   * [Prelude](https://github.com/Gabriel439/Haskell-Morte-Library/tree/master/Prelude)
