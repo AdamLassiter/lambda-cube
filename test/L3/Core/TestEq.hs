@@ -17,6 +17,8 @@ testAlphaEq = do
 
   assertAlphaEq "Core::TestEq" (Lam (Name "x") Star (Var (Name "x"))) (Lam (Name "y") Star (Var (Name "y"))) "Bound names are alpha-equivalent over lambdas"
   assertAlphaEq "Core::TestEq" (Pi (Name "x") Star (Var (Name "x"))) (Pi (Name "y") Star (Var (Name "y"))) "Bound names are alpha-equivalent over pis"
+  assertAlphaEq "Core::TestEq" (Lam (Name "x") Star (Lam (Name "x") (Var $ Name "x") (Var $ Name "x"))) (Lam (Name "a") Star (Lam (Name "b") (Var $ Name "a") (Var $ Name "b"))) "Nested lambdas compare type annotations outside the new binder and bodies inside it"
+  assertNotAlphaEq "Core::TestEq" (Lam (Name "x") Star (Lam (Name "x") (Var $ Name "x") (Var $ Name "x"))) (Lam (Name "a") Star (Lam (Name "b") (Var $ Name "b") (Var $ Name "b"))) "Nested lambda binders are not in scope in their own type annotations"
 
   assertAlphaEq "Core::TestEq" (Lam (Name "x") Star (Var (Name "x")) `App` Var (Name "y")) (Lam (Name "y") Star (Var (Name "y")) `App` Var (Name "y")) "Alpha-equivalence distributes over application"
 

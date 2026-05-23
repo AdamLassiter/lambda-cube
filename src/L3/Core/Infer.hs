@@ -25,6 +25,7 @@ trace = traceU "Core::Infer"
 weakInferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
 weakInferType (Ctx τ) e = trace ("weakInferType " ++ show τ ++ ", " ++ show e) (weakInferType' (Ctx τ) e)
 
+weakInferType' :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
 weakInferType' _ Star = return Box
 weakInferType' (Ctx τ) Box =
   Left $
@@ -43,17 +44,17 @@ weakInferType' (Ctx τ) (Var v) = case lookup v τ of
             [ "unbound variable:",
               showIndent v
             ]
-        )
+    )
   Just e -> Right e
 weakInferType' (Ctx τ) (Lam v ta b) = do
-  tb <- weakInferType (Ctx ((v, ta) : τ)) b
+  tb <- weakInferType' (Ctx ((v, ta) : τ)) b
   let tf = Pi v ta tb
   -- Types may themselves be well-typed, since they are expressions
-  _ <- weakInferType (Ctx τ) tf
+  _ <- weakInferType' (Ctx τ) tf
   return tf
 weakInferType' (Ctx τ) (Pi v ta tb) = do
-  tta <- weakInferType (Ctx τ) ta
-  ttb <- weakInferType (Ctx ((v, ta) : τ)) tb
+  tta <- weakInferType' (Ctx τ) ta
+  ttb <- weakInferType' (Ctx ((v, ta) : τ)) tb
   case (tta, ttb) of
     (Star, Star) -> return Star
     (Box, Star) -> return Star
@@ -73,7 +74,7 @@ weakInferType' (Ctx τ) (Pi v ta tb) = do
               ]
           )
 weakInferType' (Ctx τ) (App f a) = do
-  (v, ta, tb) <- case weakInferType (Ctx τ) f of
+  (v, ta, tb) <- case weakInferType' (Ctx τ) f of
     Right (Pi v ta tb) -> return (v, ta, tb)
     Right expr ->
       Left $
@@ -92,7 +93,7 @@ weakInferType' (Ctx τ) (App f a) = do
       where
         matchBind (Lam v ta b) = rethrowError ["with binding:", showIndent (v, a)] err
         matchBind f = rethrowError ["in expression:", showIndent $ App f a] err
-  ta' <- weakInferType (Ctx τ) a
+  ta' <- weakInferType' (Ctx τ) a
   if ta `betaEq` ta'
     then return $ substitute v a tb
     else
@@ -118,14 +119,16 @@ weakInferType' (Ctx τ) (App f a) = do
 inferType1 :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
 inferType1 (Ctx τ) e = trace ("inferType1 " ++ show τ ++ ", " ++ show e) (inferType1' (Ctx τ) e)
 
-inferType1' τ e = weakInferType τ e
+inferType1' :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
+inferType1' τ e = weakInferType' τ e
 
 -- | Type-check an expression and return the expression's normalized type if
 -- | type-checking succeeds or an error message if type-checking fails
 inferType :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
 inferType (Ctx τ) e = trace ("inferType " ++ show τ ++ ", " ++ show e) (inferType' (Ctx τ) e)
 
-inferType' τ e = mapR normalize $ inferType1 τ e
+inferType' :: (Eq a, Enum a, Show a) => Context a -> Expr a -> Result (Expr a)
+inferType' τ e = mapR normalize $ inferType1' τ e
 
 -- | `inferType0` is the same as `inferType` with an empty context, meaning that
 -- | the expression must be closed (i.e. no free variables), otherwise type-checking

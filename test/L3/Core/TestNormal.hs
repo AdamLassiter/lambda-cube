@@ -48,6 +48,8 @@ testSubstitute = do
 
   assertEq "Core::TestNormal" (substitute 0 (Var 1) (Lam 0 (Var 0) (Var 0))) (Lam 0 (Var 1) (Var 0)) "(Lam 0 : 0 . 0)[0 := 1] renames free type context to Lam 0 : 1 . 0"
   assertEq "Core::TestNormal" (substitute 0 (Var 1) (Lam 2 (Var 0) (Var 0))) (Lam 2 (Var 1) (Var 1)) "(Lam 2 : 0 . 0)[0 := 1] renames all to Lam 2 : 1 . 1"
+  assertEq "Core::TestNormal" (substitute 0 (Var 1) (Lam 1 Star (Var 2))) (Lam 1 Star (Var 2)) "No-op substitution leaves unused binders unchanged"
+  assertEq "Core::TestNormal" (substitute 0 (Var 1) (Lam 1 Star (Var 0))) (Lam 2 Star (Var 1)) "Substitution renames binders that would capture free variables"
 
   assertEq "Core::TestNormal" (substitute 0 (Var 1) (Pi 0 (Var 0) (Var 0))) (Pi 0 (Var 1) (Var 0)) "(Pi 0 : 0 . 0)[0 := 1] renames free type context to Pi 0 : 1 . 0"
   assertEq "Core::TestNormal" (substitute 0 (Var 1) (Pi 2 (Var 0) (Var 0))) (Pi 2 (Var 1) (Var 1)) "(Pi 2 : 0 . 0)[0 := 1] renames all to Pi 2 : 1 . 1"
@@ -58,3 +60,7 @@ testNormalize :: IO ()
 testNormalize = do
   let param a x e = Lam a Star (Lam x (Var a) e)
   assertEq "Core::TestNormal" (normalize (param 0 1 $ param 2 3 (Var 3) `App` Var 0 `App` Var 1)) (param 0 1 (Var 1)) "Id Id normalizes to Id"
+  assertEq "Core::TestNormal" (normalize (Lam 0 Star (Var 1))) (Lam 0 Star (Var 1)) "Normalize leaves unchanged lambda bodies unchanged"
+  assertEq "Core::TestNormal" (normalize (Lam 0 Star (App (Lam 2 Star (App (Lam 3 Star (Var 3)) (Var 2))) (Var 4)))) (Lam 0 Star (Var 4)) "Normalize rechecks changed lambda bodies"
+  assertEq "Core::TestNormal" (normalize (Lam 0 Star (App (Var 1) (Var 0)))) (Var 1) "Normalize eta-reduces lambdas"
+  assertEq "Core::TestNormal" (normalize (App (Lam 0 Star (Lam 1 Star (Var 0))) (Var 1))) (Lam 2 Star (Var 1)) "Normalize avoids capture while substituting beta-redexes"

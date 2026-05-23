@@ -30,6 +30,7 @@ testIndex = do
 
   assertEq "Core::TestDeBruijn" (index0 $ Lam (Name "x") Star (Var (Name "x"))) (Lam (Left 0) Star (Var $ Left 0)) "Bound names can be indexed"
   assertEq "Core::TestDeBruijn" (index0 $ Lam (Name "x") (Var (Name "x")) (Var (Name "x"))) (Lam (Left 0) (Var $ Right (Name "x")) (Var $ Left 0)) "Types are unbound relative to their binding"
+  assertEq "Core::TestDeBruijn" (index0 $ Lam (Name "x") Star (Lam (Name "x") (Var (Name "x")) (Var (Name "x")))) (Lam (Left 0) Star (Lam (Left 1) (Var $ Left 0) (Var $ Left 1))) "Nested bindings shadow outer bindings in bodies but not type annotations"
 
   assertEq "Core::TestDeBruijn" (index0 $ Pi (Name "x") Star (Var (Name "x"))) (Pi (Left 0) Star (Var $ Left 0)) "Bound names can be indexed"
   assertEq "Core::TestDeBruijn" (index0 $ Pi (Name "x") (Var (Name "x")) (Var (Name "x"))) (Pi (Left 0) (Var $ Right (Name "x")) (Var $ Left 0)) "Types are unbound relative to their binding"
